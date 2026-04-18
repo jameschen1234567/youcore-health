@@ -328,6 +328,33 @@
     .radar-score-bar { height: 100%; background: linear-gradient(90deg, #3a7d44, #56a564); border-radius: 4px; transition: width 0.6s ease; }
     .radar-score-label { min-width: 88px; color: #2d6235; font-weight: 700; font-size: 13px; }
     .radar-score-val { min-width: 32px; text-align: right; color: #555; font-size: 13px; }
+
+    /* ─── Hero Images ─── */
+    .hero-imgs { display: flex; gap: 10px; justify-content: center; margin: 20px 0; padding: 0 16px; }
+    .hero-img { width: calc(33.3% - 8px); max-width: 160px; height: 110px; object-fit: cover; border-radius: 12px; }
+
+    /* ─── Accordion Services ─── */
+    .accordion-services { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+    .acc-item { background: #fff; border: 1px solid #e0ece0; border-radius: 14px; overflow: hidden; }
+    .acc-trigger { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; background: none; border: none; width: 100%; text-align: left; }
+    .acc-trigger:hover { background: #f5faf5; }
+    .acc-trigger img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+    .acc-trigger-text h3 { font-size: 16px; font-weight: 700; color: #1b4332; margin: 0 0 2px; }
+    .acc-trigger-text span { font-size: 12px; color: #888; }
+    .acc-arrow { margin-left: auto; font-size: 18px; color: #52b788; transition: transform 0.25s; }
+    .acc-item.open .acc-arrow { transform: rotate(180deg); }
+    .acc-body { display: none; padding: 0 18px 18px; border-top: 1px solid #eaf4ea; }
+    .acc-item.open .acc-body { display: block; }
+    .acc-body img.acc-full-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin: 14px 0 10px; }
+
+    /* ─── Instrument Grid ─── */
+    .inst-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    .inst-card { background: #fff; border: 1px solid #dde8dd; border-radius: 12px; overflow: hidden; cursor: pointer; }
+    .inst-card-top { position: relative; }
+    .inst-card-top img { width: 100%; height: 100px; object-fit: cover; display: block; }
+    .inst-card-top h4 { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(27,67,50,0.85)); color: #fff; font-size: 13px; font-weight: 700; padding: 8px 10px 6px; margin: 0; }
+    .inst-card-detail { display: none; padding: 10px 12px; font-size: 13px; color: #555; line-height: 1.6; border-top: 1px solid #eaf4ea; }
+    .inst-card.open .inst-card-detail { display: block; }
   </style>
 </head>
 <body>
@@ -351,15 +378,16 @@
 
 <!-- ══ HERO ══ -->
 <section class="hero">
-  <div class="hero-eyebrow">宥芯健康服務地圖 2026</div>
-  <h1>你的身體問題那麼多，<br><span>你到底該先從哪裡開始修復？</span></h1>
-  <p class="hero-sub">一張地圖，幫你省下亂試半年的時間。</p>
-  <div class="hero-badge">
-    精密檢測 × 客製訓練 × 射頻修復 × 頌缽音療<br>
-    <em>一站式，帶你回到穩定與高效</em>
+  <div class="hero-eyebrow">宥芯健康顧問 2026</div>
+  <h1>找到你身體<br><span>真正的起點</span></h1>
+  <p class="hero-sub">精密檢測 × 科學修復 × 客製訓練</p>
+  <div class="hero-imgs">
+    <img src="service-massage.png" alt="射頻修復" class="hero-img">
+    <img src="service-training.png" alt="體能訓練" class="hero-img">
+    <img src="service-bowl.png" alt="頌缽療育" class="hero-img">
   </div>
   <div class="hero-btns">
-    <a href="#quiz" class="btn-primary">🎯 先做免費測驗，找出你的起點</a>
+    <a href="#quiz" class="btn-primary">先做免費測驗</a>
     <a href="https://youcore.press" class="btn-outline">了解官網 →</a>
   </div>
 </section>
@@ -883,7 +911,7 @@
       <div style="text-align:center;margin-top:16px;">
         <p style="font-size:14px;color:#555;margin-bottom:12px;">👇 最適合你的服務</p>
         <div class="result-services" id="result-services"></div>
-        <a href="https://youcore.press" class="result-cta" id="result-cta">立即前往官網預約 →</a>
+        <a href="#lead-form" class="result-cta" id="result-cta">立即前往官網預約 →</a>
         <br>
         <button class="quiz-restart" onclick="restartQuiz()">重新測驗</button>
       </div>
@@ -897,207 +925,100 @@
 <div class="container">
 <section class="section" id="services">
   <h2>五大服務，一次看懂各自能幫你解決什麼</h2>
-  <div class="service-cards">
+  <div class="accordion-services">
 
-    <div class="service-card">
-      <img src="service-assessment.png" alt="專業健康檢測" style="width:100%;height:220px;object-fit:cover;display:block;">
-      <div class="card-header"><div class="card-emoji">🏥</div><div class="card-title-wrap"><h3>專業健康檢測</h3><span>60–75 分鐘 / 次 ｜ 所有服務的起點</span></div></div>
-      <div class="card-body">
-        <p class="card-tagline">不知道問題在哪？先讓數據告訴你。</p>
-        <ul class="card-list">
-          <li><span class="dot">●</span> ROM 關節活動度評估 <span class="tag tag-green">🟢 入門首選</span></li>
-          <li><span class="dot">●</span> 動作品質與代償模式分析（生物力學）</li>
-          <li><span class="dot">●</span> 測力板雙腳對稱性 × 單腳穩定度 × 爆發力</li>
-          <li><span class="dot">●</span> InBody 體組成分析（肌肉量 / 體脂率 / 內臟脂肪）</li>
-          <li><span class="dot">●</span> 建立個人雷達圖基準線，4–6 週後比對進步</li>
-        </ul>
-        <div class="card-tip">💡 所有客戶的第一步。這 60 分鐘決定後面所有方向。</div>
-        <!-- SVG: 健康檢測示意雷達圖 -->
-        <svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top:16px;border-radius:10px;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
-          <rect width="300" height="140" fill="#f0faf4"/>
-          <text x="150" y="14" text-anchor="middle" font-size="11" fill="#2d6a4f" font-weight="700" font-family="'Noto Sans TC',sans-serif">個人雷達圖示意</text>
-          <g stroke="#b7dfc8" stroke-width="0.8" fill="none">
-            <polygon points="150,32 170,43 170,65 150,76 130,65 130,43"/>
-            <polygon points="150,22 182,40 182,76 150,94 118,76 118,40"/>
-            <polygon points="150,12 194,37 194,89 150,114 106,89 106,37"/>
-          </g>
-          <g stroke="#b7dfc8" stroke-width="0.8">
-            <line x1="150" y1="12" x2="150" y2="114"/>
-            <line x1="194" y1="37" x2="106" y2="89"/>
-            <line x1="194" y1="89" x2="106" y2="37"/>
-          </g>
-          <polygon points="150,50 168,59 172,74 150,95 128,74 132,59"
-            fill="rgba(82,183,136,0.35)" stroke="#2d6a4f" stroke-width="2"/>
-          <circle cx="150" cy="50" r="3" fill="#2d6a4f"/>
-          <circle cx="168" cy="59" r="3" fill="#2d6a4f"/>
-          <circle cx="172" cy="74" r="3" fill="#2d6a4f"/>
-          <circle cx="150" cy="95" r="3" fill="#2d6a4f"/>
-          <circle cx="128" cy="74" r="3" fill="#2d6a4f"/>
-          <circle cx="132" cy="59" r="3" fill="#2d6a4f"/>
-          <text x="150" y="9" text-anchor="middle" font-size="8" fill="#2d6a4f" font-family="sans-serif">活動度</text>
-          <text x="200" y="40" text-anchor="start" font-size="8" fill="#2d6a4f" font-family="sans-serif">動作</text>
-          <text x="200" y="92" text-anchor="start" font-size="8" fill="#2d6a4f" font-family="sans-serif">平衡</text>
-          <text x="150" y="128" text-anchor="middle" font-size="8" fill="#2d6a4f" font-family="sans-serif">爆發力</text>
-          <text x="100" y="92" text-anchor="end" font-size="8" fill="#2d6a4f" font-family="sans-serif">體組成</text>
-          <text x="100" y="40" text-anchor="end" font-size="8" fill="#2d6a4f" font-family="sans-serif">核心</text>
-          <text x="150" y="136" text-anchor="middle" font-size="9" fill="#555" font-family="sans-serif">檢測後建立個人基準線</text>
-        </svg>
-      </div>
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-assessment.png" alt="專業健康檢測">
+      <div class="acc-trigger-text"><h3>專業健康檢測</h3><span>60–75 分鐘 ｜ 所有服務的起點</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-assessment.png" alt="專業健康檢測" class="acc-full-img">
+      <p class="card-tagline">不知道問題在哪？先讓數據告訴你。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> ROM 關節活動度評估</li>
+        <li><span class="dot">●</span> 動作品質與代償模式分析</li>
+        <li><span class="dot">●</span> 測力板雙腳對稱性 × 單腳穩定度</li>
+        <li><span class="dot">●</span> InBody 體組成分析</li>
+        <li><span class="dot">●</span> 建立個人雷達圖基準線，4–6 週後比對進步</li>
+      </ul>
+      <div class="card-tip">所有客戶的第一步。這 60 分鐘決定後面所有方向。</div>
     </div>
+  </div>
 
-    <div class="service-card">
-      <img src="service-training.png" alt="一對一肌力與體能訓練" style="width:100%;height:220px;object-fit:cover;display:block;">
-      <div class="card-header"><div class="card-emoji">🏋️</div><div class="card-title-wrap"><h3>一對一肌力與體能訓練</h3><span>60–75 分鐘 / 次 ｜ 週 2–3 次</span></div></div>
-      <div class="card-body">
-        <p class="card-tagline">技術先到位，再把力量與速度堆上去。</p>
-        <ul class="card-list">
-          <li><span class="dot">●</span> 動態暖身 × 動作姿勢調整 × 肌力訓練 <span class="tag tag-orange">🔥 高效能</span></li>
-          <li><span class="dot">●</span> VMAX Pro 速度監控，訓練負荷科學化</li>
-          <li><span class="dot">●</span> 週 2 次效率型 / 週 3 次表現型，完全客製</li>
-          <li><span class="dot">●</span> 研究實證：阻力訓練可讓肌力提升 25–30%（Fragala et al., 2019）</li>
-        </ul>
-        <div class="card-tip">💡 訓練卡關的人必看。先找到問題根源，再重設課表。</div>
-        <!-- SVG: 體能訓練折線趨勢圖 -->
-        <svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top:16px;border-radius:10px;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
-          <rect width="300" height="140" fill="#f0faf4"/>
-          <text x="150" y="14" text-anchor="middle" font-size="11" fill="#2d6a4f" font-weight="700" font-family="'Noto Sans TC',sans-serif">12 週訓練進步趨勢</text>
-          <line x1="40" y1="20" x2="40" y2="110" stroke="#ccc" stroke-width="1"/>
-          <line x1="40" y1="110" x2="270" y2="110" stroke="#ccc" stroke-width="1"/>
-          <line x1="40" y1="80" x2="270" y2="80" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="3,3"/>
-          <line x1="40" y1="55" x2="270" y2="55" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="3,3"/>
-          <line x1="40" y1="30" x2="270" y2="30" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="3,3"/>
-          <polygon points="60,98.8 120,71.8 180,51.5 240,31.3 240,110 60,110"
-            fill="rgba(82,183,136,0.18)"/>
-          <polyline points="60,98.8 120,71.8 180,51.5 240,31.3"
-            fill="none" stroke="#3a7d44" stroke-width="2.5" stroke-linejoin="round"/>
-          <circle cx="60" cy="98.8" r="4" fill="#3a7d44"/>
-          <circle cx="120" cy="71.8" r="4" fill="#3a7d44"/>
-          <circle cx="180" cy="51.5" r="4" fill="#3a7d44"/>
-          <circle cx="240" cy="31.3" r="5" fill="#2d6a4f"/>
-          <text x="60" y="93" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">100</text>
-          <text x="120" y="66" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">112</text>
-          <text x="180" y="46" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">121</text>
-          <text x="240" y="26" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">130</text>
-          <text x="60" y="122" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">訓練前</text>
-          <text x="120" y="122" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">第4週</text>
-          <text x="180" y="122" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">第8週</text>
-          <text x="240" y="122" text-anchor="middle" font-size="8" fill="#666" font-family="sans-serif">第12週</text>
-          <rect x="248" y="22" width="42" height="18" rx="4" fill="#e8471a"/>
-          <text x="269" y="34" text-anchor="middle" font-size="10" fill="#fff" font-weight="700" font-family="sans-serif">+30%</text>
-        </svg>
-      </div>
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-training.png" alt="一對一肌力與體能訓練">
+      <div class="acc-trigger-text"><h3>一對一肌力與體能訓練</h3><span>60–75 分鐘 ｜ 週 2–3 次</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-training.png" alt="一對一肌力與體能訓練" class="acc-full-img">
+      <p class="card-tagline">技術先到位，再把力量與速度堆上去。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 動態暖身 × 動作姿勢調整 × 肌力訓練</li>
+        <li><span class="dot">●</span> VMAX Pro 速度監控，訓練負荷科學化</li>
+        <li><span class="dot">●</span> 週 2 次效率型 / 週 3 次表現型，完全客製</li>
+        <li><span class="dot">●</span> 阻力訓練可讓肌力提升 25–30%（Fragala et al., 2019）</li>
+      </ul>
+      <div class="card-tip">訓練卡關的人必看。先找到問題根源，再重設課表。</div>
     </div>
+  </div>
 
-    <div class="service-card">
-      <img src="service-rehab.png" alt="運動傷害防護與康復訓練" style="width:100%;height:220px;object-fit:cover;display:block;">
-      <div class="card-header"><div class="card-emoji">🩹</div><div class="card-title-wrap"><h3>運動傷害防護與康復訓練</h3><span>105 分鐘 / 次 ｜ 4 Phase 完整計畫</span></div></div>
-      <div class="card-body">
-        <p class="card-tagline">不只是康復，而是有數據支撐的「回場計畫」。</p>
-        <ul class="card-list">
-          <li><span class="dot">●</span> Phase 1–4 完整分期，每個 Phase 有明確數據門檻 <span class="tag tag-teal">💡 根治型</span></li>
-          <li><span class="dot">●</span> 測力板患側/健側對稱性回測（目標 > 90%）</li>
-          <li><span class="dot">●</span> James ACL 術後親身驗證的系統，完全理解你的感受</li>
-        </ul>
-        <div class="card-tip">💡 「準備好了」不靠感覺，靠測試數據說話。</div>
-        <!-- SVG: 4 Phase 進度條 -->
-        <svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top:16px;border-radius:10px;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
-          <rect width="300" height="140" fill="#fff"/>
-          <text x="150" y="14" text-anchor="middle" font-size="11" fill="#2d6a4f" font-weight="700" font-family="'Noto Sans TC',sans-serif">4 Phase 回場計畫進度</text>
-          <text x="10" y="31" font-size="9" fill="#333" font-family="sans-serif">Phase 1 穩定活化</text>
-          <rect x="10" y="34" width="280" height="14" rx="7" fill="#e8f5e8"/>
-          <rect x="10" y="34" width="70" height="14" rx="7" fill="#52b788"/>
-          <text x="84" y="45" font-size="9" fill="#2d6a4f" font-family="sans-serif">25%</text>
-          <text x="10" y="63" font-size="9" fill="#333" font-family="sans-serif">Phase 2 力量重建</text>
-          <rect x="10" y="66" width="280" height="14" rx="7" fill="#e8f5e8"/>
-          <rect x="10" y="66" width="140" height="14" rx="7" fill="#40916c"/>
-          <text x="154" y="77" font-size="9" fill="#2d6a4f" font-family="sans-serif">50%</text>
-          <text x="10" y="95" font-size="9" fill="#333" font-family="sans-serif">Phase 3 功能情境</text>
-          <rect x="10" y="98" width="280" height="14" rx="7" fill="#e8f5e8"/>
-          <rect x="10" y="98" width="210" height="14" rx="7" fill="#2d6a4f"/>
-          <text x="224" y="109" font-size="9" fill="#fff" font-family="sans-serif">75%</text>
-          <text x="10" y="127" font-size="9" fill="#333" font-family="sans-serif">Phase 4 專項回場</text>
-          <rect x="10" y="130" width="280" height="14" rx="7" fill="#1b4332"/>
-          <text x="265" y="141" text-anchor="end" font-size="9" fill="#fff" font-family="sans-serif">100% ✓</text>
-        </svg>
-      </div>
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-rehab.png" alt="運動傷害防護與康復訓練">
+      <div class="acc-trigger-text"><h3>運動傷害防護與康復訓練</h3><span>105 分鐘 ｜ 4 Phase 完整計畫</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-rehab.png" alt="運動傷害防護與康復訓練" class="acc-full-img">
+      <p class="card-tagline">不只是康復，而是有數據支撐的回場計畫。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> Phase 1–4 完整分期，每個 Phase 有明確數據門檻</li>
+        <li><span class="dot">●</span> 測力板患側/健側對稱性回測（目標 &gt; 90%）</li>
+        <li><span class="dot">●</span> James ACL 術後親身驗證的系統</li>
+      </ul>
+      <div class="card-tip">「準備好了」不靠感覺，靠測試數據說話。</div>
     </div>
+  </div>
 
-    <div class="service-card">
-      <img src="service-massage.png" alt="科技結合運動按摩" style="width:100%;height:220px;object-fit:cover;display:block;">
-      <div class="card-header"><div class="card-emoji">🔧</div><div class="card-title-wrap"><h3>科技結合運動按摩</h3><span>60 分鐘 / 次 ｜ 招牌服務：射頻 × 手技</span></div></div>
-      <div class="card-body">
-        <p class="card-tagline">先找根源，再深層化解，最後整合回動作。</p>
-        <ul class="card-list">
-          <li><span class="dot">●</span> 手技找出真正的張力路徑 <span class="tag tag-orange">🔥 高效能</span></li>
-          <li><span class="dot">●</span> 射頻深層溫熱（40–45°C），促進筋膜延展性</li>
-          <li><span class="dot">●</span> 動作再教育 + 呼吸整合，讓放鬆被身體「記住」</li>
-        </ul>
-        <div class="card-tip">💡 上班族脖肩腰背問題的最佳起點。</div>
-        <!-- SVG: 三段流程圖 -->
-        <svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top:16px;border-radius:10px;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="svgmg1" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#1b4332"/><stop offset="100%" style="stop-color:#52b788"/>
-            </linearGradient>
-            <linearGradient id="svgmg2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#2d6a4f"/><stop offset="100%" style="stop-color:#74c69d"/>
-            </linearGradient>
-            <linearGradient id="svgmg3" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#40916c"/><stop offset="100%" style="stop-color:#95d5b2"/>
-            </linearGradient>
-          </defs>
-          <rect width="300" height="140" fill="#f8fffe"/>
-          <text x="150" y="14" text-anchor="middle" font-size="11" fill="#2d6a4f" font-weight="700" font-family="'Noto Sans TC',sans-serif">三步驟整合修復流程</text>
-          <rect x="8" y="26" width="82" height="90" rx="10" fill="url(#svgmg1)"/>
-          <text x="49" y="64" text-anchor="middle" font-size="22" font-family="sans-serif">&#x1F590;</text>
-          <text x="49" y="82" text-anchor="middle" font-size="10" fill="#fff" font-weight="700" font-family="'Noto Sans TC',sans-serif">手技評估</text>
-          <text x="49" y="96" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.85)" font-family="'Noto Sans TC',sans-serif">找張力根源</text>
-          <text x="99" y="75" text-anchor="middle" font-size="18" fill="#3a7d44" font-family="sans-serif">&#x2192;</text>
-          <rect x="109" y="26" width="82" height="90" rx="10" fill="url(#svgmg2)"/>
-          <text x="150" y="64" text-anchor="middle" font-size="22" font-family="sans-serif">&#x1F525;</text>
-          <text x="150" y="82" text-anchor="middle" font-size="10" fill="#fff" font-weight="700" font-family="'Noto Sans TC',sans-serif">射頻深層熱</text>
-          <text x="150" y="96" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.85)" font-family="'Noto Sans TC',sans-serif">40-45&#xB0;C 熱效應</text>
-          <text x="200" y="75" text-anchor="middle" font-size="18" fill="#3a7d44" font-family="sans-serif">&#x2192;</text>
-          <rect x="210" y="26" width="82" height="90" rx="10" fill="url(#svgmg3)"/>
-          <text x="251" y="64" text-anchor="middle" font-size="22" font-family="sans-serif">&#x1F9E0;</text>
-          <text x="251" y="82" text-anchor="middle" font-size="10" fill="#fff" font-weight="700" font-family="'Noto Sans TC',sans-serif">動作再教育</text>
-          <text x="251" y="96" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.85)" font-family="'Noto Sans TC',sans-serif">身體記住放鬆</text>
-          <text x="150" y="128" text-anchor="middle" font-size="9" fill="#555" font-family="sans-serif">根源 &#x2192; 深層修復 &#x2192; 動作整合</text>
-        </svg>
-      </div>
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-massage.png" alt="科技結合運動按摩">
+      <div class="acc-trigger-text"><h3>科技結合運動按摩</h3><span>60 分鐘 ｜ 射頻 × 手技整合</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-massage.png" alt="科技結合運動按摩" class="acc-full-img">
+      <p class="card-tagline">先找根源，再深層化解，最後整合回動作。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 手技找出真正的張力路徑</li>
+        <li><span class="dot">●</span> 射頻深層溫熱（40–45°C），促進筋膜延展性</li>
+        <li><span class="dot">●</span> 動作再教育 + 呼吸整合</li>
+      </ul>
+      <div class="card-tip">上班族脖肩腰背問題的最佳起點。</div>
     </div>
+  </div>
 
-    <div class="service-card">
-      <img src="service-bowl.png" alt="頌缽療育" style="width:100%;height:220px;object-fit:cover;display:block;">
-      <div class="card-header"><div class="card-emoji">🎵</div><div class="card-title-wrap"><h3>頌缽療育</h3><span>60–90 分鐘 / 次 ｜ 身心雙向調節</span></div></div>
-      <div class="card-body">
-        <p class="card-tagline">聲波共振讓神經系統從「戰鬥模式」切換到「恢復模式」。</p>
-        <ul class="card-list">
-          <li><span class="dot">●</span> 頌缽鬆筋振體 × 全身能量共振 × 深層脈輪冥想音療 <span class="tag tag-green">🟢 入門首選</span></li>
-          <li><span class="dot">●</span> 科學實證：HRV 提升、腦波 Delta+135%（Lin et al., 2025）</li>
-          <li><span class="dot">●</span> 焦慮降低效果量 d=1.51–2.18（Rio-Alamos et al., 2023）</li>
-        </ul>
-        <div class="card-tip">💡 高壓族群、睡眠困擾者的首選。一對一 / 線上版皆可。</div>
-        <!-- SVG: 聲波視覺化 -->
-        <svg width="100%" height="140" viewBox="0 0 300 140" style="margin-top:16px;border-radius:10px;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="svgsg1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#1b4332"/><stop offset="100%" style="stop-color:#2d6a4f"/>
-            </linearGradient>
-          </defs>
-          <rect width="300" height="140" fill="url(#svgsg1)" rx="10"/>
-          <path d="M0,55 C15,55 15,45 30,45 C45,45 45,55 60,55 C75,55 75,45 90,45 C105,45 105,55 120,55 C135,55 135,45 150,45 C165,45 165,55 180,55 C195,55 195,45 210,45 C225,45 225,55 240,55 C255,55 255,45 270,45 C285,45 285,55 300,55"
-            fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-          <path d="M0,70 C10,70 10,50 25,50 C40,50 40,90 55,90 C70,90 70,50 85,50 C100,50 100,90 115,90 C130,90 130,50 145,50 C160,50 160,90 175,90 C190,90 190,50 205,50 C220,50 220,90 235,90 C250,90 250,50 265,50 C280,50 280,70 300,70"
-            fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
-          <path d="M0,70 C8,70 8,30 20,30 C32,30 32,110 44,110 C56,110 56,30 68,30 C80,30 80,110 92,110 C104,110 104,30 116,30 C128,30 128,110 140,110 C152,110 152,30 164,30 C176,30 176,110 188,110 C200,110 200,30 212,30 C224,30 224,110 236,110 C248,110 248,30 260,30 C272,30 272,70 300,70"
-            fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2.5"/>
-          <rect x="30" y="58" width="240" height="26" rx="6" fill="rgba(0,0,0,0.4)"/>
-          <text x="150" y="75" text-anchor="middle" font-size="11" fill="#a8d5a2" font-weight="700" font-family="'Noto Sans TC',sans-serif">&#x3B8; 腦波同步 &#xFF5C; HRV &#x2191; &#xFF5C; Delta +135%</text>
-          <text x="150" y="126" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.7)" font-family="sans-serif">科學實證聲波共振療法</text>
-        </svg>
-      </div>
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-bowl.png" alt="頌缽療育">
+      <div class="acc-trigger-text"><h3>頌缽療育</h3><span>60–90 分鐘 ｜ 身心雙向調節</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-bowl.png" alt="頌缽療育" class="acc-full-img">
+      <p class="card-tagline">聲波共振讓神經系統從戰鬥模式切換到恢復模式。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 頌缽鬆筋振體 × 全身能量共振 × 深層音療</li>
+        <li><span class="dot">●</span> HRV 提升、腦波 Delta +135%（Lin et al., 2025）</li>
+        <li><span class="dot">●</span> 焦慮降低效果量 d=1.51–2.18（Rio-Alamos et al., 2023）</li>
+      </ul>
+      <div class="card-tip">高壓族群、睡眠困擾者的首選。一對一 / 線上版皆可。</div>
     </div>
+  </div>
 
   </div>
 </section>
@@ -1107,100 +1028,56 @@
 <section class="section">
   <h2>我們的科學儀器設備</h2>
   <p>每一個評估與訓練，都有儀器數據在背後支撐——不是憑感覺，是數字說話。</p>
-  <div class="instruments">
-    <div class="instrument"><img src="inst-vmax.png" alt="VMAX Pro" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">📡</div><h4>VMAX Pro</h4><p>監控訓練速度、加速度、位移與旋轉，負荷科學化</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <text x="100" y="10" text-anchor="middle" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">訓練速度監控</text>
-        <rect x="20" y="55" width="24" height="18" rx="3" fill="#52b788"/>
-        <rect x="60" y="42" width="24" height="31" rx="3" fill="#40916c"/>
-        <rect x="100" y="28" width="24" height="45" rx="3" fill="#2d6a4f"/>
-        <rect x="140" y="14" width="24" height="59" rx="3" fill="#1b4332"/>
-        <text x="32" y="78" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif">1.2</text>
-        <text x="72" y="78" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif">1.8</text>
-        <text x="112" y="78" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif">2.4</text>
-        <text x="152" y="78" text-anchor="middle" font-size="8" fill="#555" font-family="sans-serif">3.1</text>
-        <text x="185" y="78" font-size="7" fill="#888" font-family="sans-serif">m/s</text>
-      </svg></div></div>
-    <div class="instrument"><img src="inst-forceplate.png" alt="測力板" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">⚖️</div><h4>測力板</h4><p>地面反作用力、雙腳平衡、跳躍高度、落地傷害風險</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <ellipse cx="65" cy="38" rx="16" ry="24" fill="rgba(82,183,136,0.5)" stroke="#40916c" stroke-width="1.5"/>
-        <ellipse cx="57" cy="16" rx="5" ry="4" fill="rgba(82,183,136,0.5)" stroke="#40916c" stroke-width="1"/>
-        <ellipse cx="65" cy="13" rx="5" ry="4" fill="rgba(82,183,136,0.5)" stroke="#40916c" stroke-width="1"/>
-        <ellipse cx="73" cy="14" rx="5" ry="4" fill="rgba(82,183,136,0.5)" stroke="#40916c" stroke-width="1"/>
-        <ellipse cx="135" cy="38" rx="16" ry="24" fill="rgba(64,145,108,0.5)" stroke="#2d6a4f" stroke-width="1.5"/>
-        <ellipse cx="127" cy="16" rx="5" ry="4" fill="rgba(64,145,108,0.5)" stroke="#2d6a4f" stroke-width="1"/>
-        <ellipse cx="135" cy="13" rx="5" ry="4" fill="rgba(64,145,108,0.5)" stroke="#2d6a4f" stroke-width="1"/>
-        <ellipse cx="143" cy="14" rx="5" ry="4" fill="rgba(64,145,108,0.5)" stroke="#2d6a4f" stroke-width="1"/>
-        <text x="65" y="72" text-anchor="middle" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">L: 48%</text>
-        <text x="135" y="72" text-anchor="middle" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">R: 52%</text>
-      </svg></div></div>
-    <div class="instrument"><img src="inst-inbody.png" alt="InBody" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">📊</div><h4>InBody</h4><p>肌肉量、體脂率、內臟脂肪、節段性肌肉分布</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <path d="M70,12 A28,28 0 0,1 94.2,55.6 L84.9,46.1 A16,16 0 0,0 70,24 Z" fill="#52b788"/>
-        <path d="M94.2,55.6 A28,28 0 0,1 45.8,55.6 L55.1,46.1 A16,16 0 0,0 84.9,46.1 Z" fill="#f4a261"/>
-        <path d="M45.8,55.6 A28,28 0 1,1 70,12 L70,24 A16,16 0 1,0 55.1,46.1 Z" fill="#adb5bd"/>
-        <circle cx="70" cy="40" r="15" fill="#f0faf4"/>
-        <text x="70" y="44" text-anchor="middle" font-size="8" fill="#2d6a4f" font-family="sans-serif">體組成</text>
-        <rect x="110" y="18" width="10" height="8" rx="2" fill="#52b788"/>
-        <text x="124" y="26" font-size="9" fill="#333" font-family="sans-serif">肌肉 42%</text>
-        <rect x="110" y="32" width="10" height="8" rx="2" fill="#f4a261"/>
-        <text x="124" y="40" font-size="9" fill="#333" font-family="sans-serif">脂肪 23%</text>
-        <rect x="110" y="46" width="10" height="8" rx="2" fill="#adb5bd"/>
-        <text x="124" y="54" font-size="9" fill="#333" font-family="sans-serif">其他 35%</text>
-      </svg></div></div>
-    <div class="instrument"><img src="inst-goniometer.png" alt="關節尺" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">📐</div><h4>關節尺</h4><p>精確量測各關節活動度（ROM），追蹤治療進展</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <path d="M65,75 L115,75 A50,50 0 0,0 33.2,36.5 Z" fill="rgba(82,183,136,0.25)" stroke="#40916c" stroke-width="1.5"/>
-        <line x1="65" y1="75" x2="115" y2="75" stroke="#2d6a4f" stroke-width="2"/>
-        <line x1="65" y1="75" x2="33.2" y2="36.5" stroke="#2d6a4f" stroke-width="2"/>
-        <text x="118" y="78" font-size="9" fill="#2d6a4f" font-family="sans-serif">0&#xB0;</text>
-        <text x="24" y="34" font-size="9" fill="#2d6a4f" font-family="sans-serif">130&#xB0;</text>
-        <text x="86" y="52" font-size="10" fill="#1b4332" font-weight="700" font-family="sans-serif">130&#xB0;</text>
-        <text x="150" y="32" text-anchor="middle" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">ROM</text>
-        <text x="150" y="46" text-anchor="middle" font-size="9" fill="#555" font-family="sans-serif">關節活動度</text>
-        <text x="150" y="60" text-anchor="middle" font-size="9" fill="#555" font-family="sans-serif">精確量測</text>
-      </svg></div></div>
-    <div class="instrument"><img src="inst-levelgauge.png" alt="脊椎水平儀" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">🧭</div><h4>脊椎水平儀</h4><p>測量脊椎弧度角度，評估姿勢代償</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <path d="M80,5 C95,5 100,20 95,30 C90,40 75,45 80,55 C85,65 95,70 90,78"
-          fill="none" stroke="#2d6a4f" stroke-width="3" stroke-linecap="round"/>
-        <text x="108" y="18" font-size="8" fill="#40916c" font-family="sans-serif">頸椎</text>
-        <line x1="95" y1="15" x2="106" y2="15" stroke="#40916c" stroke-width="0.8"/>
-        <text x="108" y="42" font-size="8" fill="#40916c" font-family="sans-serif">胸椎</text>
-        <line x1="80" y1="38" x2="106" y2="38" stroke="#40916c" stroke-width="0.8"/>
-        <text x="108" y="62" font-size="8" fill="#40916c" font-family="sans-serif">腰椎</text>
-        <line x1="85" y1="58" x2="106" y2="58" stroke="#40916c" stroke-width="0.8"/>
-        <line x1="20" y1="40" x2="70" y2="40" stroke="#ccc" stroke-width="0.8" stroke-dasharray="3,2"/>
-        <text x="45" y="37" text-anchor="middle" font-size="7" fill="#aaa" font-family="sans-serif">基準線</text>
-        <text x="30" y="12" text-anchor="middle" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">脊椎</text>
-        <text x="30" y="23" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">弧度</text>
-        <text x="30" y="34" text-anchor="middle" font-size="9" fill="#2d6a4f" font-family="sans-serif">評估</text>
-      </svg></div></div>
-    <div class="instrument"><img src="inst-skinfold.png" alt="皮脂尺" style="width:100%;height:150px;object-fit:cover;display:block;"><div class="instrument-body"><div class="icon">📏</div><h4>皮脂尺</h4><p>腰圍、臂圍、腳圍等體態數據追蹤</p>
-      <svg width="100%" height="80" viewBox="0 0 200 80" style="margin-top:8px;border-radius:8px;" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="80" fill="#f0faf4"/>
-        <circle cx="80" cy="10" r="7" fill="none" stroke="#40916c" stroke-width="1.5"/>
-        <path d="M74,17 L66,42 L72,42 L70,65 L80,65 L80,42 L80,65 L90,65 L88,42 L94,42 L86,17 Z"
-          fill="none" stroke="#40916c" stroke-width="1.5" stroke-linejoin="round"/>
-        <line x1="74" y1="20" x2="62" y2="38" stroke="#40916c" stroke-width="1.5"/>
-        <line x1="86" y1="20" x2="98" y2="38" stroke="#40916c" stroke-width="1.5"/>
-        <circle cx="80" cy="30" r="4" fill="#52b788" stroke="#2d6a4f" stroke-width="1"/>
-        <text x="105" y="33" font-size="8" fill="#2d6a4f" font-family="sans-serif">腰圍</text>
-        <circle cx="67" cy="26" r="4" fill="#74c69d" stroke="#2d6a4f" stroke-width="1"/>
-        <text x="36" y="22" text-anchor="end" font-size="8" fill="#2d6a4f" font-family="sans-serif">臂圍</text>
-        <circle cx="75" cy="55" r="4" fill="#95d5b2" stroke="#2d6a4f" stroke-width="1"/>
-        <text x="105" y="58" font-size="8" fill="#2d6a4f" font-family="sans-serif">腿圍</text>
-        <text x="148" y="20" font-size="9" fill="#2d6a4f" font-weight="700" font-family="sans-serif">體態追蹤</text>
-        <circle cx="130" cy="35" r="4" fill="#52b788"/>
-        <text x="137" y="38" font-size="8" fill="#555" font-family="sans-serif">腰 / 臂</text>
-        <circle cx="130" cy="50" r="4" fill="#95d5b2"/>
-        <text x="137" y="53" font-size="8" fill="#555" font-family="sans-serif">腿 / 胸</text>
-      </svg></div></div>
+  <div class="inst-grid">
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-vmax.png" alt="VMAX Pro">
+      <h4>VMAX Pro</h4>
+    </div>
+    <div class="inst-card-detail">監控訓練速度、加速度、位移與旋轉，讓每次訓練負荷科學化。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-forceplate.png" alt="測力板">
+      <h4>測力板</h4>
+    </div>
+    <div class="inst-card-detail">量測地面反作用力、雙腳平衡、跳躍高度與落地傷害風險。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-inbody.png" alt="InBody">
+      <h4>InBody</h4>
+    </div>
+    <div class="inst-card-detail">分析肌肉量、體脂率、內臟脂肪與節段性肌肉分布。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-goniometer.png" alt="關節尺">
+      <h4>關節尺</h4>
+    </div>
+    <div class="inst-card-detail">精確量測各關節活動度（ROM），追蹤每次治療的進展。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-levelgauge.png" alt="脊椎水平儀">
+      <h4>脊椎水平儀</h4>
+    </div>
+    <div class="inst-card-detail">測量脊椎弧度角度，精準評估姿勢代償問題。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-skinfold.png" alt="皮脂尺">
+      <h4>皮脂尺</h4>
+    </div>
+    <div class="inst-card-detail">追蹤腰圍、臂圍、腳圍等體態數據，量化體型改變。</div>
+  </div>
+
   </div>
 </section>
 
@@ -1641,6 +1518,15 @@ function restartRadar() {
   }
   document.getElementById('rq1').classList.add('active');
   document.getElementById('radar-bar').style.width = '16.67%';
+}
+
+/* ─ ACCORDION ─ */
+function toggleAcc(btn) {
+  var item = btn.closest('.acc-item');
+  var isOpen = item.classList.contains('open');
+  // 關閉所有其他
+  document.querySelectorAll('.acc-item.open').forEach(function(el) { el.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
 }
 
 </script>
