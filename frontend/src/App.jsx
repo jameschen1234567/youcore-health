@@ -106,7 +106,7 @@ function AdminApp({ onLogout }) {
       if (stopped) return
       try {
         const res = await fetch(API.poll(jobId), {
-          headers: { 'ngrok-skip-browser-warning': '1' },
+          headers: authHeaders(),
           cache: 'no-store',
         })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
