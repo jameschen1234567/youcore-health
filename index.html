@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>你的身體問題那麼多，你到底該先從哪裡開始修復？ — 宥芯健康顧問</title>
+  <meta name="description" content="一張地圖，幫你省下亂試半年的時間。宥芯健康顧問帶你找到最適合自己的身體修復起點。" />
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: #fafaf8; color: #1a1a1a; line-height: 1.8; font-size: 16px;
+    }
+
+    /* ─── Header ─── */
+    .site-header {
+      background: #fff; border-bottom: 1px solid #e8e8e4;
+      padding: 14px 24px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 200;
+    }
+    .site-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #1a1a1a; }
+    .logo-mark {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #3a7d44, #56a564);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .logo-text { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .logo-sub  { font-size: 11px; color: #888; font-weight: 400; }
+    .header-nav { display: flex; gap: 8px; align-items: center; }
+    .header-link {
+      color: #555; text-decoration: none; font-size: 14px; padding: 6px 12px;
+      border-radius: 6px; transition: background 0.2s;
+    }
+    .header-link:hover { background: #f0f0f0; }
+    .header-cta {
+      background: #3a7d44; color: #fff; border: none; padding: 10px 20px;
+      border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .header-cta:hover { background: #2d6235; }
+    @media (max-width: 600px) { .header-nav .header-link { display: none; } }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: linear-gradient(160deg, #1b3a21 0%, #2d6235 50%, #3a7d44 100%);
+      color: #fff; padding: 72px 24px 60px; text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-block; background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+      padding: 5px 16px; font-size: 13px; letter-spacing: 0.5px; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(26px,5vw,42px); font-weight: 900; line-height: 1.3;
+      max-width: 720px; margin: 0 auto 16px;
+    }
+    .hero h1 span { color: #a8d5a2; }
+    .hero-sub { font-size: 18px; opacity: 0.9; max-width: 520px; margin: 0 auto 32px; }
+    .hero-badge {
+      background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.4);
+      display: inline-block; padding: 12px 28px; border-radius: 8px;
+      font-size: 16px; font-weight: 700; margin-bottom: 28px;
+    }
+    .hero-badge em { color: #a8d5a2; font-style: normal; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: #a8d5a2; color: #1b3a21; padding: 14px 32px; border-radius: 10px;
+      font-size: 16px; font-weight: 800; text-decoration: none; transition: transform 0.15s, background 0.2s;
+    }
+    .btn-primary:hover { background: #c0e8ba; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.6);
+      padding: 12px 28px; border-radius: 10px; font-size: 15px; font-weight: 600;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+    /* ─── Container ─── */
+    .container { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 52px 0; }
+    .section + .section { border-top: 1px solid #e8e8e4; }
+    p { margin-bottom: 16px; font-size: 16px; color: #333; }
+    p:last-child { margin-bottom: 0; }
+    strong { color: #1a1a1a; }
+    h2 { font-size: clamp(20px,3.5vw,26px); font-weight: 800; color: #1a1a1a; margin-bottom: 20px; line-height: 1.35; }
+    h3 { font-size: 18px; font-weight: 700; color: #2d6235; margin-bottom: 12px; margin-top: 28px; }
+    .divider { border: none; border-top: 2px dashed #d5e8d5; margin: 40px 0; }
+
+    /* ─── Pain-point callout ─── */
+    .pain-box {
+      background: #f5f0eb; border-left: 4px solid #c4893a;
+      padding: 20px 24px; border-radius: 0 8px 8px 0; margin: 24px 0;
+    }
+    .pain-box p { color: #5a3a1a; margin-bottom: 10px; }
+
+    /* ─── Steps ─── */
+    .steps { display: flex; flex-direction: column; gap: 24px; margin: 28px 0; }
+    .step {
+      display: flex; gap: 18px; align-items: flex-start;
+      background: #fff; border: 1px solid #e0ece0;
+      border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .step-num {
+      min-width: 44px; height: 44px; background: linear-gradient(135deg, #3a7d44, #56a564);
+      color: #fff; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 18px; font-weight: 800;
+    }
+    .step-content h3 { margin-top: 0; font-size: 16px; }
+    .step-content p  { font-size: 15px; color: #555; }
+
+    /* ─── Identity table ─── */
+    .identity-table { width: 100%; border-collapse: collapse; margin: 24px 0; }
+    .identity-table th, .identity-table td {
+      padding: 12px 16px; text-align: left; border-bottom: 1px solid #e8e8e4; font-size: 15px;
+    }
+    .identity-table thead tr { background: #3a7d44; color: #fff; }
+    .identity-table thead th { font-weight: 700; }
+    .identity-table tbody tr:nth-child(even) { background: #f5faf5; }
+    .identity-table tbody tr:hover { background: #eaf4ea; }
+    .identity-table td strong { color: #2d6235; }
+
+    /* ─── Tags ─── */
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 4px; vertical-align: middle; }
+    .tag-green  { background: #d4f0d4; color: #1f6b2f; }
+    .tag-orange { background: #fde8cc; color: #9b5a00; }
+    .tag-teal   { background: #ccecf0; color: #00606e; }
+
+    /* ─── Service cards ─── */
+    .service-cards { display: flex; flex-direction: column; gap: 36px; margin: 8px 0; }
+    .service-card { background: #fff; border: 1px solid #e0ece0; border-radius: 16px; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.05); }
+    .card-header { background: linear-gradient(135deg, #2d6235, #3a7d44); color: #fff; padding: 18px 24px; display: flex; align-items: center; gap: 14px; }
+    .card-emoji { font-size: 28px; }
+    .card-title-wrap h3 { color: #fff; margin: 0 0 2px; font-size: 18px; }
+    .card-title-wrap span { font-size: 13px; opacity: 0.8; }
+    .card-body { padding: 22px 24px; }
+    .card-tagline { font-size: 15px; color: #555; font-style: italic; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed #ddd; }
+    .card-list { list-style: none; margin: 0; padding: 0; }
+    .card-list li { padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px; color: #333; display: flex; align-items: center; gap: 8px; }
+    .card-list li:last-child { border-bottom: none; }
+    .card-list .dot { color: #3a7d44; font-size: 12px; }
+    .card-tip { background: #f5faf5; border-left: 3px solid #3a7d44; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-top: 16px; font-size: 14px; color: #2d6235; }
+
+    /* ─── Instruments ─── */
+    .instruments { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin: 20px 0; }
+    .instrument { background: #fff; border: 1px solid #dde8dd; border-radius: 10px; overflow: hidden; padding: 0; }
+    .instrument .icon { font-size: 22px; margin-bottom: 6px; } .instrument-body { padding: 14px 16px; }
+    .instrument h4 { font-size: 14px; font-weight: 700; color: #2d6235; margin-bottom: 4px; }
+    .instrument p  { font-size: 13px; color: #666; margin: 0; line-height: 1.5; }
+
+    /* ─── Warning box ─── */
+    .warning-box { background: #fff8e8; border: 2px solid #f5c842; border-radius: 12px; padding: 24px 28px; margin: 32px 0; }
+    .warning-box h2 { color: #8a6200; margin-bottom: 12px; }
+    .warning-box p  { color: #5a4200; }
+
+    /* ─── Blockquote ─── */
+    blockquote {
+      background: #f0f8f0; border-left: 4px solid #3a7d44;
+      margin: 24px 0; padding: 16px 20px; border-radius: 0 8px 8px 0;
+      font-size: 16px; color: #2d5a35; font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════
+       ─── SVG MAP SECTION ───
+    ═══════════════════════════════════════ */
+    .map-section { background: #f0f8f0; padding: 52px 0; }
+    .map-section h2 { text-align: center; margin-bottom: 8px; }
+    .map-subtitle { text-align: center; color: #555; margin-bottom: 32px; font-size: 15px; }
+    .map-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .map-tab {
+      padding: 8px 20px; border-radius: 20px; border: 2px solid #3a7d44;
+      font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+      background: #fff; color: #3a7d44;
+    }
+    .map-tab.active { background: #3a7d44; color: #fff; }
+    .map-wrapper { display: none; }
+    .map-wrapper.active { display: block; }
+    .map-wrapper svg { width: 100%; max-width: 760px; display: block; margin: 0 auto; }
+
+    /* ═══════════════════════════════════════
+       ─── QUIZ SECTION ───
+    ═══════════════════════════════════════ */
+    .quiz-section { background: linear-gradient(135deg, #f5faf5, #e8f5e8); padding: 52px 0; }
+    .quiz-wrap {
+      background: #fff; border-radius: 20px; padding: 36px;
+      box-shadow: 0 8px 32px rgba(58,125,68,0.12); max-width: 680px; margin: 0 auto;
+    }
+    .quiz-header { text-align: center; margin-bottom: 28px; }
+    .quiz-header h2 { color: #1b3a21; margin-bottom: 8px; }
+    .quiz-header p  { color: #666; font-size: 15px; }
+    .quiz-progress { height: 6px; background: #e8e8e4; border-radius: 3px; margin-bottom: 28px; overflow: hidden; }
+    .quiz-progress-bar { height: 100%; background: linear-gradient(90deg, #3a7d44, #56a564); border-radius: 3px; transition: width 0.4s ease; }
+    .quiz-step { display: none; }
+    .quiz-step.active { display: block; }
+    .quiz-q { font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; line-height: 1.5; }
+    .quiz-q .qnum { font-size: 12px; font-weight: 600; color: #3a7d44; display: block; margin-bottom: 6px; letter-spacing: 1px; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-opt {
+      padding: 14px 18px; border: 2px solid #e0ece0; border-radius: 12px;
+      cursor: pointer; font-size: 15px; transition: all 0.2s; background: #fff; text-align: left;
+    }
+    .quiz-opt:hover { border-color: #3a7d44; background: #f5faf5; }
+    .quiz-opt.selected { border-color: #3a7d44; background: #eaf4ea; color: #1b3a21; font-weight: 600; }
+    .quiz-opt .opt-icon { margin-right: 10px; }
+    .quiz-nav { display: flex; justify-content: space-between; margin-top: 24px; align-items: center; }
+    .quiz-btn-back {
+      background: none; border: 2px solid #ddd; color: #888; padding: 10px 20px;
+      border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.2s;
+    }
+    .quiz-btn-back:hover { border-color: #aaa; color: #555; }
+    .quiz-btn-next {
+      background: #3a7d44; color: #fff; border: none; padding: 12px 28px;
+      border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 700; transition: background 0.2s;
+    }
+    .quiz-btn-next:hover { background: #2d6235; }
+    .quiz-btn-next:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* Quiz Result */
+    .quiz-result { display: none; }
+    .quiz-result.active { display: block; }
+    .result-card {
+      text-align: center; padding: 28px 20px; background: linear-gradient(135deg, #f5faf5, #fff);
+      border: 2px solid #3a7d44; border-radius: 16px; margin-bottom: 20px;
+    }
+    .result-emoji { font-size: 56px; margin-bottom: 12px; }
+    .result-type { font-size: 22px; font-weight: 900; color: #1b3a21; margin-bottom: 8px; }
+    .result-desc { font-size: 15px; color: #555; line-height: 1.7; }
+    .result-services { margin: 20px 0; }
+    .result-service-tag {
+      display: inline-block; background: #3a7d44; color: #fff;
+      padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700;
+      margin: 4px; text-decoration: none; transition: background 0.2s;
+    }
+    .result-service-tag:hover { background: #2d6235; }
+    .result-cta {
+      background: linear-gradient(135deg, #3a7d44, #56a564); color: #fff;
+      border: none; padding: 16px 36px; border-radius: 12px;
+      font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 12px;
+      text-decoration: none; display: inline-block; transition: transform 0.15s;
+    }
+    .result-cta:hover { transform: translateY(-2px); }
+    .quiz-restart {
+      background: none; border: none; color: #888; font-size: 14px;
+      cursor: pointer; margin-top: 12px; text-decoration: underline;
+    }
+
+    /* ═══════════════════════════════════════
+       ─── LEAD FORM SECTION ───
+    ═══════════════════════════════════════ */
+    .lead-section { background: linear-gradient(160deg, #1b3a21, #2d6235); padding: 64px 24px; }
+    .lead-wrap { max-width: 600px; margin: 0 auto; text-align: center; }
+    .lead-wrap h2 { color: #fff; font-size: 26px; margin-bottom: 10px; }
+    .lead-wrap .lead-sub { color: rgba(255,255,255,0.8); font-size: 15px; margin-bottom: 32px; }
+    .lead-benefits { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; }
+    .lead-benefit {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 13px;
+    }
+    .lead-form { background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+    .lead-form h3 { color: #1b3a21; font-size: 18px; margin-bottom: 6px; text-align: left; }
+    .lead-form .form-note { font-size: 13px; color: #888; margin-bottom: 20px; text-align: left; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .form-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: #444; }
+    .form-group input, .form-group select {
+      padding: 12px 14px; border: 2px solid #e8e8e4; border-radius: 8px;
+      font-size: 15px; font-family: inherit; transition: border-color 0.2s; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #3a7d44; }
+    .form-submit {
+      width: 100%; background: linear-gradient(135deg, #3a7d44, #56a564);
+      color: #fff; border: none; padding: 16px; border-radius: 10px;
+      font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 8px;
+      transition: transform 0.15s, opacity 0.2s; font-family: inherit;
+    }
+    .form-submit:hover { transform: translateY(-1px); opacity: 0.95; }
+    .form-privacy { font-size: 12px; color: #aaa; text-align: center; margin-top: 12px; }
+    .form-success {
+      display: none; text-align: center; padding: 24px;
+      background: #f0faf0; border-radius: 12px; border: 2px solid #3a7d44;
+    }
+    .form-success .success-emoji { font-size: 48px; }
+    .form-success h3 { color: #1b3a21; margin: 12px 0 8px; }
+    .form-success p { color: #555; font-size: 14px; }
+    @media (max-width: 500px) { .form-row { flex-direction: column; } }
+
+    /* ═══════════════════════════════════════
+       ─── FINAL CTA + INFO ───
+    ═══════════════════════════════════════ */
+    .cta-section { background: #1a1a1a; color: #fff; text-align: center; padding: 60px 24px; }
+    .cta-section h2 { color: #a8d5a2; font-size: 26px; margin-bottom: 10px; }
+    .cta-section p  { color: rgba(255,255,255,0.75); max-width: 480px; margin: 0 auto 24px; }
+    .cta-btn {
+      display: inline-block; background: #3a7d44; color: #fff;
+      padding: 16px 40px; border-radius: 10px; font-size: 17px; font-weight: 800;
+      text-decoration: none; transition: transform 0.15s, background 0.2s; margin: 6px;
+    }
+    .cta-btn:hover { background: #2d6235; transform: translateY(-2px); }
+    .cta-btn-line {
+      display: inline-block; background: #06c755; color: #fff;
+      padding: 16px 40px; border-radius: 10px; font-size: 17px; font-weight: 800;
+      text-decoration: none; margin: 6px; transition: transform 0.15s;
+    }
+    .cta-btn-line:hover { transform: translateY(-2px); }
+    .contact-grid {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 16px 32px; margin-top: 28px; font-size: 14px; color: rgba(255,255,255,0.65);
+    }
+    .contact-grid a { color: #a8d5a2; text-decoration: none; }
+    .info-strip {
+      background: #fff; border-top: 1px solid #e8e8e4;
+      padding: 24px; display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 20px 40px; font-size: 14px; color: #555;
+    }
+    .info-strip span { display: flex; align-items: center; gap: 6px; }
+    .info-strip strong { color: #2d6235; }
+    footer { background: #111; color: #777; padding: 28px 24px; text-align: center; font-size: 13px; line-height: 1.8; }
+    footer a { color: #a8d5a2; text-decoration: none; }
+
+    /* --- Radar Quiz --- */
+    .radar-score-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px;
+    }
+    .radar-score-item:last-child { border-bottom: none; }
+    .radar-score-bar-wrap { flex: 1; height: 8px; background: #e8e8e4; border-radius: 4px; overflow: hidden; }
+    .radar-score-bar { height: 100%; background: linear-gradient(90deg, #3a7d44, #56a564); border-radius: 4px; transition: width 0.6s ease; }
+    .radar-score-label { min-width: 88px; color: #2d6235; font-weight: 700; font-size: 13px; }
+    .radar-score-val { min-width: 32px; text-align: right; color: #555; font-size: 13px; }
+
+    /* ─── Hero Images ─── */
+    .hero-imgs { display: flex; gap: 10px; justify-content: center; margin: 20px 0; padding: 0 16px; }
+    .hero-img { width: calc(33.3% - 8px); max-width: 160px; height: 110px; object-fit: cover; border-radius: 12px; }
+
+    /* ─── Accordion Services ─── */
+    .accordion-services { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+    .acc-item { background: #fff; border: 1px solid #e0ece0; border-radius: 14px; overflow: hidden; }
+    .acc-trigger { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; background: none; border: none; width: 100%; text-align: left; }
+    .acc-trigger:hover { background: #f5faf5; }
+    .acc-trigger img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+    .acc-trigger-text h3 { font-size: 16px; font-weight: 700; color: #1b4332; margin: 0 0 2px; }
+    .acc-trigger-text span { font-size: 12px; color: #888; }
+    .acc-arrow { margin-left: auto; font-size: 18px; color: #52b788; transition: transform 0.25s; }
+    .acc-item.open .acc-arrow { transform: rotate(180deg); }
+    .acc-body { display: none; padding: 0 18px 18px; border-top: 1px solid #eaf4ea; }
+    .acc-item.open .acc-body { display: block; }
+    .acc-body img.acc-full-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin: 14px 0 10px; }
+
+    /* ─── Instrument Grid ─── */
+    .inst-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+    .inst-card { background: #fff; border: 1px solid #dde8dd; border-radius: 12px; overflow: hidden; cursor: pointer; }
+    .inst-card-top { position: relative; }
+    .inst-card-top img { width: 100%; height: 100px; object-fit: cover; display: block; }
+    .inst-card-top h4 { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(27,67,50,0.85)); color: #fff; font-size: 13px; font-weight: 700; padding: 8px 10px 6px; margin: 0; }
+    .inst-card-detail { display: none; padding: 10px 12px; font-size: 13px; color: #555; line-height: 1.6; border-top: 1px solid #eaf4ea; }
+    .inst-card.open .inst-card-detail { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <a href="https://youcore.press" class="site-logo">
+    <img src="youcore-logo.png" alt="宥芯健康顧問 Logo" style="height:56px;width:56px;object-fit:contain;" />
+    <div>
+      <div class="logo-text">宥芯健康顧問</div>
+      <div class="logo-sub">YouCore Health Advisors</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="https://youcore.press" class="header-link">官網首頁</a>
+    <a href="#quiz" class="header-link">身體測驗</a>
+    <a href="#services" class="header-link">服務項目</a>
+    <a href="#lead-form" class="header-cta">立即預約</a>
+  </nav>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-eyebrow">宥芯健康顧問 2026</div>
+  <h1>找到你身體<br><span>真正的起點</span></h1>
+  <p class="hero-sub">精密檢測 × 科學修復 × 客製訓練</p>
+  <div class="hero-imgs">
+    <img src="service-massage.png" alt="科技修復" class="hero-img">
+    <img src="service-training.png" alt="體能訓練" class="hero-img">
+    <img src="service-bowl.png" alt="頌缽療育" class="hero-img">
+  </div>
+  <div class="hero-btns">
+    <a href="#quiz" class="btn-primary">先做免費測驗</a>
+    <a href="https://youcore.press" class="btn-outline">了解官網 →</a>
+  </div>
+</section>
+
+<!-- ══ PROBLEM ══ -->
+<div class="container">
+<section class="section">
+  <p>你是不是也這樣——</p>
+  <div class="pain-box">
+    <p>脖子痠了去按摩，舒服了兩天，下週又回來。</p>
+    <p>健身練了半年，體態沒什麼變化，反而腰開始痛。</p>
+    <p>壓力大、睡不好，試過冥想 App、試過泡澡，還是感覺腦袋停不下來。</p>
+    <p>受傷康復了三個月，沒有人告訴你「你現在準備好了，可以回去運動了」。</p>
+  </div>
+  <p>這不是你不夠努力。是你一直在處理<strong>症狀的位置</strong>，而不是<strong>問題的根源</strong>。</p>
+  <blockquote>「我自己從 120 公斤降到 75 公斤，中間走了很多彎路。後來還經歷了前十字韌帶手術，才真正理解：身體的問題需要系統，不需要碰運氣。」<br>— James，宥芯創辦人 / 運動傷害防護員 / 臺師大運動科學碩士</blockquote>
+</section>
+<hr class="divider" />
+</div>
+
+<!-- ══ MAP SECTION ══ -->
+<section class="map-section" id="map">
+<div class="container">
+  <h2>宥芯健康地圖——一眼看懂你的位置與路徑</h2>
+  <p class="map-subtitle">選擇下方的標籤，找到最像你的狀態，看清楚你的修復路徑。</p>
+
+  <div class="map-tabs">
+    <button class="map-tab active" onclick="showMap('overview')">📍 整體服務地圖</button>
+    <button class="map-tab" onclick="showMap('flow')">🔄 修復流程圖</button>
+    <button class="map-tab" onclick="showMap('persona')">👥 客群路徑圖</button>
+  </div>
+
+  <!-- MAP 1: 整體服務地圖 -->
+  <div class="map-wrapper active" id="map-overview">
+    <svg viewBox="0 0 760 480" xmlns="http://www.w3.org/2000/svg" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+      <defs>
+        <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f0f8f0"/>
+          <stop offset="100%" style="stop-color:#e8f5e8"/>
+        </linearGradient>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#1b3a21"/><stop offset="100%" style="stop-color:#3a7d44"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#2d6235"/><stop offset="100%" style="stop-color:#56a564"/>
+        </linearGradient>
+        <filter id="shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.12"/></filter>
+      </defs>
+      <rect width="760" height="480" fill="url(#bg-grad)" rx="16"/>
+      <!-- Title -->
+      <text x="380" y="38" text-anchor="middle" font-size="18" font-weight="800" fill="#1b3a21">宥芯健康顧問 — 一站式服務全覽</text>
+      <text x="380" y="58" text-anchor="middle" font-size="12" fill="#666">youcore.press</text>
+      <!-- Center circle -->
+      <circle cx="380" cy="255" r="62" fill="url(#g1)" filter="url(#shadow)"/>
+      <text x="380" y="247" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">宥芯</text>
+      <text x="380" y="263" text-anchor="middle" font-size="11" fill="#a8d5a2">健康顧問</text>
+      <text x="380" y="278" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)">一站式整合</text>
+      <!-- Node 1: 健康檢測 -->
+      <g filter="url(#shadow)">
+        <rect x="60" y="80" width="148" height="80" rx="14" fill="url(#g2)"/>
+        <text x="134" y="115" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🏥 專業健康檢測</text>
+        <text x="134" y="133" text-anchor="middle" font-size="11" fill="#d4f0d4">60–75 分鐘</text>
+        <text x="134" y="148" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)">所有服務的起點</text>
+      </g>
+      <!-- Node 2: 體能訓練 -->
+      <g filter="url(#shadow)">
+        <rect x="556" y="80" width="148" height="80" rx="14" fill="#2d6235"/>
+        <text x="630" y="115" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🏋️ 體能訓練</text>
+        <text x="630" y="133" text-anchor="middle" font-size="11" fill="#d4f0d4">60–75 分鐘</text>
+        <text x="630" y="148" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)">VMAX Pro 監控</text>
+      </g>
+      <!-- Node 3: 康復訓練 -->
+      <g filter="url(#shadow)">
+        <rect x="60" y="350" width="148" height="80" rx="14" fill="#1b5e2c"/>
+        <text x="134" y="385" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🩹 康復訓練</text>
+        <text x="134" y="403" text-anchor="middle" font-size="11" fill="#d4f0d4">105 分鐘</text>
+        <text x="134" y="418" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)">4 Phase 回場計畫</text>
+      </g>
+      <!-- Node 4: 科技按摩 -->
+      <g filter="url(#shadow)">
+        <rect x="556" y="350" width="148" height="80" rx="14" fill="#1b5e2c"/>
+        <text x="630" y="385" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🔧 科技按摩</text>
+        <text x="630" y="403" text-anchor="middle" font-size="11" fill="#d4f0d4">60 分鐘</text>
+        <text x="630" y="418" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)">科技 × 手技整合</text>
+      </g>
+      <!-- Node 5: 頌缽療育 -->
+      <g filter="url(#shadow)">
+        <rect x="306" y="390" width="148" height="72" rx="14" fill="#3a5a3a"/>
+        <text x="380" y="423" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">🎵 頌缽療育</text>
+        <text x="380" y="441" text-anchor="middle" font-size="11" fill="#d4f0d4">60–90 分鐘</text>
+        <text x="380" y="454" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.75)">身心雙向調節</text>
+      </g>
+      <!-- Connecting lines -->
+      <line x1="208" y1="120" x2="318" y2="215" stroke="#3a7d44" stroke-width="2" stroke-dasharray="6,3" opacity="0.5"/>
+      <line x1="556" y1="120" x2="442" y2="215" stroke="#3a7d44" stroke-width="2" stroke-dasharray="6,3" opacity="0.5"/>
+      <line x1="208" y1="390" x2="318" y2="295" stroke="#3a7d44" stroke-width="2" stroke-dasharray="6,3" opacity="0.5"/>
+      <line x1="556" y1="390" x2="442" y2="295" stroke="#3a7d44" stroke-width="2" stroke-dasharray="6,3" opacity="0.5"/>
+      <line x1="380" y1="390" x2="380" y2="317" stroke="#3a7d44" stroke-width="2" stroke-dasharray="6,3" opacity="0.5"/>
+      <!-- Legend -->
+      <rect x="260" y="78" width="240" height="28" rx="6" fill="rgba(58,125,68,0.1)" stroke="#3a7d44" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="380" y="97" text-anchor="middle" font-size="11" fill="#2d6235">✦ 所有路徑都可以從健康檢測出發</text>
+    </svg>
+  </div>
+
+  <!-- MAP 2: 修復流程圖 -->
+  <div class="map-wrapper" id="map-flow">
+    <svg viewBox="0 0 760 420" xmlns="http://www.w3.org/2000/svg" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+      <defs>
+        <linearGradient id="flow-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f8fff8"/>
+          <stop offset="100%" style="stop-color:#e8f5e8"/>
+        </linearGradient>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#3a7d44"/>
+        </marker>
+      </defs>
+      <rect width="760" height="420" fill="url(#flow-bg)" rx="16"/>
+      <text x="380" y="36" text-anchor="middle" font-size="17" font-weight="800" fill="#1b3a21">宥芯修復流程 — 從問題到高效的完整路徑</text>
+
+      <!-- Step boxes -->
+      <!-- Step 1 -->
+      <rect x="30" y="70" width="128" height="78" rx="12" fill="#3a7d44"/>
+      <text x="94" y="102" text-anchor="middle" font-size="22">🔍</text>
+      <text x="94" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">精密檢測</text>
+      <text x="94" y="137" text-anchor="middle" font-size="10" fill="#d4f0d4">動作分析 + 體組成</text>
+      <!-- Arrow -->
+      <line x1="158" y1="109" x2="188" y2="109" stroke="#3a7d44" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 2 -->
+      <rect x="190" y="70" width="128" height="78" rx="12" fill="#2d6235"/>
+      <text x="254" y="102" text-anchor="middle" font-size="22">🔧</text>
+      <text x="254" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">科技修復</text>
+      <text x="254" y="137" text-anchor="middle" font-size="10" fill="#d4f0d4">科技 × 手技整合</text>
+      <!-- Arrow -->
+      <line x1="318" y1="109" x2="348" y2="109" stroke="#3a7d44" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 3 -->
+      <rect x="350" y="70" width="128" height="78" rx="12" fill="#1b5e2c"/>
+      <text x="414" y="102" text-anchor="middle" font-size="22">🏋️</text>
+      <text x="414" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">客製訓練</text>
+      <text x="414" y="137" text-anchor="middle" font-size="10" fill="#d4f0d4">技術先行再堆負荷</text>
+      <!-- Arrow -->
+      <line x1="478" y1="109" x2="508" y2="109" stroke="#3a7d44" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 4 -->
+      <rect x="510" y="70" width="128" height="78" rx="12" fill="#3a5a3a"/>
+      <text x="574" y="102" text-anchor="middle" font-size="22">🎵</text>
+      <text x="574" y="120" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">頌缽音療</text>
+      <text x="574" y="137" text-anchor="middle" font-size="10" fill="#d4f0d4">神經系統調節</text>
+      <!-- Arrow -->
+      <line x1="638" y1="109" x2="668" y2="109" stroke="#3a7d44" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+      <!-- Step 5 -->
+      <rect x="670" y="70" width="66" height="78" rx="12" fill="#c4893a"/>
+      <text x="703" y="102" text-anchor="middle" font-size="22">📊</text>
+      <text x="703" y="120" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">數據</text>
+      <text x="703" y="136" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">回測</text>
+
+      <!-- 4-6 週循環 label -->
+      <text x="380" y="190" text-anchor="middle" font-size="13" fill="#3a7d44" font-weight="700">↑ 每 4–6 週回測一次，雷達圖追蹤進步 ↑</text>
+
+      <!-- Phase 分期 -->
+      <text x="380" y="225" text-anchor="middle" font-size="14" font-weight="800" fill="#1b3a21">康復訓練 4 Phase 回場計畫</text>
+      <!-- Phase bars -->
+      <rect x="30" y="242" width="162" height="54" rx="10" fill="#3a7d44" opacity="0.85"/>
+      <text x="111" y="265" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Phase 1</text>
+      <text x="111" y="281" text-anchor="middle" font-size="11" fill="#d4f0d4">穩定活化</text>
+      <text x="111" y="293" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)">疼痛 &lt;3/10</text>
+
+      <rect x="204" y="242" width="162" height="54" rx="10" fill="#2d6235" opacity="0.85"/>
+      <text x="285" y="265" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Phase 2</text>
+      <text x="285" y="281" text-anchor="middle" font-size="11" fill="#d4f0d4">力量重建</text>
+      <text x="285" y="293" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)">基本動作無代償</text>
+
+      <rect x="378" y="242" width="162" height="54" rx="10" fill="#1b5e2c" opacity="0.85"/>
+      <text x="459" y="265" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Phase 3</text>
+      <text x="459" y="281" text-anchor="middle" font-size="11" fill="#d4f0d4">功能與情境</text>
+      <text x="459" y="293" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)">單腳落地可控</text>
+
+      <rect x="552" y="242" width="178" height="54" rx="10" fill="#c4893a"/>
+      <text x="641" y="265" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">Phase 4</text>
+      <text x="641" y="281" text-anchor="middle" font-size="11" fill="#fff">專項回場</text>
+      <text x="641" y="293" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.85)">通過回場測試 ✓</text>
+
+      <!-- Arrows between phases -->
+      <line x1="192" y1="269" x2="204" y2="269" stroke="#aaa" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="366" y1="269" x2="378" y2="269" stroke="#aaa" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="540" y1="269" x2="552" y2="269" stroke="#aaa" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <!-- Bottom note -->
+      <rect x="30" y="324" width="700" height="52" rx="10" fill="rgba(58,125,68,0.08)" stroke="#3a7d44" stroke-width="1" stroke-dasharray="5,3"/>
+      <text x="380" y="347" text-anchor="middle" font-size="12" fill="#2d6235" font-weight="700">📐 每個 Phase 升級都有明確的數據門檻，不靠感覺、靠測試說話</text>
+      <text x="380" y="365" text-anchor="middle" font-size="11" fill="#555">James 本人 ACL 前十字韌帶術後，用同一套系統康復，親身驗證</text>
+    </svg>
+  </div>
+
+  <!-- MAP 3: 客群路徑圖 -->
+  <div class="map-wrapper" id="map-persona">
+    <svg viewBox="0 0 760 500" xmlns="http://www.w3.org/2000/svg" font-family="'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif">
+      <defs>
+        <linearGradient id="pb" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f8fff8"/><stop offset="100%" style="stop-color:#e8f5e8"/>
+        </linearGradient>
+        <marker id="a2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3a7d44"/>
+        </marker>
+      </defs>
+      <rect width="760" height="500" fill="url(#pb)" rx="16"/>
+      <text x="380" y="36" text-anchor="middle" font-size="17" font-weight="800" fill="#1b3a21">你是哪一種人？找到你的修復路徑</text>
+
+      <!-- Persona 1: 上班族 -->
+      <rect x="20" y="65" width="160" height="90" rx="12" fill="#fff" stroke="#3a7d44" stroke-width="2"/>
+      <text x="100" y="90" text-anchor="middle" font-size="22">💼</text>
+      <text x="100" y="110" text-anchor="middle" font-size="13" font-weight="800" fill="#1b3a21">久坐上班族</text>
+      <text x="100" y="127" text-anchor="middle" font-size="10" fill="#777">頸肩腰背長期痠痛</text>
+      <text x="100" y="143" text-anchor="middle" font-size="10" fill="#777">按了又好又痛</text>
+      <!-- Arrow to service -->
+      <line x1="180" y1="110" x2="240" y2="110" stroke="#3a7d44" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="240" y="80" width="150" height="60" rx="10" fill="#3a7d44"/>
+      <text x="315" y="106" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">🔧 科技結合按摩</text>
+      <text x="315" y="123" text-anchor="middle" font-size="10" fill="#d4f0d4">根源修復，不只是舒緩</text>
+      <!-- Arrow to result -->
+      <line x1="390" y1="110" x2="450" y2="110" stroke="#c4893a" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="450" y="82" width="280" height="56" rx="10" fill="#fff8e8" stroke="#c4893a" stroke-width="1.5"/>
+      <text x="590" y="106" text-anchor="middle" font-size="12" font-weight="700" fill="#8a6200">✓ 4–6 週後：痠痛根源改善</text>
+      <text x="590" y="122" text-anchor="middle" font-size="10" fill="#5a4200">不再每週都要去按摩</text>
+
+      <!-- Persona 2: 訓練者 -->
+      <rect x="20" y="185" width="160" height="90" rx="12" fill="#fff" stroke="#3a7d44" stroke-width="2"/>
+      <text x="100" y="210" text-anchor="middle" font-size="22">🏃</text>
+      <text x="100" y="230" text-anchor="middle" font-size="13" font-weight="800" fill="#1b3a21">健身訓練者</text>
+      <text x="100" y="247" text-anchor="middle" font-size="10" fill="#777">進步卡關</text>
+      <text x="100" y="263" text-anchor="middle" font-size="10" fill="#777">動作有問題</text>
+      <line x1="180" y1="230" x2="240" y2="230" stroke="#3a7d44" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="240" y="200" width="150" height="60" rx="10" fill="#2d6235"/>
+      <text x="315" y="226" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">🏥 健康檢測</text>
+      <text x="315" y="243" text-anchor="middle" font-size="10" fill="#d4f0d4">+ 體能訓練課程</text>
+      <line x1="390" y1="230" x2="450" y2="230" stroke="#c4893a" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="450" y="202" width="280" height="56" rx="10" fill="#fff8e8" stroke="#c4893a" stroke-width="1.5"/>
+      <text x="590" y="226" text-anchor="middle" font-size="12" font-weight="700" fill="#8a6200">✓ 4–6 週後：肌力 +25–30%</text>
+      <text x="590" y="242" text-anchor="middle" font-size="10" fill="#5a4200">雷達圖看得見進步</text>
+
+      <!-- Persona 3: 高壓族 -->
+      <rect x="20" y="305" width="160" height="90" rx="12" fill="#fff" stroke="#3a7d44" stroke-width="2"/>
+      <text x="100" y="330" text-anchor="middle" font-size="22">😩</text>
+      <text x="100" y="350" text-anchor="middle" font-size="13" font-weight="800" fill="#1b3a21">高壓工作者</text>
+      <text x="100" y="367" text-anchor="middle" font-size="10" fill="#777">睡不好、壓力大</text>
+      <text x="100" y="383" text-anchor="middle" font-size="10" fill="#777">腦袋停不下來</text>
+      <line x1="180" y1="350" x2="240" y2="350" stroke="#3a7d44" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="240" y="320" width="150" height="60" rx="10" fill="#3a5a3a"/>
+      <text x="315" y="346" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">🎵 頌缽療育</text>
+      <text x="315" y="363" text-anchor="middle" font-size="10" fill="#d4f0d4">副交感神經啟動</text>
+      <line x1="390" y1="350" x2="450" y2="350" stroke="#c4893a" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="450" y="322" width="280" height="56" rx="10" fill="#fff8e8" stroke="#c4893a" stroke-width="1.5"/>
+      <text x="590" y="346" text-anchor="middle" font-size="12" font-weight="700" fill="#8a6200">✓ 睡眠改善、壓力指數降低</text>
+      <text x="590" y="362" text-anchor="middle" font-size="10" fill="#5a4200">焦慮效果量 d=1.51–2.18</text>
+
+      <!-- Persona 4: 受傷後 -->
+      <rect x="20" y="425" width="160" height="60" rx="12" fill="#fff" stroke="#3a7d44" stroke-width="2"/>
+      <text x="100" y="448" text-anchor="middle" font-size="13" font-weight="800" fill="#1b3a21">🩹 受傷後</text>
+      <text x="100" y="466" text-anchor="middle" font-size="10" fill="#777">術後 / 不知何時能回場</text>
+      <line x1="180" y1="455" x2="240" y2="455" stroke="#3a7d44" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="240" y="427" width="150" height="50" rx="10" fill="#1b5e2c"/>
+      <text x="315" y="449" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">🩹 康復訓練</text>
+      <text x="315" y="466" text-anchor="middle" font-size="10" fill="#d4f0d4">4 Phase 回場計畫</text>
+      <line x1="390" y1="452" x2="450" y2="452" stroke="#c4893a" stroke-width="2" marker-end="url(#a2)"/>
+      <rect x="450" y="427" width="280" height="50" rx="10" fill="#fff8e8" stroke="#c4893a" stroke-width="1.5"/>
+      <text x="590" y="449" text-anchor="middle" font-size="12" font-weight="700" fill="#8a6200">✓ 數據說「你準備好了」</text>
+      <text x="590" y="465" text-anchor="middle" font-size="10" fill="#5a4200">患側/健側對稱性 &gt; 90%</text>
+
+      <!-- Column labels -->
+      <text x="100" y="50" text-anchor="middle" font-size="11" fill="#888" font-weight="600">你的狀態</text>
+      <text x="315" y="50" text-anchor="middle" font-size="11" fill="#3a7d44" font-weight="600">建議服務</text>
+      <text x="590" y="50" text-anchor="middle" font-size="11" fill="#c4893a" font-weight="600">4–6 週後的改變</text>
+    </svg>
+  </div>
+</div>
+</section>
+
+<!-- ══ HOW TO USE ══ -->
+<div class="container">
+<section class="section">
+  <h2>怎麼用這張地圖？三步驟直接上手</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>先做下面的小測驗，找到你的身份</h3>
+        <p>不到 2 分鐘，5 個問題，告訴你最適合從哪裡開始。<strong>測完還會幫你產出個人化建議。</strong></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>只挑 1 個服務開始</h3>
+        <p>對應你的需求，只選優先度最高的 1 個服務。不要同時嘗試所有服務——<strong>有感受，才叫真正開始。</strong></p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>做到有感，再加下一個</h3>
+        <p>4–6 週後做一次回測，雷達圖比對進步。看到數字在動，你就會知道下一步要走哪裡。</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+</div>
+
+<!-- ══ RADAR QUIZ ══ -->
+<section class="quiz-section" id="radar-quiz">
+<div class="container">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <h2>📊 身體能力雷達圖測驗</h2>
+      <p>6 個維度 × 6 道問題 → 產出你的個人雷達圖</p>
+    </div>
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar" id="radar-bar" style="width:16.67%"></div>
+    </div>
+    <!-- Radar Q1 -->
+    <div class="quiz-step active" id="rq1">
+      <div class="quiz-q"><span class="qnum">問題 1 / 6</span>你的關節柔軟度如何？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 很僵硬，常有緊繃感</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 有點緊，活動受限</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 還算正常</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 非常靈活</button>
+      </div>
+      <div class="quiz-nav">
+        <span style="font-size:13px;color:#aaa"></span>
+        <button class="quiz-btn-next" onclick="nextRadar(1)" disabled>下一題 →</button>
+      </div>
+    </div>
+    <!-- Radar Q2 -->
+    <div class="quiz-step" id="rq2">
+      <div class="quiz-q"><span class="qnum">問題 2 / 6</span>做深蹲或弓步時，姿勢如何？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 明顯歪斜代償</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 有些代償</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 尚可，偶爾跑掉</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 姿勢很標準</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevRadar(2)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextRadar(2)" disabled>下一題 →</button>
+      </div>
+    </div>
+    <!-- Radar Q3 -->
+    <div class="quiz-step" id="rq3">
+      <div class="quiz-q"><span class="qnum">問題 3 / 6</span>單腳站立閉眼，能維持多久？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 不到 5 秒</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 5–10 秒</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 10–20 秒</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 超過 20 秒</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevRadar(3)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextRadar(3)" disabled>下一題 →</button>
+      </div>
+    </div>
+    <!-- Radar Q4 -->
+    <div class="quiz-step" id="rq4">
+      <div class="quiz-q"><span class="qnum">問題 4 / 6</span>下肢爆發力（跳躍／衝刺）如何？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 很差，無法跳高</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 普通，勉強</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 不錯，有感</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 很強，自信滿滿</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevRadar(4)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextRadar(4)" disabled>下一題 →</button>
+      </div>
+    </div>
+    <!-- Radar Q5 -->
+    <div class="quiz-step" id="rq5">
+      <div class="quiz-q"><span class="qnum">問題 5 / 6</span>目前體態目標的完成度？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 25% 以下</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 25–50%</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 50–75%</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 75% 以上</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevRadar(5)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextRadar(5)" disabled>下一題 →</button>
+      </div>
+    </div>
+    <!-- Radar Q6 -->
+    <div class="quiz-step" id="rq6">
+      <div class="quiz-q"><span class="qnum">問題 6 / 6</span>棒式（Plank）能維持多久？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-rval="2"><span class="opt-icon">🔴</span>A. 不到 20 秒</button>
+        <button class="quiz-opt" data-rval="3"><span class="opt-icon">🟠</span>B. 20–40 秒</button>
+        <button class="quiz-opt" data-rval="4"><span class="opt-icon">🟡</span>C. 40–60 秒</button>
+        <button class="quiz-opt" data-rval="5"><span class="opt-icon">🟢</span>D. 超過 60 秒</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevRadar(6)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="showRadarResult()" disabled>看我的雷達圖 →</button>
+      </div>
+    </div>
+    <!-- Radar Result -->
+    <div class="quiz-result" id="radar-result">
+      <div style="text-align:center;margin-bottom:16px;">
+        <svg id="radar-svg" viewBox="0 0 400 380" style="max-width:400px;width:100%;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div id="radar-score-list" style="margin:16px 0;padding:0 8px;"></div>
+      <div id="radar-analysis" class="card-tip" style="margin:16px 0;font-size:15px;"></div>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="https://youcore.press" class="result-cta">🌿 預約專業健康檢測 — youcore.press</a>
+        <br>
+        <button class="quiz-restart" onclick="restartRadar()">重新測驗</button>
+      </div>
+    </div>
+  </div><!-- /quiz-wrap -->
+</div>
+</section>
+
+<!-- ══ QUIZ ══ -->
+<section class="quiz-section" id="quiz">
+<div class="container">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <h2>🎯 快速測驗：找到你的修復起點</h2>
+      <p>5 個問題 × 不到 2 分鐘 → 個人化服務建議</p>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar" id="quiz-bar" style="width:20%"></div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-step active" id="q1">
+      <div class="quiz-q"><span class="qnum">問題 1 / 5</span>你最常感受到哪一種不舒服？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="A"><span class="opt-icon">💼</span>脖子、肩膀、腰背長期痠痛，按了又好又回來</button>
+        <button class="quiz-opt" data-val="B"><span class="opt-icon">🏃</span>運動或訓練後某個部位反覆疼痛，或進步停滯</button>
+        <button class="quiz-opt" data-val="C"><span class="opt-icon">😩</span>壓力大、睡不好、腦袋很難真正放鬆</button>
+        <button class="quiz-opt" data-val="D"><span class="opt-icon">🩹</span>受傷或手術後，不確定能不能放心回去運動</button>
+        <button class="quiz-opt" data-val="E"><span class="opt-icon">🌱</span>目前沒有明顯問題，想提早預防老化與肌肉流失</button>
+      </div>
+      <div class="quiz-nav">
+        <span style="font-size:13px;color:#aaa"></span>
+        <button class="quiz-btn-next" onclick="nextQ(1)" disabled>下一題 →</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-step" id="q2">
+      <div class="quiz-q"><span class="qnum">問題 2 / 5</span>你之前嘗試過哪些方法？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="x1"><span class="opt-icon">💆</span>一般按摩、推拿、整脊</button>
+        <button class="quiz-opt" data-val="x2"><span class="opt-icon">🏥</span>康復診所或物理治療</button>
+        <button class="quiz-opt" data-val="x3"><span class="opt-icon">💪</span>自己上健身房或跟教練練習</button>
+        <button class="quiz-opt" data-val="x4"><span class="opt-icon">🧘</span>瑜珈、冥想、放鬆課程</button>
+        <button class="quiz-opt" data-val="x5"><span class="opt-icon">🤷</span>還沒有認真嘗試過任何方法</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevQ(2)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextQ(2)" disabled>下一題 →</button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-step" id="q3">
+      <div class="quiz-q"><span class="qnum">問題 3 / 5</span>你每週能安排幾次來做身體保養？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="t1"><span class="opt-icon">⚡</span>1 次，時間很有限但願意固定來</button>
+        <button class="quiz-opt" data-val="t2"><span class="opt-icon">🎯</span>2–3 次，想認真改變身體狀態</button>
+        <button class="quiz-opt" data-val="t3"><span class="opt-icon">🔥</span>3 次以上，訓練是我生活的一部分</button>
+        <button class="quiz-opt" data-val="t4"><span class="opt-icon">📅</span>不確定，想先了解再決定</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevQ(3)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextQ(3)" disabled>下一題 →</button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-step" id="q4">
+      <div class="quiz-q"><span class="qnum">問題 4 / 5</span>你最想在幾週內感受到明顯改善？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="w1"><span class="opt-icon">⚡</span>希望 1–2 次就有感覺</button>
+        <button class="quiz-opt" data-val="w2"><span class="opt-icon">📈</span>願意用 4–6 週系統性改善</button>
+        <button class="quiz-opt" data-val="w3"><span class="opt-icon">🌱</span>長期投資，3 個月以上穩健進步</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevQ(4)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="nextQ(4)" disabled>下一題 →</button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-step" id="q5">
+      <div class="quiz-q"><span class="qnum">問題 5 / 5</span>你最在意的結果是什麼？</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" data-val="g1"><span class="opt-icon">😌</span>不再每天帶著身體疼痛工作生活</button>
+        <button class="quiz-opt" data-val="g2"><span class="opt-icon">💪</span>在運動上突破瓶頸、表現更好</button>
+        <button class="quiz-opt" data-val="g3"><span class="opt-icon">😴</span>壓力降低、睡眠改善、精神變好</button>
+        <button class="quiz-opt" data-val="g4"><span class="opt-icon">🏆</span>安全回到喜愛的運動或生活型態</button>
+        <button class="quiz-opt" data-val="g5"><span class="opt-icon">🌿</span>為未來 20 年的健康打好基礎</button>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn-back" onclick="prevQ(5)">← 上一題</button>
+        <button class="quiz-btn-next" onclick="showResult()" disabled>看我的結果 →</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="quiz-result" id="quiz-result">
+      <div class="result-card" id="result-card">
+        <div class="result-emoji" id="result-emoji">🎯</div>
+        <div class="result-type" id="result-type">你的類型</div>
+        <div class="result-desc" id="result-desc">描述</div>
+      </div>
+      <div style="text-align:center;margin-top:16px;">
+        <p style="font-size:14px;color:#555;margin-bottom:12px;">👇 最適合你的服務</p>
+        <div class="result-services" id="result-services"></div>
+        <a href="#lead-form" class="result-cta" id="result-cta">立即前往官網預約 →</a>
+        <br>
+        <button class="quiz-restart" onclick="restartQuiz()">重新測驗</button>
+      </div>
+    </div>
+
+  </div><!-- /quiz-wrap -->
+</div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<div class="container">
+<section class="section" id="services">
+  <h2>五大服務，一次看懂各自能幫你解決什麼</h2>
+  <div class="accordion-services">
+
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-assessment.png" alt="專業健康檢測">
+      <div class="acc-trigger-text"><h3>專業健康檢測</h3><span>60–75 分鐘 ｜ 所有服務的起點</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-assessment.png" alt="專業健康檢測" class="acc-full-img">
+      <p class="card-tagline">不知道問題在哪？先讓數據告訴你。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> ROM 關節活動度評估</li>
+        <li><span class="dot">●</span> 動作品質與代償模式分析</li>
+        <li><span class="dot">●</span> 測力板雙腳對稱性 × 單腳穩定度</li>
+        <li><span class="dot">●</span> InBody 體組成分析</li>
+        <li><span class="dot">●</span> 建立個人雷達圖基準線，4–6 週後比對進步</li>
+      </ul>
+      <div class="card-tip">所有客戶的第一步。這 60 分鐘決定後面所有方向。</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-training.png" alt="一對一肌力與體能訓練">
+      <div class="acc-trigger-text"><h3>一對一肌力與體能訓練</h3><span>60–75 分鐘 ｜ 週 2–3 次</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-training.png" alt="一對一肌力與體能訓練" class="acc-full-img">
+      <p class="card-tagline">技術先到位，再把力量與速度堆上去。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 動態暖身 × 動作姿勢調整 × 肌力訓練</li>
+        <li><span class="dot">●</span> VMAX Pro 速度監控，訓練負荷科學化</li>
+        <li><span class="dot">●</span> 週 2 次效率型 / 週 3 次表現型，完全客製</li>
+        <li><span class="dot">●</span> 阻力訓練可讓肌力提升 25–30%（Fragala et al., 2019）</li>
+      </ul>
+      <div class="card-tip">訓練卡關的人必看。先找到問題根源，再重設課表。</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-rehab.png" alt="運動傷害防護與康復訓練">
+      <div class="acc-trigger-text"><h3>運動傷害防護與康復訓練</h3><span>105 分鐘 ｜ 4 Phase 完整計畫</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-rehab.png" alt="運動傷害防護與康復訓練" class="acc-full-img">
+      <p class="card-tagline">不只是康復，而是有數據支撐的回場計畫。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> Phase 1–4 完整分期，每個 Phase 有明確數據門檻</li>
+        <li><span class="dot">●</span> 測力板患側/健側對稱性回測（目標 &gt; 90%）</li>
+        <li><span class="dot">●</span> James ACL 術後親身驗證的系統</li>
+      </ul>
+      <div class="card-tip">「準備好了」不靠感覺，靠測試數據說話。</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-massage.png" alt="科技結合運動按摩">
+      <div class="acc-trigger-text"><h3>科技結合運動按摩</h3><span>60 分鐘 ｜ 科技 × 手技整合</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-massage.png" alt="科技結合運動按摩" class="acc-full-img">
+      <p class="card-tagline">先找根源，再深層化解，最後整合回動作。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 手技找出真正的張力路徑</li>
+        <li><span class="dot">●</span> 深層溫熱（40–45°C），促進筋膜延展性</li>
+        <li><span class="dot">●</span> 動作再教育 + 呼吸整合</li>
+      </ul>
+      <div class="card-tip">上班族脖肩腰背問題的最佳起點。</div>
+    </div>
+  </div>
+
+  <div class="acc-item">
+    <button class="acc-trigger" onclick="toggleAcc(this)">
+      <img src="service-bowl.png" alt="頌缽療育">
+      <div class="acc-trigger-text"><h3>頌缽療育</h3><span>60–90 分鐘 ｜ 身心雙向調節</span></div>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="acc-body">
+      <img src="service-bowl.png" alt="頌缽療育" class="acc-full-img">
+      <p class="card-tagline">聲波共振讓神經系統從戰鬥模式切換到恢復模式。</p>
+      <ul class="card-list">
+        <li><span class="dot">●</span> 頌缽鬆筋振體 × 全身能量共振 × 深層音療</li>
+        <li><span class="dot">●</span> HRV 提升、腦波 Delta +135%（Lin et al., 2025）</li>
+        <li><span class="dot">●</span> 焦慮降低效果量 d=1.51–2.18（Rio-Alamos et al., 2023）</li>
+      </ul>
+      <div class="card-tip">高壓族群、睡眠困擾者的首選。一對一 / 線上版皆可。</div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ══ INSTRUMENTS ══ -->
+<section class="section">
+  <h2>我們的科學儀器設備</h2>
+  <p>每一個評估與訓練，都有儀器數據在背後支撐——不是憑感覺，是數字說話。</p>
+  <div class="inst-grid">
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-vmax.png" alt="VMAX Pro">
+      <h4>VMAX Pro</h4>
+    </div>
+    <div class="inst-card-detail">監控訓練速度、加速度、位移與旋轉，讓每次訓練負荷科學化。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-forceplate.png" alt="測力板">
+      <h4>測力板</h4>
+    </div>
+    <div class="inst-card-detail">量測地面反作用力、雙腳平衡、跳躍高度與落地傷害風險。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-inbody.png" alt="InBody">
+      <h4>InBody</h4>
+    </div>
+    <div class="inst-card-detail">分析肌肉量、體脂率、內臟脂肪與節段性肌肉分布。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-goniometer.png" alt="關節尺">
+      <h4>關節尺</h4>
+    </div>
+    <div class="inst-card-detail">精確量測各關節活動度（ROM），追蹤每次治療的進展。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-levelgauge.png" alt="脊椎水平儀">
+      <h4>脊椎水平儀</h4>
+    </div>
+    <div class="inst-card-detail">測量脊椎弧度角度，精準評估姿勢代償問題。</div>
+  </div>
+
+  <div class="inst-card" onclick="this.classList.toggle('open')">
+    <div class="inst-card-top">
+      <img src="inst-skinfold.png" alt="皮脂尺">
+      <h4>皮脂尺</h4>
+    </div>
+    <div class="inst-card-detail">追蹤腰圍、臂圍、腳圍等體態數據，量化體型改變。</div>
+  </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ══ RULE ══ -->
+<div class="warning-box">
+  <h2>⚠️ 最重要的一條規則</h2>
+  <p><strong>不要同時嘗試所有服務。</strong></p>
+  <p>一個服務做到你的身體有真實改變——恢復速度、睡眠品質、關節活動度——再說下一個。<br><strong>選一個，做到有感，再說下一個。</strong></p>
+</div>
+
+</div><!-- /container -->
+
+<!-- ══ LEAD FORM ══ -->
+<section class="lead-section" id="lead-form">
+  <div class="lead-wrap">
+    <h2>🎁 免費取得你的個人化健康建議</h2>
+    <p class="lead-sub">留下你的 Gmail，James 會在 24 小時內寄出針對你身體狀況的個人化建議，以及宥芯最新課程資訊。</p>
+    <div class="lead-benefits">
+      <span class="lead-benefit">✓ 個人化服務建議</span>
+      <span class="lead-benefit">✓ 優先預約通知</span>
+      <span class="lead-benefit">✓ 健康知識電子報</span>
+      <span class="lead-benefit">✓ 首次優惠資訊</span>
+    </div>
+    <div class="lead-form">
+      <h3>留下你的資料</h3>
+      <p class="form-note">填寫後 James 會親自回覆，不會有自動發送的廣告郵件。</p>
+      <form id="lead-form-el" onsubmit="submitLead(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-name">你的名字 *</label>
+            <input type="text" id="f-name" placeholder="例：小明" required />
+          </div>
+          <div class="form-group">
+            <label for="f-email">Gmail 信箱 *</label>
+            <input type="email" id="f-email" placeholder="yourname@gmail.com" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="f-concern">你最在意的問題</label>
+            <select id="f-concern">
+              <option value="">請選擇</option>
+              <option>脖子/肩膀/腰背痠痛</option>
+              <option>訓練進步卡關</option>
+              <option>壓力大、睡不好</option>
+              <option>受傷後康復回場</option>
+              <option>體態管理與減脂</option>
+              <option>預防老化、維持健康</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="f-phone">手機號碼（選填）</label>
+            <input type="tel" id="f-phone" placeholder="09xxxxxxxx" />
+          </div>
+        </div>
+        <button type="submit" class="form-submit">📩 送出，取得個人化建議</button>
+        <p class="form-privacy">🔒 你的資料只會由 James 本人查看，不會轉售或用於廣告。</p>
+      </form>
+      <div class="form-success" id="form-success">
+        <div class="success-emoji">🎉</div>
+        <h3>收到了！James 會盡快聯繫你。</h3>
+        <p>請確認 Gmail 信箱，24 小時內你會收到個人化建議。<br>
+        也可以直接前往官網了解更多服務。</p>
+        <a href="https://youcore.press" style="display:inline-block;margin-top:12px;background:#3a7d44;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;">前往官網 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="cta-section">
+  <h2>準備好了嗎？從這裡開始。</h2>
+  <p>立即預約健康檢測，讓數據幫你找到身體問題的真正起點。</p>
+  <div>
+    <a href="https://youcore.press" class="cta-btn">🌿 前往官網預約</a>
+    <a href="tel:0226539433" class="cta-btn-line">📞 直接電話聯絡</a>
+  </div>
+  <div class="contact-grid">
+    <span>📞 <a href="tel:0226539433">(02)2653-9433</a></span>
+    <span>📧 <a href="mailto:youcore.healthadvisors@gmail.com">youcore.healthadvisors@gmail.com</a></span>
+    <span>📍 台北市南港區成福路 51 之 3 號 1 樓（後山埤站）</span>
+    <span>🕙 週二–日 10:00–20:30（週一公休）</span>
+  </div>
+</section>
+
+<!-- ══ INFO STRIP ══ -->
+<div class="info-strip">
+  <span>🏥 <strong>健康檢測</strong> — 所有改變的起點</span>
+  <span>🎓 <strong>臺師大運動科學碩/博士</strong></span>
+  <span>🛡️ <strong>運動傷害防護員執照</strong></span>
+  <span>📊 <strong>數據說話，不靠感覺</strong></span>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <p>© 2026 YouCore Health Advisors Co., Ltd. 宥芯健康顧問有限公司</p>
+  <p style="margin-top:6px;">
+    <a href="https://youcore.press">youcore.press</a> ｜
+    台北市南港區成福路 51 之 3 號 1 樓 ｜ (02)2653-9433
+  </p>
+  <p style="margin-top:8px; font-size:11px; opacity:0.55;">本網頁內容屬運動調節與訓練輔助說明，非醫療診斷或治療建議。</p>
+</footer>
+
+<!-- ══ JAVASCRIPT ══ -->
+<script>
+/* ─ MAP TABS ─ */
+function showMap(id) {
+  document.querySelectorAll('.map-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.map-wrapper').forEach(m => m.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('map-' + id).classList.add('active');
+}
+
+/* ─ QUIZ ─ */
+var quizAnswers = {};
+var currentQ = 1;
+
+// Attach option click handlers
+document.querySelectorAll('.quiz-step').forEach(function(step) {
+  step.querySelectorAll('.quiz-opt').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      var stepId = step.id;
+      var qIndex = parseInt(stepId.replace('q',''));
+      // deselect others in same step
+      step.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      quizAnswers['q' + qIndex] = opt.getAttribute('data-val');
+      // enable next button
+      var nextBtn = step.querySelector('.quiz-btn-next');
+      if (nextBtn) nextBtn.disabled = false;
+    });
+  });
+});
+
+function nextQ(from) {
+  var current = document.getElementById('q' + from);
+  var next = document.getElementById('q' + (from + 1));
+  if (!next) return;
+  current.classList.remove('active');
+  next.classList.add('active');
+  currentQ = from + 1;
+  var pct = (currentQ / 5) * 100;
+  document.getElementById('quiz-bar').style.width = pct + '%';
+}
+
+function prevQ(from) {
+  var current = document.getElementById('q' + from);
+  var prev = document.getElementById('q' + (from - 1));
+  if (!prev) return;
+  current.classList.remove('active');
+  prev.classList.add('active');
+  currentQ = from - 1;
+  var pct = (currentQ / 5) * 100;
+  document.getElementById('quiz-bar').style.width = pct + '%';
+}
+
+function showResult() {
+  // Hide all steps
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('quiz-bar').style.width = '100%';
+
+  // Determine result based on Q1 primary answer
+  var q1 = quizAnswers['q1'];
+  var results = {
+    'A': {
+      emoji: '💼', type: '久坐上班族型',
+      desc: '你的問題根源很可能是長期姿勢代償——不是肌肉太緊，而是某些肌肉沒有在正確出力。按摩只是短暫舒緩，真正需要的是「找到根源、深層修復」的整合方案。',
+      services: ['科技結合運動按摩', '專業健康檢測'],
+      cta: '預約科技按摩修復'
+    },
+    'B': {
+      emoji: '🏃', type: '訓練突破型',
+      desc: '訓練卡關通常不是不夠努力，而是動作品質或關節活動度出了問題。運動生物力學分析可以精準找出你身體的限制，讓你的訓練效益真正最大化。',
+      services: ['專業健康檢測', '一對一體能訓練'],
+      cta: '預約健康檢測'
+    },
+    'C': {
+      emoji: '😩', type: '高壓減壓型',
+      desc: '你的神經系統長期在「戰鬥模式」——這不是意志力的問題，是生理狀態沒有被重設。頌缽療育透過聲波共振讓副交感神經真正被啟動，科學研究顯示焦慮效果量高達 d=1.51。',
+      services: ['頌缽紓壓音療', '頌缽鬆筋振體'],
+      cta: '預約頌缽療育'
+    },
+    'D': {
+      emoji: '🩹', type: '康復回場型',
+      desc: '你需要的不只是「感覺好多了」，而是一個有數據支撐的回場計畫——每個 Phase 都有明確門檻，讓你知道「你現在在哪裡、什麼時候準備好了」。James 本人經歷 ACL 術後康復，完全理解你的狀態。',
+      services: ['康復訓練 105分鐘', '專業健康檢測'],
+      cta: '預約康復訓練'
+    },
+    'E': {
+      emoji: '🌱', type: '健康投資型',
+      desc: '你的思維領先大多數人——在問題還沒發生前就開始保養。研究顯示 40 歲起每十年流失 8% 肌肉量，阻力訓練可降低跌倒風險 21–34%。現在開始，是最好的時機。',
+      services: ['專業健康檢測', '一對一體能訓練'],
+      cta: '預約健康檢測'
+    }
+  };
+
+  var r = results[q1] || results['A'];
+  document.getElementById('result-emoji').textContent = r.emoji;
+  document.getElementById('result-type').textContent = r.type;
+  document.getElementById('result-desc').textContent = r.desc;
+
+  var servicesEl = document.getElementById('result-services');
+  servicesEl.innerHTML = '';
+  r.services.forEach(function(s) {
+    var a = document.createElement('a');
+    a.href = 'https://youcore.press';
+    a.className = 'result-service-tag';
+    a.textContent = '→ ' + s;
+    servicesEl.appendChild(a);
+  });
+
+  document.getElementById('result-cta').textContent = '🌿 ' + r.cta + ' — youcore.press';
+
+  document.getElementById('quiz-result').classList.add('active');
+}
+
+function restartQuiz() {
+  quizAnswers = {};
+  currentQ = 1;
+  document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.quiz-btn-next').forEach(b => b.disabled = true);
+  document.getElementById('quiz-result').classList.remove('active');
+  document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('q1').classList.add('active');
+  document.getElementById('quiz-bar').style.width = '20%';
+}
+
+/* ─ LEAD FORM ─ */
+function submitLead(e) {
+  e.preventDefault();
+  var name    = document.getElementById('f-name').value;
+  var email   = document.getElementById('f-email').value;
+  var concern = document.getElementById('f-concern').value;
+  var phone   = document.getElementById('f-phone').value;
+
+  // 儲存到 localStorage（本地備份）
+  var leads = JSON.parse(localStorage.getItem('youcore_leads') || '[]');
+  leads.push({
+    name: name, email: email, concern: concern, phone: phone,
+    date: new Date().toISOString(), source: 'health-map'
+  });
+  localStorage.setItem('youcore_leads', JSON.stringify(leads));
+
+  // 透過 Google Apps Script 送出（需設定 GAS Web App URL）
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbxE_8I_SUVLokooIxzUFEYNt2T8urmXPbwa_znzNNsmUd5fTIFEqk2ZPI2f_78Xz_IsOQ/exec';
+  if (GAS_URL) {
+    fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, concern, phone, source: 'health-map', date: new Date().toISOString() })
+    }).catch(function(){});
+  }
+
+  // 顯示成功畫面
+  document.getElementById('lead-form-el').style.display = 'none';
+  document.getElementById('form-success').style.display = 'block';
+
+  // Scroll to success
+  document.getElementById('form-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+/* --- RADAR QUIZ --- */
+var radarAnswers = {};
+var radarCurrentQ = 1;
+var radarDimensions = ['關節活動度', '動作品質', '單腳平衡控制', '力量爆發', '身體組成', '核心穩定性'];
+
+(function() {
+  for (var qi = 1; qi <= 6; qi++) {
+    (function(qIndex) {
+      var step = document.getElementById('rq' + qIndex);
+      if (!step) return;
+      step.querySelectorAll('.quiz-opt').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          step.querySelectorAll('.quiz-opt').forEach(function(o) { o.classList.remove('selected'); });
+          opt.classList.add('selected');
+          radarAnswers['rq' + qIndex] = parseInt(opt.getAttribute('data-rval'));
+          var nb = step.querySelector('.quiz-btn-next');
+          if (nb) nb.disabled = false;
+        });
+      });
+    })(qi);
+  }
+})();
+
+function nextRadar(from) {
+  var cur = document.getElementById('rq' + from);
+  var nxt = document.getElementById('rq' + (from + 1));
+  if (!nxt) return;
+  cur.classList.remove('active');
+  nxt.classList.add('active');
+  radarCurrentQ = from + 1;
+  document.getElementById('radar-bar').style.width = (radarCurrentQ / 6 * 100) + '%';
+}
+
+function prevRadar(from) {
+  var cur = document.getElementById('rq' + from);
+  var prv = document.getElementById('rq' + (from - 1));
+  if (!prv) return;
+  cur.classList.remove('active');
+  prv.classList.add('active');
+  radarCurrentQ = from - 1;
+  document.getElementById('radar-bar').style.width = (radarCurrentQ / 6 * 100) + '%';
+}
+
+function showRadarResult() {
+  for (var i = 1; i <= 6; i++) {
+    var s = document.getElementById('rq' + i);
+    if (s) s.classList.remove('active');
+  }
+  document.getElementById('radar-bar').style.width = '100%';
+
+  var radarScores = [];
+  for (var i = 1; i <= 6; i++) {
+    radarScores.push(radarAnswers['rq' + i] || 2);
+  }
+
+  drawRadar(radarScores);
+
+  var listEl = document.getElementById('radar-score-list');
+  listEl.innerHTML = '';
+  radarDimensions.forEach(function(dim, i) {
+    var score = radarScores[i];
+    var pct = (score / 5) * 100;
+    var item = document.createElement('div');
+    item.className = 'radar-score-item';
+    item.innerHTML =
+      '<span class="radar-score-label">' + dim + '</span>' +
+      '<div class="radar-score-bar-wrap"><div class="radar-score-bar" style="width:' + pct + '%"></div></div>' +
+      '<span class="radar-score-val">' + score + '/5</span>';
+    listEl.appendChild(item);
+  });
+
+  var avg = radarScores.reduce(function(a, b) { return a + b; }, 0) / 6;
+  var analysisEl = document.getElementById('radar-analysis');
+  if (avg < 3) {
+    analysisEl.innerHTML = '💡 你目前整體身體功能偏弱，建議從專業健康檢測開始，找出最需要改善的環節。';
+  } else if (avg <= 4) {
+    analysisEl.innerHTML = '💡 你有一定基礎，但仍有進步空間。建議針對最低分的維度優先改善。';
+  } else {
+    analysisEl.innerHTML = '💡 你的身體功能相當不錯！可以進入進階體能訓練，挑戰更高表現。';
+  }
+
+  document.getElementById('radar-result').classList.add('active');
+}
+
+function drawRadar(scores) {
+  var svg = document.getElementById('radar-svg');
+  svg.innerHTML = '';
+  var cx = 200, cy = 190, rMax = 130;
+  var ns = 'http://www.w3.org/2000/svg';
+  var N = 6;
+
+  // 5 層同心六邊形網格
+  for (var layer = 1; layer <= 5; layer++) {
+    var r = rMax * layer / 5;
+    var pts = [];
+    for (var d = 0; d < N; d++) {
+      var a = (Math.PI * 2 * d / N) - Math.PI / 2;
+      pts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+    }
+    var poly = document.createElementNS(ns, 'polygon');
+    poly.setAttribute('points', pts.join(' '));
+    poly.setAttribute('fill', 'none');
+    poly.setAttribute('stroke', '#d0d0d0');
+    poly.setAttribute('stroke-width', '0.8');
+    svg.appendChild(poly);
+  }
+
+  // 軸線
+  for (var d = 0; d < N; d++) {
+    var a = (Math.PI * 2 * d / N) - Math.PI / 2;
+    var ln = document.createElementNS(ns, 'line');
+    ln.setAttribute('x1', cx); ln.setAttribute('y1', cy);
+    ln.setAttribute('x2', (cx + rMax * Math.cos(a)).toFixed(1));
+    ln.setAttribute('y2', (cy + rMax * Math.sin(a)).toFixed(1));
+    ln.setAttribute('stroke', '#d0d0d0');
+    ln.setAttribute('stroke-width', '0.8');
+    svg.appendChild(ln);
+  }
+
+  // 資料多邊形
+  var dataPts = [];
+  for (var d = 0; d < N; d++) {
+    var a = (Math.PI * 2 * d / N) - Math.PI / 2;
+    var r = rMax * scores[d] / 5;
+    dataPts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+  }
+  var dataPoly = document.createElementNS(ns, 'polygon');
+  dataPoly.setAttribute('points', dataPts.join(' '));
+  dataPoly.setAttribute('fill', 'rgba(82,183,136,0.35)');
+  dataPoly.setAttribute('stroke', '#2d6a4f');
+  dataPoly.setAttribute('stroke-width', '2.5');
+  svg.appendChild(dataPoly);
+
+  // 頂點標籤
+  radarDimensions.forEach(function(dim, d) {
+    var a = (Math.PI * 2 * d / N) - Math.PI / 2;
+    var lx = cx + (rMax + 26) * Math.cos(a);
+    var ly = cy + (rMax + 26) * Math.sin(a);
+    var txt = document.createElementNS(ns, 'text');
+    txt.setAttribute('x', lx.toFixed(1));
+    txt.setAttribute('y', ly.toFixed(1));
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('dominant-baseline', 'middle');
+    txt.setAttribute('font-size', '11');
+    txt.setAttribute('font-weight', '700');
+    txt.setAttribute('fill', '#2d6a4f');
+    txt.setAttribute('font-family', "'Noto Sans TC',sans-serif");
+    txt.textContent = dim + ' ' + scores[d] + '/5';
+    svg.appendChild(txt);
+  });
+
+  // 資料點圓點
+  for (var d = 0; d < N; d++) {
+    var a = (Math.PI * 2 * d / N) - Math.PI / 2;
+    var r = rMax * scores[d] / 5;
+    var dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('cx', (cx + r * Math.cos(a)).toFixed(1));
+    dot.setAttribute('cy', (cy + r * Math.sin(a)).toFixed(1));
+    dot.setAttribute('r', '5');
+    dot.setAttribute('fill', '#2d6a4f');
+    svg.appendChild(dot);
+  }
+}
+
+function restartRadar() {
+  radarAnswers = {};
+  radarCurrentQ = 1;
+  document.querySelectorAll('#radar-quiz .quiz-opt').forEach(function(o) { o.classList.remove('selected'); });
+  document.querySelectorAll('#radar-quiz .quiz-btn-next').forEach(function(b) { b.disabled = true; });
+  document.getElementById('radar-result').classList.remove('active');
+  for (var i = 1; i <= 6; i++) {
+    var s = document.getElementById('rq' + i);
+    if (s) s.classList.remove('active');
+  }
+  document.getElementById('rq1').classList.add('active');
+  document.getElementById('radar-bar').style.width = '16.67%';
+}
+
+/* ─ ACCORDION ─ */
+function toggleAcc(btn) {
+  var item = btn.closest('.acc-item');
+  var isOpen = item.classList.contains('open');
+  // 關閉所有其他
+  document.querySelectorAll('.acc-item.open').forEach(function(el) { el.classList.remove('open'); });
+  if (!isOpen) item.classList.add('open');
+}
+
+</script>
+
+</body>
+</html>
