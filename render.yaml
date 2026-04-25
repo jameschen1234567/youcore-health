@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: youcore-motion-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter          # $7/月，不會睡眠；免費方案會休眠 15 分鐘
+    region: singapore      # 亞洲節點，台灣連線較快
+    envVars:
+      - key: MAX_UPLOAD_MB
+        value: "200"
+    healthCheckPath: /health

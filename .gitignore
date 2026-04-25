@@ -1,0 +1,21 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/routers/__pycache__/
+backend/*.pyc
+backend/*.pt          # YOLO 模型（大檔案，Dockerfile 會自動下載）
+backend/*.task        # MediaPipe 模型
+backend/tmp/
+backend/test_*.pdf    # 測試用 PDF
+
+# Storage (videos + DB — sensitive user data)
+backend/storage/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# OS
+.DS_Store
+Thumbs.db
