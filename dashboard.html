@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouCore 客戶訓練儀錶板</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Noto Sans TC', sans-serif; }
+    .glass  { background: rgba(255,255,255,0.08); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.14); }
+    .glass2 { background: rgba(255,255,255,0.13); backdrop-filter: blur(8px);  border: 1px solid rgba(255,255,255,0.20); }
+    .card-hover { transition: transform .2s, box-shadow .2s; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(0,0,0,.35); }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 4px; }
+    .fade-in { animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+    .skeleton { background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.06) 75%); background-size: 400% 100%; animation: shimmer 1.4s infinite; border-radius: 12px; }
+    @keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+    .drive-thumb { object-fit: cover; width:100%; height:100%; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-indigo-950 text-white">
+
+<!-- ═══ HEADER ═══ -->
+<header class="glass border-b border-white/10 sticky top-0 z-20">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm shadow">Y</div>
+      <span class="font-semibold text-blue-100 text-sm tracking-wide">YouCore Health Advisors</span>
+    </div>
+    <span id="lastUpdated" class="text-xs text-blue-300">載入中…</span>
+  </div>
+</header>
+
+<!-- ═══ LOADING STATE ═══ -->
+<div id="loadingState" class="max-w-5xl mx-auto px-4 py-8 space-y-4">
+  <div class="skeleton h-28 w-full"></div>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="skeleton h-24"></div><div class="skeleton h-24"></div>
+    <div class="skeleton h-24"></div><div class="skeleton h-24"></div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="skeleton h-52"></div><div class="skeleton h-52"></div>
+  </div>
+</div>
+
+<!-- ═══ ERROR STATE ═══ -->
+<div id="errorState" class="hidden max-w-5xl mx-auto px-4 py-16 text-center">
+  <div class="glass rounded-2xl p-10 inline-block">
+    <p class="text-4xl mb-4">⚠️</p>
+    <p class="text-lg font-semibold text-blue-200" id="errorMsg">找不到客戶資料</p>
+    <p class="text-sm text-blue-400 mt-2">請確認網址中的 client 參數是否正確</p>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main id="mainContent" class="hidden max-w-5xl mx-auto px-4 py-6 space-y-6 fade-in">
+
+  <!-- 客戶資訊卡 -->
+  <section class="glass rounded-2xl p-5 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+    <div id="avatarCircle" class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-2xl font-bold shadow-lg shrink-0"></div>
+    <div class="text-center sm:text-left flex-1">
+      <h1 id="clientName" class="text-2xl font-bold"></h1>
+      <p id="clientMeta" class="text-blue-300 text-sm mt-0.5"></p>
+      <div id="clientTags" class="flex flex-wrap justify-center sm:justify-start gap-2 mt-2"></div>
+    </div>
+    <div class="sm:ml-auto text-center sm:text-right shrink-0">
+      <p class="text-xs text-blue-400">下次回測</p>
+      <p id="nextAssessment" class="text-xl font-bold text-white"></p>
+      <p id="daysUntil" class="text-xs text-blue-300"></p>
+    </div>
+  </section>
+
+  <!-- 關鍵數據卡片 -->
+  <section>
+    <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">最新身體組成</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="statsGrid"></div>
+  </section>
+
+  <!-- 趨勢圖 -->
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-4">體重變化趨勢</h2>
+      <canvas id="weightChart" height="160"></canvas>
+    </div>
+    <div class="glass rounded-2xl p-5">
+      <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-4">肌肉量變化趨勢</h2>
+      <canvas id="muscleChart" height="160"></canvas>
+    </div>
+  </section>
+
+  <!-- 本週訓練 -->
+  <section id="trainingSection">
+    <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">本週阻力訓練記錄</h2>
+    <div id="trainingLog" class="space-y-3"></div>
+  </section>
+
+  <!-- 體態觀察 -->
+  <section id="observationSection">
+    <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">體態與身體變化觀察</h2>
+    <div class="glass rounded-2xl p-5 space-y-4">
+      <div id="indicatorGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+      <div id="coachNote" class="hidden bg-white/5 rounded-xl p-4 border-l-4 border-blue-400">
+        <p class="text-xs text-blue-400 font-semibold mb-2">🎯 James 教練觀察</p>
+        <p id="coachNoteText" class="text-sm text-blue-100 leading-relaxed"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 體態照片 / 影片 -->
+  <section id="mediaSection" class="hidden">
+    <h2 class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">體態紀錄</h2>
+    <div class="glass rounded-2xl p-5">
+      <div id="mediaGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-blue-500 space-y-1">
+    <p>YouCore Health Advisors ・ 宥芯健康顧問</p>
+    <p>台北市南港區成福路 51 之 3 號 1 樓 ・ (02)2653-9433</p>
+  </footer>
+</main>
+
+<script>
+/* ================================================================
+   設定區 — 部署後請填入 Apps Script Web App URL
+   ================================================================ */
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+/* ================================================================ */
+
+const WEEKDAYS = ['日','一','二','三','四','五','六'];
+const DAY_COLORS = {
+  '一':'bg-blue-500','二':'bg-blue-500','三':'bg-indigo-500',
+  '四':'bg-indigo-500','五':'bg-violet-500','六':'bg-violet-500','日':'bg-purple-500',
+};
+const INDICATOR_COLORS = {
+  '良好':'emerald','進步':'emerald','↑良好':'emerald','↑進步':'emerald',
+  '持平':'blue','→持平':'blue',
+  '待加強':'amber','↓待加強':'amber',
+  '改善':'emerald','↑改善':'emerald',
+};
+
+/* ─── 取得示範資料（尚未設定 Apps Script 時使用）─── */
+function getDemoData(client) {
+  return {
+    info: { name: client || '示範客戶', goal: '增肌減脂', start_date: '2025-12-01', next_assessment: '2026-06-09', weeks: 25 },
+    body_composition: [
+      { date:'2026/4/7',  weight:82.1, muscle_mass:35.0, body_fat_pct:24.5, bmi:25.8, waist_cm:88 },
+      { date:'2026/4/14', weight:81.4, muscle_mass:35.2, body_fat_pct:24.1, bmi:25.6, waist_cm:87 },
+      { date:'2026/4/21', weight:80.8, muscle_mass:35.5, body_fat_pct:23.8, bmi:25.4, waist_cm:86 },
+      { date:'2026/4/28', weight:80.3, muscle_mass:35.7, body_fat_pct:23.4, bmi:25.2, waist_cm:86 },
+      { date:'2026/5/5',  weight:79.6, muscle_mass:35.9, body_fat_pct:23.0, bmi:25.0, waist_cm:85 },
+      { date:'2026/5/12', weight:79.1, muscle_mass:36.1, body_fat_pct:22.6, bmi:24.8, waist_cm:85 },
+      { date:'2026/5/19', weight:79.0, muscle_mass:36.2, body_fat_pct:22.3, bmi:24.8, waist_cm:84 },
+      { date:'2026/5/26', weight:78.2, muscle_mass:36.4, body_fat_pct:22.1, bmi:24.5, waist_cm:84 },
+    ],
+    training_log: [
+      { date:'2026/5/20', day_type:'上半身推', exercises:[
+        {exercise:'槓鈴臥推',sets:4,reps:8,weight_kg:70},
+        {exercise:'啞鈴肩推',sets:3,reps:10,weight_kg:20},
+        {exercise:'三頭下壓',sets:3,reps:12,weight_kg:25},
+      ]},
+      { date:'2026/5/22', day_type:'下半身', exercises:[
+        {exercise:'背蹲舉',sets:4,reps:6,weight_kg:90},
+        {exercise:'羅馬尼亞硬舉',sets:3,reps:8,weight_kg:60},
+        {exercise:'腿推機',sets:3,reps:12,weight_kg:120},
+      ]},
+      { date:'2026/5/24', day_type:'上半身拉', exercises:[
+        {exercise:'引體向上',sets:4,reps:6,weight_kg:0},
+        {exercise:'槓鈴划船',sets:3,reps:8,weight_kg:60},
+        {exercise:'二頭彎舉',sets:3,reps:12,weight_kg:16},
+      ]},
+    ],
+    observations: [{
+      date:'2026/5/26',
+      indicators:[
+        {label:'肩膀活動度',value:'↑ 良好',color:'emerald'},
+        {label:'核心穩定性',value:'↑ 進步',color:'blue'},
+        {label:'睡眠品質',  value:'→ 持平',color:'indigo'},
+        {label:'恢復狀態',  value:'↑ 改善',color:'amber'},
+      ],
+      coach_note:'本週整體表現穩定進步。臥推重量首次突破 70 kg，代表上肢推力已達新的里程碑。背蹲舉的深度與核心控制較上個月明顯改善，建議下週嘗試逐步增加到 95 kg。睡眠與恢復品質需要繼續關注，建議訓練後補充蛋白質並確保 7 小時以上睡眠。'
+    }],
+    media: []
+  };
+}
+
+/* ─── 主程式 ─── */
+const params = new URLSearchParams(window.location.search);
+const CLIENT = (params.get('client') || '').trim();
+
+(async () => {
+  let data;
+  try {
+    if (!CLIENT) throw new Error('未指定客戶名稱（?client=姓名）');
+    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      data = getDemoData(CLIENT);
+    } else {
+      const res = await fetch(`${APPS_SCRIPT_URL}?client=${encodeURIComponent(CLIENT)}`);
+      if (!res.ok) throw new Error('伺服器回傳錯誤 ' + res.status);
+      data = await res.json();
+      if (data.error) throw new Error(data.error);
+    }
+    renderDashboard(data);
+  } catch (e) {
+    document.getElementById('loadingState').classList.add('hidden');
+    const errState = document.getElementById('errorState');
+    errState.classList.remove('hidden');
+    document.getElementById('errorMsg').textContent = e.message;
+  }
+})();
+
+/* ─── 渲染 ─── */
+function renderDashboard(d) {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
+
+  // ── 更新時間
+  document.getElementById('lastUpdated').textContent = '最後更新：' + today();
+
+  // ── 客戶資訊
+  const info = d.info;
+  document.getElementById('avatarCircle').textContent = (info.name || '?')[0];
+  document.getElementById('clientName').textContent = info.name;
+  document.getElementById('clientMeta').textContent =
+    `訓練開始日：${info.start_date}　·　第 ${info.weeks} 週`;
+  const tags = document.getElementById('clientTags');
+  tags.innerHTML = `
+    <span class="bg-blue-500/30 text-blue-200 text-xs px-3 py-1 rounded-full">目標：${info.goal}</span>
+    <span class="bg-indigo-500/30 text-indigo-200 text-xs px-3 py-1 rounded-full">教練：James 陳</span>`;
+  document.getElementById('nextAssessment').textContent = info.next_assessment;
+  document.getElementById('daysUntil').textContent = '距今 ' + daysUntil(info.next_assessment) + ' 天';
+
+  // ── 數據卡
+  const bc = d.body_composition;
+  const latest = bc[bc.length - 1] || {};
+  const prev   = bc[bc.length - 2] || {};
+  const statsConf = [
+    { label:'體重',   key:'weight',      unit:'kg', precision:1 },
+    { label:'肌肉量', key:'muscle_mass', unit:'kg', precision:1 },
+    { label:'體脂率', key:'body_fat_pct',unit:'%',  precision:1 },
+    { label:'腰圍',   key:'waist_cm',    unit:'cm', precision:0 },
+  ];
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = statsConf.map(s => {
+    const cur  = latest[s.key] ?? '--';
+    const old  = prev[s.key]  ?? null;
+    const diff = old !== null ? (cur - old) : null;
+    const arrow = diff === null ? '' : diff > 0 ? `▲ ${Math.abs(diff).toFixed(s.precision)}` : diff < 0 ? `▼ ${Math.abs(diff).toFixed(s.precision)}` : '— 持平';
+    const arrowColor = diff === null ? '' :
+      (s.key==='weight'||s.key==='body_fat_pct'||s.key==='waist_cm')
+        ? (diff<0?'text-emerald-400':'diff>0?text-rose-400':'text-blue-400')
+        : (diff>0?'text-emerald-400':'diff<0?text-rose-400':'text-blue-400');
+    return `<div class="glass2 rounded-2xl p-4 card-hover">
+      <p class="text-xs text-blue-300 mb-1">${s.label}</p>
+      <p class="text-3xl font-bold">${typeof cur==='number'?cur.toFixed(s.precision):cur}<span class="text-sm font-normal text-blue-300 ml-1">${s.unit}</span></p>
+      <p class="text-xs mt-1 ${diff===null?'text-blue-400':diff===0?'text-blue-400':diff<0?'text-emerald-400':'text-rose-400'}">${arrow}${diff!==null&&diff!==0?' vs 上次':diff===0?' 持平':''}</p>
+    </div>`;
+  }).join('');
+
+  // ── 趨勢圖
+  const labels = bc.map(r => r.date.slice(5));
+  const weights = bc.map(r => r.weight);
+  const muscles = bc.map(r => r.muscle_mass);
+  const chartOpts = (label, data, color) => ({
+    type:'line', data:{
+      labels,
+      datasets:[{label, data, borderColor:color, backgroundColor:color+'22',
+        borderWidth:2.5, pointBackgroundColor:color, pointRadius:4, pointHoverRadius:6,
+        tension:.4, fill:true}]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#93c5fd',font:{size:11}},grid:{color:'rgba(255,255,255,.06)'}},
+        y:{ticks:{color:'#93c5fd',font:{size:11}},grid:{color:'rgba(255,255,255,.06)'}}
+      }
+    }
+  });
+  new Chart(document.getElementById('weightChart'), chartOpts('體重(kg)', weights,'#60a5fa'));
+  new Chart(document.getElementById('muscleChart'), chartOpts('肌肉量(kg)',muscles,'#818cf8'));
+
+  // ── 訓練日誌
+  const tlog = d.training_log || [];
+  const trainingEl = document.getElementById('trainingLog');
+  if (!tlog.length) {
+    trainingEl.innerHTML = '<p class="text-sm text-blue-400">本週尚無訓練記錄</p>';
+  } else {
+    trainingEl.innerHTML = tlog.map(day => {
+      const d = new Date(day.date.replace(/\//g,'-'));
+      const wd = WEEKDAYS[d.getDay()];
+      const bg = DAY_COLORS[wd] || 'bg-blue-500';
+      const exs = (day.exercises||[]).map(e => {
+        const wt = e.weight_kg === 0 ? 'BW' : `${e.weight_kg} kg`;
+        return `<div class="bg-white/5 rounded-xl p-3 flex justify-between items-center gap-2">
+          <span class="text-sm">${e.exercise}</span>
+          <span class="text-sm font-semibold text-blue-300 whitespace-nowrap">${e.sets}×${e.reps} @ ${wt}</span>
+        </div>`;
+      }).join('');
+      return `<div class="glass rounded-2xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="${bg} text-white text-xs font-bold px-2.5 py-1 rounded-lg">週${wd}</span>
+          <span class="text-sm text-blue-200">${day.date.slice(5)}</span>
+          <span class="ml-auto text-xs text-blue-400">${day.day_type||''}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">${exs}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── 觀察指標
+  const obs = (d.observations || [])[0] || {};
+  const indGrid = document.getElementById('indicatorGrid');
+  if (obs.indicators && obs.indicators.length) {
+    indGrid.innerHTML = obs.indicators.map(ind => {
+      const c = ind.color || 'blue';
+      return `<div class="bg-${c}-500/15 border border-${c}-500/30 rounded-xl p-3 text-center">
+        <p class="text-xs text-${c}-300 mb-1">${ind.label}</p>
+        <p class="text-xl font-bold text-${c}-400">${ind.value}</p>
+      </div>`;
+    }).join('');
+  } else {
+    indGrid.innerHTML = '<p class="text-sm text-blue-400 col-span-4">尚無觀察記錄</p>';
+  }
+  if (obs.coach_note) {
+    document.getElementById('coachNote').classList.remove('hidden');
+    document.getElementById('coachNoteText').textContent = obs.coach_note;
+  }
+
+  // ── 媒體
+  const media = d.media || [];
+  if (media.length) {
+    document.getElementById('mediaSection').classList.remove('hidden');
+    document.getElementById('mediaGrid').innerHTML = media.map(m => {
+      const isVideo = m.type === 'video';
+      const thumb = isVideo
+        ? `<div class="absolute inset-0 flex flex-col items-center justify-center">
+            <svg class="w-10 h-10 text-blue-300 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <p class="text-xs text-blue-300 mt-1">${m.caption || ''}</p>
+            <p class="text-xs text-blue-400">${m.date||''}</p>
+           </div>`
+        : `<img src="${convertDriveUrl(m.drive_url)}" alt="${m.caption||''}" class="drive-thumb" onerror="this.parentElement.innerHTML='<div class=\'absolute inset-0 flex flex-col items-center justify-center\'><p class=\'text-xs text-blue-400\'>${m.caption||''}</p><p class=\'text-xs text-blue-500\'>${m.date||''}</p></div>'" />`;
+      return `<a href="${m.drive_url}" target="_blank" rel="noopener"
+          class="aspect-square bg-white/5 rounded-xl overflow-hidden relative block hover:ring-2 hover:ring-blue-400 transition">
+          ${thumb}
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-1.5">
+            <p class="text-xs text-white">${m.caption||''} ${m.date||''}</p>
+          </div>
+        </a>`;
+    }).join('');
+  }
+}
+
+/* ─── 工具函式 ─── */
+function today() {
+  return new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
+}
+function daysUntil(dateStr) {
+  const target = new Date(dateStr.replace(/\//g,'-'));
+  const now = new Date(); now.setHours(0,0,0,0);
+  return Math.ceil((target - now) / 86400000);
+}
+function convertDriveUrl(url) {
+  // 將 Google Drive 分享連結轉為可嵌入的直接圖片連結
+  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? `https://lh3.googleusercontent.com/d/${m[1]}` : url;
+}
+</script>
+</body>
+</html>
