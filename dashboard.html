@@ -253,8 +253,8 @@ function renderDashboard(d) {
     const arrow = diff === null ? '' : diff > 0 ? `▲ ${Math.abs(diff).toFixed(s.precision)}` : diff < 0 ? `▼ ${Math.abs(diff).toFixed(s.precision)}` : '— 持平';
     const arrowColor = diff === null ? '' :
       (s.key==='weight'||s.key==='body_fat_pct'||s.key==='waist_cm')
-        ? (diff<0?'text-emerald-400':'diff>0?text-rose-400':'text-blue-400')
-        : (diff>0?'text-emerald-400':'diff<0?text-rose-400':'text-blue-400');
+        ? (diff<0?'text-emerald-400':diff>0?'text-rose-400':'text-blue-400')
+        : (diff>0?'text-emerald-400':diff<0?'text-rose-400':'text-blue-400');
     return `<div class="glass2 rounded-2xl p-4 card-hover">
       <p class="text-xs text-blue-300 mb-1">${s.label}</p>
       <p class="text-3xl font-bold">${typeof cur==='number'?cur.toFixed(s.precision):cur}<span class="text-sm font-normal text-blue-300 ml-1">${s.unit}</span></p>
