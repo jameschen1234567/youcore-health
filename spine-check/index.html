@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片自動辨識、3D 骨骼模型與回正運動順序。">
+<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片自動辨識、3D 骨骼模型、前後測角度對比與一頁式 PDF 報告。">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -130,6 +130,74 @@ ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .cta .info{font-size:13px;opacity:.92;display:flex;flex-direction:column;gap:2px;user-select:text}
 .disc{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
 .toast{font-size:13px;color:var(--accent);min-height:1.2em}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.cmp{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cmp th,.cmp td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;position:sticky;left:0;background:var(--surface)}
+.cmp thead th{font-size:12px;color:var(--muted);font-weight:500;background:var(--bg)}
+.cmp thead th:first-child{background:var(--bg)}
+.cmp tr:last-child td{border-bottom:0}
+.cmp .cur{font-weight:700}
+.cmp .better{color:var(--accent);font-weight:700}
+.cmp .worse{color:var(--bad);font-weight:700}
+.cmp .same{color:var(--muted)}
+.histbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.histbar .btn{font-size:13px;min-height:36px;padding:6px 12px;font-weight:500}
+.q input.txt,.field input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+.q input.txt:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+.field input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+/* one-page A4 report, rendered off-screen at 794×1123 CSS px; fixed print colors, independent of theme */
+.rp{position:fixed;left:-10000px;top:0;width:794px;height:1123px;overflow:hidden;background:#FFFFFF;color:#1C2B1A;font-family:var(--sans);--fs:10px;font-size:var(--fs);line-height:1.5}
+.rp *{box-sizing:border-box}
+.rp-in{height:100%;display:flex;flex-direction:column;gap:12px;padding:26px 30px 22px}
+.rp-hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1C2B1A;padding-bottom:10px}
+.rp-hd .ey{font-size:9px;letter-spacing:.18em;font-weight:700;color:#4A6741}
+.rp-hd h1{font-family:var(--serif);font-size:24px;margin:2px 0 0;line-height:1.25}
+.rp-hd dl{margin:0;display:grid;grid-template-columns:auto auto;gap:1px 10px;font-size:9.5px;text-align:right}
+.rp-hd dt{color:#5F6A5B}.rp-hd dd{margin:0;font-weight:700}
+.rp-top{display:grid;grid-template-columns:1.35fr 1fr;gap:12px}
+.rp-sum{background:#F4F0E8;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.rp-k{font-size:8.5px;font-weight:700;letter-spacing:.12em;color:#9C7A3C}
+.rp-sum h2{font-family:var(--serif);font-size:17px;margin:0;line-height:1.3}
+.rp-meter{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;font-size:8.5px;color:#5F6A5B}
+.rp-meter i{display:block;height:4px;border-radius:9px;background:#DDD6C7;margin-bottom:2px}
+.rp-meter .on{color:#1C2B1A;font-weight:700}.rp-meter .on i{background:#9C7A3C}
+.rp-chips{display:flex;flex-wrap:wrap;gap:3px}
+.rp-chips span{font-size:8.5px;padding:1px 6px;border-radius:9px;background:#FFFFFF;border:1px solid #DDD6C7}
+.rp-notes{display:flex;flex-direction:column;gap:6px}
+.rp-note{border-radius:8px;padding:8px 10px;background:#F1E7D3}
+.rp-note b{color:#8A5A14}
+.rp-note.bad{background:#F5DDD4;color:#8A2F1C}.rp-note.bad b{color:#8A2F1C}
+.rp-note.ok{background:#E3E8DC}.rp-note.ok b{color:#4A6741}
+.rp h3{font-family:var(--serif);font-size:12.5px;margin:0 0 5px;display:flex;align-items:baseline;gap:8px}
+.rp h3 small{font-family:var(--sans);font-size:8.5px;font-weight:400;color:#5F6A5B}
+.rp-views{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.rp-views figure{margin:0;background:#F7F4EE;border-radius:8px;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px}
+.rp-views img{height:150px;width:auto;max-width:100%;display:block}
+.rp-views figcaption{font-size:9px;font-weight:700}
+.rp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 12px}
+.rp-sec h4{font-size:8.5px;font-weight:700;color:#4A6741;letter-spacing:.08em;margin:0 0 2px;border-bottom:1px solid #DDD6C7;padding-bottom:2px}
+.rp-row{display:flex;justify-content:space-between;gap:6px;line-height:1.55}
+.rp-row span:first-child{color:#5F6A5B}
+.rp-row .v{font-weight:700;color:#A3482F;text-align:right}.rp-row .v.ok{font-weight:400;color:#1C2B1A}
+.rp-pat{margin:0;padding-left:14px;columns:2;column-gap:22px}
+.rp-pat li{break-inside:avoid;margin-bottom:2px}
+.rp-plan{display:grid;grid-template-columns:1fr 1fr;gap:3px 22px}
+.rp-plan div{display:grid;grid-template-columns:18px 1fr;gap:4px}
+.rp-plan .n{font-weight:700;color:#4A6741;text-align:right}
+.rp-plan b{font-weight:700}
+.rp-plan .first .n,.rp-plan .first b{color:#9C7A3C}
+.rp-ft{background:#1C2B1A;color:#F4F0E8;border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1.3fr 1fr;gap:12px;align-items:center}
+.rp-ft p{margin:0}
+.rp-ft .big{font-family:var(--serif);font-size:12.5px;font-weight:700;color:#C9A96E}
+.rp-ft .ct{font-size:9px;line-height:1.6;text-align:right}
+.rp-disc{font-size:7.5px;color:#7A8476;line-height:1.5}
+.rp .cmp{font-size:inherit;white-space:nowrap;width:100%}
+.rp .cmp th,.rp .cmp td{padding:2px 6px;border-bottom:1px solid #E6E0D3;background:transparent;position:static;color:#1C2B1A}
+.rp .cmp thead th{font-size:8.5px;color:#5F6A5B;background:#F4F0E8;line-height:1.3}
+.rp .cmp .better{color:#3E6B34}.rp .cmp .worse{color:#A3482F}.rp .cmp .same{color:#7A8476}
 @media (max-width:460px){
   .card{padding:16px}
   .seg{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -158,6 +226,7 @@ const SIDE={L:"左",R:"右"};
 const ROW4=(a,b,c)=>[["L",a],[b[0],b[1]],["R",c],["U","不確定"]];
 const STEPS=[
  {id:"basic",label:"基本資料",title:"先確認幾件事",qs:[
+  {k:"name",q:"姓名或暱稱",hint:"用來比對前後測。同一個人每次請輸入一樣的名字，紀錄只存在這台裝置上。",type:"text"},
   {k:"age",q:"你的年齡層",type:"list",opts:[["u18","未滿 18 歲（成長期）"],["a18","18 至 40 歲"],["a41","41 歲以上"]]},
   {k:"flags",q:"最近有出現下列情況嗎？可複選。",type:"multi",opts:[["night","夜間痛醒或休息時仍持續疼痛"],["numb","下肢麻木、刺痛或無力"],["bladder","大小便控制出現異常"],["prog","幾個月內歪斜明顯加重"],["none","以上都沒有"]]}
  ]},
@@ -203,10 +272,43 @@ const STEPS=[
 const PHOTO_STEP=1, FIRST_Q=2;
 
 /* ---------- state ---------- */
-const S={step:0,a:{flags:[]},pre:{},photos:{},marks:{},moved:{},auto:{},marking:false,active:{},busy:false,msg:"",done:false};
+const S={step:0,a:{flags:[]},pre:{},photos:{},marks:{},moved:{},auto:{},m:{},name:"",recId:null,confirmClear:false,marking:false,active:{},busy:false,msg:"",done:false};
 const STORE="youcore-spine-v1";
 try{const d=JSON.parse(localStorage.getItem(STORE)||"null");if(d&&d.a){S.a=d.a;S.a.flags=S.a.flags||[];}}catch(e){}
 function save(){try{localStorage.setItem(STORE,JSON.stringify({a:S.a}))}catch(e){}}
+
+/* assessment history on this device, matched by name, for pre/post comparison */
+const HKEY="youcore-spine-history-v1";
+function loadHist(){try{const h=JSON.parse(localStorage.getItem(HKEY)||"[]");return Array.isArray(h)?h:[]}catch(e){return []}}
+function saveHist(h){try{localStorage.setItem(HKEY,JSON.stringify(h.slice(-80)))}catch(e){}}
+function historyFor(name){const n=(name||"").trim();return loadHist().filter(r=>(r.name||"")===n).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:0)}
+function recordResult(r){
+  const h=loadHist();
+  if(!S.recId) S.recId=Date.now().toString(36);
+  const rec={id:S.recId,t:new Date().toISOString(),date:taipeiDate(),name:S.name||"",level:r.level,lv:r.lv[0],n:r.n,m:S.m||{}};
+  const i=h.findIndex(x=>x.id===rec.id);
+  if(i>=0){rec.t=h[i].t;rec.date=h[i].date;h[i]=rec}else h.push(rec);
+  saveHist(h);
+}
+const METRICS=[["shoulder","肩峰傾斜","左高","右高"],["scap","肩胛下角傾斜","左高","右高"],["pelvis","骨盆傾斜","左高","右高"],
+  ["headTilt","頭部側傾","左傾","右傾"],["trunk","軀幹側移角","偏左","偏右"],["kneeL","左膝額狀面角","O 型","X 型"],["kneeR","右膝額狀面角","O 型","X 型"],
+  ["fh","耳肩線前傾角","前","後"],["sway","骨盆前移角","前推","後靠"]];
+const fmtDeg=(v,d)=>v==null?"—":Math.abs(v)<.05?"0.0°":`${v>0?d[2]:d[3]} ${Math.abs(v).toFixed(1)}°`;
+function diffCell(cur,ref,unit){
+  if(cur==null||ref==null) return `<td class="same">—</td>`;
+  const d=Math.abs(cur)-Math.abs(ref), th=unit==="°"?.3:.5;
+  if(Math.abs(d)<th) return `<td class="same">持平</td>`;
+  const v=unit==="°"?Math.abs(d).toFixed(1)+"°":Math.abs(d)+" 處";
+  return d<0?`<td class="better">${unit==="°"?"改善":"減少"} ${v}</td>`:`<td class="worse">增加 ${v}</td>`;
+}
+function compareTable(hist,maxCols){
+  const cols=hist.slice(-maxCols), first=hist[0], prev=hist[hist.length-2], cur=hist[hist.length-1];
+  const rows=METRICS.filter(d=>hist.some(r=>r.m&&r.m[d[0]]!=null));
+  const head=`<tr><th>項目</th>${cols.map(r=>`<th>第 ${hist.indexOf(r)+1} 次<br>${r.date.slice(5).replace("-","/")}</th>`).join("")}<th>較上次</th><th>較第 1 次</th></tr>`;
+  const body=rows.map(d=>`<tr><td>${d[1]}</td>${cols.map(r=>`<td class="${r===cur?"cur":""}">${fmtDeg(r.m&&r.m[d[0]],d)}</td>`).join("")}${diffCell(cur.m[d[0]],prev.m&&prev.m[d[0]],"°")}${diffCell(cur.m[d[0]],first.m&&first.m[d[0]],"°")}</tr>`).join("")
+    +`<tr><td>有差異的部位數</td>${cols.map(r=>`<td class="${r===cur?"cur":""}">${r.n} 處</td>`).join("")}${diffCell(cur.n,prev.n,"處")}${diffCell(cur.n,first.n,"處")}</tr>`;
+  return {html:`<table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table>`,angles:rows.length};
+}
 
 let sample=null, canImages=false;
 if(window.claude&&claude.use){claude.use("sample").then(async s=>{
@@ -224,8 +326,14 @@ function optBtn(k,v,label,seg){
   const pre=S.pre[k]===v;
   return `<button type="button" class="opt${on?" on":""}" data-k="${k}" data-v="${v}" aria-pressed="${on}">${esc(label)}${pre?'<span class="tag">照片</span>':""}</button>`;
 }
+function histNote(){
+  const n=historyFor(S.name).filter(r=>r.id!==S.recId).length;
+  return n?`找到「${esc(S.name||"未命名")}」之前的 ${n} 次紀錄，完成後會自動比較角度變化。`:"";
+}
 function qHTML(q){
   let body="";
+  if(q.type==="text") return `<div class="q"><div class="qh"><h3><label for="q-name">${esc(q.q)}</label></h3></div><p class="hint">${esc(q.hint)}</p>
+    <input class="txt" id="q-name" type="text" maxlength="20" autocomplete="off" placeholder="例如：王小明" value="${esc(S.name||"")}"><p class="small" id="histnote">${histNote()}</p></div>`;
   if(q.type==="row") body=`<div class="seg">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
   else if(q.type==="list"||q.type==="multi") body=`<div class="list">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
   else if(q.type==="pair") body=["L","R"].map(s=>`<div class="pair"><span class="side">${SIDE[s]}</span><div class="seg">${q.opts.map(o=>optBtn(q.k+s,o[0],o[1])).join("")}</div></div>`).join("");
@@ -234,6 +342,7 @@ function qHTML(q){
 function remaining(st){
   let n=0;
   for(const q of st.qs){
+    if(q.type==="text") continue;
     if(q.type==="pair"){if(!S.a[q.k+"L"])n++;if(!S.a[q.k+"R"])n++;}
     else if(q.type==="multi"){if(!S.a.flags.length)n++;}
     else if(!S.a[q.k])n++;
@@ -343,7 +452,10 @@ const clamp=x=>Math.max(0,Math.min(1,x));
 
 /* turn marks into answers; thresholds are screening heuristics, not measurements */
 function applyMarks(){
-  const pre={};
+  const pre={}, M={};
+  const R1=x=>Math.round(x*10)/10, DEG=180/Math.PI;
+  /* signed tilt in degrees, positive when the person's left point is higher */
+  const tilt=(L,R)=>R1(Math.atan2(R.y-L.y,Math.abs(L.x-R.x))*DEG);
   const P=(v,id)=>{const p=S.marks[v][id],ph=S.photos[v];return {x:p[0]*ph.w,y:p[1]*ph.h}};
   const deg=(a,b)=>Math.atan2(Math.abs(a.y-b.y),Math.abs(a.x-b.x))*180/Math.PI;
   const unit=(a,b)=>{const dx=a.x-b.x,dy=a.y-b.y,l=Math.hypot(dx,dy)||1;return {x:dx/l,y:dy/l,l}};
@@ -357,6 +469,8 @@ function applyMarks(){
     const ms={x:(f("shL").x+f("shR").x)/2,y:(f("shL").y+f("shR").y)/2}, ma={x:(f("anL").x+f("anR").x)/2,y:(f("anL").y+f("anR").y)/2};
     const shift=((ms.x-ma.x)*lv.x+(ms.y-ma.y)*lv.y)/lv.l;
     pre.trunk=Math.abs(shift)<.08?"C":(shift>0?"L":"R");
+    M.headTilt=-tilt(eL,eR); M.shoulder=tilt(f("shL"),f("shR")); M.pelvis=tilt(f("plL"),f("plR"));
+    M.trunk=R1(Math.atan2((ms.x-ma.x)*lv.x+(ms.y-ma.y)*lv.y,Math.abs(ma.y-ms.y)||1)*DEG);
     for(const s of ["L","R"]){
       const h=f("pl"+s),k=f("kn"+s),a=f("an"+s);
       const ha={x:a.x-h.x,y:a.y-h.y},len=Math.hypot(ha.x,ha.y)||1;
@@ -365,15 +479,19 @@ function applyMarks(){
       const lat=s==="L"?1:-1;
       const dev=((k.x-proj.x)*lv.x+(k.y-proj.y)*lv.y)*lat/len;
       pre["knee"+s]=dev<-.03?"X":dev>.03?"O":"N";
+      const u={x:k.x-h.x,y:k.y-h.y}, w={x:a.x-k.x,y:a.y-k.y};
+      const bend=Math.acos(Math.max(-1,Math.min(1,(u.x*w.x+u.y*w.y)/((Math.hypot(u.x,u.y)*Math.hypot(w.x,w.y))||1))))*DEG;
+      M["knee"+s]=R1(dev<0?-bend:bend);
     }
   }
   if(S.marks.back&&S.photos.back){
     const b=id=>P("back",id), mv=S.moved.back||{};
-    if(!S.auto.back||mv.scL||mv.scR) pre.scap=higher(b("scL"),b("scR"),1.5)||"E";
+    if(!S.auto.back||mv.scL||mv.scR){pre.scap=higher(b("scL"),b("scR"),1.5)||"E";M.scap=tilt(b("scL"),b("scR"))}
     if(!pre.trunk){
       const lv=unit(b("scL"),b("scR")),c7=b("c7"),sac=b("sac");
       const shift=((c7.x-sac.x)*lv.x+(c7.y-sac.y)*lv.y)/lv.l;
       pre.trunk=Math.abs(shift)<.08?"C":(shift>0?"L":"R");
+      M.trunk=R1(Math.atan2((c7.x-sac.x)*lv.x+(c7.y-sac.y)*lv.y,Math.abs(sac.y-c7.y)||1)*DEG);
     }
   }
   if(S.marks.side&&S.photos.side){
@@ -383,7 +501,11 @@ function applyMarks(){
     const fh=(ear.x-sh.x)*fw/H; pre.ear=fh>.06?"severe":fh>.025?"mild":"ok";
     const t=(hip.y-ank.y)/((sh.y-ank.y)||1), lineX=ank.x+(sh.x-ank.x)*t;
     pre.sway=(hip.x-lineX)*fw/H>.03?"yes":"no";
+    M.fh=R1(Math.atan2((ear.x-sh.x)*fw,Math.abs(sh.y-ear.y)||1)*DEG);
+    const ang=p=>Math.atan2((p.x-ank.x)*fw,Math.abs(ank.y-p.y)||1)*DEG;
+    M.sway=R1(ang(hip)-ang(sh));
   }
+  S.m=M;
   setPre(pre);
 }
 /* on-device pose detection (MediaPipe); photos never leave the device */
@@ -508,8 +630,12 @@ app.addEventListener("click",e=>{
   else if(act==="ai"){runAI();return}
   else if(act==="auto"){autoAnalyze();return}
   else if(act==="edit"){S.done=false;S.step=FIRST_Q}
-  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};S.moved={};S.auto={};for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
+  else if(act==="clearhist"){S.confirmClear=true;const y=window.scrollY;render();window.scrollTo({top:y});return}
+  else if(act==="clearno"){S.confirmClear=false;const y=window.scrollY;render();window.scrollTo({top:y});return}
+  else if(act==="clearyes"){const n=S.name||"";saveHist(loadHist().filter(r=>(r.name||"")!==n||r.id===S.recId));S.confirmClear=false;const y=window.scrollY;render();window.scrollTo({top:y});return}
+  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};S.moved={};S.auto={};S.m={};S.name="";S.recId=null;S.confirmClear=false;for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
   else if(act==="copy"){copySummary(b);return}
+  else if(act==="pdf"){makePDF(b);return}
   else if(act==="view"){setView(+b.dataset.v);document.querySelectorAll(".views .btn").forEach(x=>x.classList.toggle("on",x===b));return}
   else return;
   render(); window.scrollTo({top:0});
@@ -629,12 +755,21 @@ function analyze(){
   if(lr("sls")||lr("breath")) plan.push(["單腳穩定與呼吸對稱",[lr("sls")&&LBL.sls[a.sls],lr("breath")&&"胸廓擴張"+LBL.breath[a.breath]].filter(Boolean).join("、"),"單腳站穩定訓練從較不穩的一側開始，搭配側躺呼吸讓擴張較少的一側打開。"]);
   if(!plan.length) plan.push(["維持目前的對稱","各部位無明顯差異","每週 2 到 3 次全身肌力訓練，搭配每天 5 分鐘的呼吸與脊椎活動度練習。"]);
 
-  return {chips,level,lv:LV[level],struct,youth,pats,plan};
+  return {chips,n,level,lv:LV[level],struct,youth,pats,plan};
 }
 
 /* ---------- results ---------- */
 function renderResults(){
   const r=analyze(), a=A();
+  recordResult(r);
+  const hist=historyFor(S.name), who=S.name?`「${esc(S.name)}」`:"這台裝置上未命名";
+  const cmp=hist.length>=2?compareTable(hist,6):null;
+  const cmpHTML=`<section style="display:flex;flex-direction:column;gap:10px"><h2>前後測對比</h2>
+    ${cmp?`<p class="small">${who}共 ${hist.length} 次評估。角度來自照片標線，越接近 0° 越對稱；每次請用同樣的距離、高度與站姿拍照，比較才準。</p>
+      <div class="tblwrap">${cmp.html}</div>${cmp.angles?"":`<p class="small">這幾次都沒有用照片標線，所以只比較有差異的部位數。下次上傳照片就能比較角度。</p>`}`
+      :`<p class="small">這是${who}的第 1 次評估${S.m&&Object.keys(S.m).length?"，照片量到的角度已經記下來":""}。4 到 6 週後用同樣的名字和拍攝條件重測，這裡就會列出每個角度和上一次、第一次相比改善了多少。</p>`}
+    ${hist.length>=2?`<div class="histbar">${S.confirmClear?`<span class="small">確定要刪除${who}之前的 ${hist.length-1} 次紀錄嗎？</span><button type="button" class="btn" data-act="clearyes">確定刪除</button><button type="button" class="btn" data-act="clearno">取消</button>`:`<button type="button" class="btn" data-act="clearhist">刪除之前的紀錄</button>`}</div>`:""}
+    <p class="small">紀錄只存在這台裝置的瀏覽器裡，換手機或清除瀏覽資料就會消失。下載 PDF 報告可以留存每次的結果。</p></section>`;
   const flags=(a.flags||[]).filter(f=>f!=="none");
   const FL={night:"夜間痛醒或休息時持續疼痛",numb:"下肢麻木、刺痛或無力",bladder:"大小便控制異常",prog:"幾個月內歪斜明顯加重"};
   const rowHTML=([name,k,base])=>{const v=a[k];const ok=!dev(k);return `<div class="row"><span>${name}</span><span class="v${ok?" ok":""}">${esc(lab(k,base))}</span></div>`};
@@ -645,6 +780,7 @@ function renderResults(){
   <div class="meter">${["對稱","輕度","中度","明顯"].map((x,i)=>`<div class="${i===r.level?"on":""}"><i></i>${x}</div>`).join("")}</div></div>
   ${r.struct?`<div class="warn"><b>${esc(r.struct[0])}</b> ${esc(r.struct[1])}</div>`:""}
   ${r.youth?`<div class="danger">成長期的側彎有機會隨身高增加而進展，前彎有隆起時請盡快讓骨科醫師評估。</div>`:""}
+  ${cmpHTML}
   <section style="display:flex;flex-direction:column;gap:10px">
     <h2>3D 骨骼模型</h2><p class="small">依你的結果調整骨骼位置，角度放大 2 倍顯示。左右拖曳可以旋轉。</p>
     <div class="three" id="three" aria-label="依評估結果調整的 3D 骨骼模型"></div>
@@ -661,7 +797,8 @@ function renderResults(){
     <a href="https://page.line.me/374lyfap" target="_blank" rel="noopener">Line 預約專業健康檢測</a>
     <div class="info"><span>Line ID @374lyfap · 電話 (02)2653-9433 · IG @youcore.healthadvisors</span><span>台北市南港區成福路 51 之 3 號 1 樓（後山埤站旁）</span><span>週二至週日 10:00–20:30</span></div></div>
   <p class="disc">這份結果是自我篩檢，照片標線是依標記點估算的角度，會受拍攝角度、距離與衣物影響，不能取代醫師的診斷。前彎隆起在坐姿仍然存在時，需要站立全脊椎 X 光才能確認是否為結構性脊椎側彎。</p>
-  <div class="actions"><button type="button" class="btn primary" data-act="copy">複製結果摘要</button><button type="button" class="btn ghost" data-act="edit">回去修改答案</button><button type="button" class="btn ghost" data-act="restart">重新評估</button></div>
+  <div class="actions"><button type="button" class="btn primary" data-act="pdf">下載 PDF 報告</button><button type="button" class="btn ghost" data-act="copy">複製結果摘要</button></div>
+  <div class="actions"><button type="button" class="btn ghost" data-act="edit">回去修改答案</button><button type="button" class="btn ghost" data-act="restart">重新評估</button></div>
   <p class="toast" id="toast" role="status"></p>`;
   initThree(document.getElementById("three"));
 }
@@ -682,6 +819,102 @@ function copySummary(btn){
   const txt=summaryText(), toast=document.getElementById("toast");
   const fallback=()=>{const ta=document.createElement("textarea");ta.value=txt;ta.setAttribute("readonly","");ta.style.cssText="width:100%;min-height:180px;font:inherit;font-size:13px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px";toast.replaceWith(ta);ta.id="toast";ta.select();};
   try{navigator.clipboard.writeText(txt).then(()=>{toast.textContent="已複製結果摘要"},fallback)}catch(e){fallback()}
+}
+
+/* ---------- one-page PDF report ---------- */
+app.addEventListener("input",e=>{
+  if(e.target.id!=="q-name") return;
+  S.name=e.target.value.trim();
+  const hn=document.getElementById("histnote"); if(hn) hn.innerHTML=histNote();
+});
+let downloadsNS=null;
+if(window.claude&&claude.use) claude.use("downloads").then(d=>{downloadsNS=d}).catch(()=>{});
+const loadScript=src=>new Promise((res,rej)=>{
+  const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);
+});
+const SNAP_VIEWS=[["正面",0],["背面",Math.PI],["左側",Math.PI/2],["右側",-Math.PI/2],["左後斜 45°",Math.PI*3/4]];
+function snapshots(){
+  if(!T||!window.THREE) return [];
+  const W=300,H=420;
+  const rr=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
+  rr.setPixelRatio(2);rr.setSize(W,H,false);
+  const cam=new THREE.PerspectiveCamera(30,W/H,.1,20);
+  T.mats.bone.color.set("#D6CAAB");T.mats.diff.color.set("#D9822B");T.mats.ground.color.set("#DDD7C9");T.mats.ref.color.set("#4A6741");
+  const out=SNAP_VIEWS.map(([name,ang])=>{
+    cam.position.set(Math.sin(ang)*3.9,1.05,Math.cos(ang)*3.9);cam.lookAt(0,.92,0);
+    rr.render(T.scene,cam);return [name,rr.domElement.toDataURL("image/png")];
+  });
+  rr.dispose();rr.forceContextLoss&&rr.forceContextLoss();T.paint();
+  return out;
+}
+function taipeiDate(){
+  const p=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  return p; // YYYY-MM-DD
+}
+function reportHTML(r,imgs,date){
+  const a=A(), flags=(a.flags||[]).filter(f=>f!=="none");
+  const FL={night:"夜間痛醒或休息時持續疼痛",numb:"下肢麻木、刺痛或無力",bladder:"大小便控制異常",prog:"幾個月內歪斜明顯加重"};
+  const notes=[];
+  if(flags.length) notes.push(`<div class="rp-note bad"><b>請先就醫再開始運動調整。</b>勾選了：${flags.map(f=>FL[f]).join("、")}。</div>`);
+  if(r.struct) notes.push(`<div class="rp-note"><b>${esc(r.struct[0])}</b>${esc(r.struct[1])}</div>`);
+  if(r.youth) notes.push(`<div class="rp-note bad"><b>成長期提醒。</b>前彎有隆起，側彎可能隨身高增加而進展，請盡快讓骨科醫師評估。</div>`);
+  if(!notes.length) notes.push(`<div class="rp-note ok"><b>沒有需要就醫的警訊。</b>可以直接依右下方的順序開始功能性調整，4 到 6 週後用同樣條件重測。</div>`);
+  const row=([n,k,b])=>`<div class="rp-row"><span>${n}</span><span class="v${dev(k)?"":" ok"}">${esc(lab(k,b))}</span></div>`;
+  const hist=historyFor(S.name), nth=Math.max(1,hist.findIndex(x=>x.id===S.recId)+1);
+  return `<div class="rp-in">
+  <header class="rp-hd"><div><div class="ey">YOUCORE HEALTH ADVISORS · 宥芯健康顧問</div><h1>脊椎歪斜評估報告</h1></div>
+    <dl><dt>姓名</dt><dd>${esc(S.name||"—")}</dd><dt>評估日期</dt><dd>${date}</dd><dt>評估次數</dt><dd>第 ${nth} 次</dd><dt>評估方式</dt><dd>功能性歪斜自我篩檢</dd></dl></header>
+  <section class="rp-top">
+    <div class="rp-sum"><div class="rp-k">評估結果</div><h2>${r.lv[0]}</h2><p style="margin:0">${r.lv[1]}</p>
+      <div class="rp-meter">${["對稱","輕度","中度","明顯"].map((x,i)=>`<div class="${i===r.level?"on":""}"><i></i>${x}</div>`).join("")}</div>
+      ${r.chips.length?`<div class="rp-chips">${r.chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}</div>
+    <div class="rp-notes">${notes.join("")}</div>
+  </section>
+  ${imgs.length?`<section><h3>3D 骨骼模型<small>依評估結果調整骨骼位置，角度放大 2 倍顯示；橘色為有差異的部位，綠線為肩線、骨盆線與鉛垂參考</small></h3>
+    <div class="rp-views">${imgs.map(([n,src])=>`<figure><img src="${src}" alt=""><figcaption>${n}</figcaption></figure>`).join("")}</div></section>`:""}
+  ${hist.length>=2?`<section><h3>前後測對比<small>角度來自照片標線，越接近 0° 越對稱；綠色為改善、紅色為增加</small></h3>${compareTable(hist,4).html}</section>`:""}
+  <section><h3>各部位檢查</h3><div class="rp-grid">${SECTIONS.map(([h,rows])=>`<div class="rp-sec"><h4>${h}</h4>${rows.map(row).join("")}</div>`).join("")}</div></section>
+  <section><h3>代償模式</h3>${r.pats.length?`<ul class="rp-pat">${r.pats.map(p=>`<li><b>${esc(p[0])}</b>：${esc(p[1])}</li>`).join("")}</ul>`:"<p style=\"margin:0\">目前沒有明顯的代償模式。</p>"}</section>
+  <section><h3>回正運動順序<small>從骨盆與脊椎開始，再處理下肢與上背</small></h3><div class="rp-plan">${r.plan.map((p,i)=>`<div class="${i===0?"first":""}"><span class="n">${i+1}</span><span><b>${esc(p[0])}</b>　${esc(p[2])}</span></div>`).join("")}</div></section>
+  <div style="flex:1"></div>
+  <footer class="rp-ft"><div><p class="big">你的回正計畫從「${esc(r.plan[0][0])}」開始</p><p>預約宥芯專業健康檢測：ROM、動作品質與力量評估，建立你的身體雷達圖，4 到 6 週後用數據回測。</p></div>
+    <div class="ct">Line 預約 @374lyfap<br>電話 (02)2653-9433 · youcore.press<br>台北市南港區成福路 51 之 3 號 1 樓（後山埤站旁）</div></footer>
+  <p class="rp-disc">本報告為自我篩檢結果，照片標線依標記點估算，會受拍攝角度、距離與衣物影響，不能取代醫師的診斷。前彎隆起在坐姿仍然存在時，需要站立全脊椎 X 光才能確認是否為結構性脊椎側彎。評估工具由運動傷害防護員 James（臺師大運動科學碩士）設計。</p>
+  </div>`;
+}
+async function makePDF(btn){
+  const toast=document.getElementById("toast");
+  btn.disabled=true;const label=btn.textContent;btn.textContent="報告產生中…";toast.textContent="";
+  let el=null;
+  try{
+    await Promise.all([
+      window.html2canvas||loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"),
+      (window.jspdf&&window.jspdf.jsPDF)||loadScript("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js")
+    ]);
+    const r=analyze(), date=taipeiDate();
+    el=document.createElement("div");el.className="rp";el.innerHTML=reportHTML(r,snapshots(),date);
+    document.body.appendChild(el);
+    /* img.decode() can stall for off-screen images, so wait on load events with a timeout instead */
+    await Promise.all([...el.querySelectorAll("img")].map(i=>i.complete?null:new Promise(res=>{i.onload=i.onerror=res;setTimeout(res,3000)})));
+    if(document.fonts&&document.fonts.ready) await Promise.race([document.fonts.ready,new Promise(res=>setTimeout(res,3000))]);
+    /* shrink type until the whole report fits one A4 page */
+    const inner=el.firstElementChild;
+    for(let fs=10;fs>=7;fs-=.25){el.style.setProperty("--fs",fs+"px");if(inner.scrollHeight<=el.clientHeight)break}
+    const canvas=await html2canvas(el,{scale:2,backgroundColor:"#FFFFFF",logging:false,x:0,y:0,scrollX:0,scrollY:0,windowWidth:794,
+      onclone:doc=>{const c=doc.querySelector(".rp");if(c){c.style.left="0";c.style.position="absolute"}}});
+    const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+    pdf.addImage(canvas.toDataURL("image/jpeg",.92),"JPEG",0,0,210,297);
+    pdf.setProperties({title:"脊椎歪斜評估報告",author:"宥芯健康顧問"});
+    const filename=`宥芯脊椎評估報告_${date}${S.name?"_"+S.name.replace(/[\\/:*?"<>|]/g,""):""}.pdf`;
+    if(downloadsNS){
+      const res=await downloadsNS.save({filename,data:pdf.output("blob")});
+      toast.textContent=res&&res.status==="saved"?"已下載 PDF 報告":"";
+    }else{pdf.save(filename);toast.textContent="已下載 PDF 報告"}
+  }catch(e){
+    toast.textContent=e&&e.code==="unavailable"?"這個環境不能下載檔案，請改用網站版下載報告。":"報告沒有產生成功，請確認網路連線後再按一次。";
+  }finally{
+    el&&el.remove();btn.disabled=false;btn.textContent=label;
+  }
 }
 
 /* ---------- 3D skeleton (three.js) ---------- */
