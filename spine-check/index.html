@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片標線、3D 骨骼模型與回正運動順序。">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>宥芯脊椎歪斜自評</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+/* Layout: single centered column, a stepper card with a quiet header; results stack summary → 3D → detail → plan → CTA */
+:root{
+  --bg:#F4F0E8; --surface:#FBF9F4; --ink:#1C2B1A; --muted:#5F6A5B; --line:#DDD6C7;
+  --accent:#4A6741; --accent-ink:#FFFFFF; --accent-soft:#E3E8DC; --gold:#9C7A3C; --gold-soft:#F1E7D3;
+  --chip:#ECE7DC; --bad:#A3482F; --danger-soft:#F5DDD4; --danger-ink:#8A2F1C;
+  --bone:#E6DFCC; --diff:#D9822B; --ref:#4A6741; --ground:#D8D3C6; --stage:#EFEBE2;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121A11; --surface:#1A2618; --ink:#ECE6D8; --muted:#A7B1A1; --line:#2E3D2B;
+  --accent:#8DB080; --accent-ink:#0F170E; --accent-soft:#24351F; --gold:#D8BC86; --gold-soft:#332B1C;
+  --chip:#22301F; --bad:#E59378; --danger-soft:#3B231D; --danger-ink:#F0A58E;
+  --bone:#D9D1BC; --diff:#E8913A; --ref:#8DB080; --ground:#2A3527; --stage:#172115; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121A11; --surface:#1A2618; --ink:#ECE6D8; --muted:#A7B1A1; --line:#2E3D2B;
+  --accent:#8DB080; --accent-ink:#0F170E; --accent-soft:#24351F; --gold:#D8BC86; --gold-soft:#332B1C;
+  --chip:#22301F; --bad:#E59378; --danger-soft:#3B231D; --danger-ink:#F0A58E;
+  --bone:#D9D1BC; --diff:#E8913A; --ref:#8DB080; --ground:#2A3527; --stage:#172115; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+h1{font-family:var(--serif);font-size:clamp(26px,6vw,32px);line-height:1.3;margin:0;text-wrap:balance}
+h2{font-family:var(--serif);font-size:21px;margin:0;line-height:1.4;text-wrap:balance}
+h3{font-size:15px;font-weight:700;margin:0}
+p{margin:0}
+.lead{color:var(--muted);max-width:60ch}
+.byline{font-size:13px;color:var(--muted)}
+.progress{height:5px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .35s ease}
+.stepnote{font-size:13px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.note{background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:14px}
+.warn{background:var(--gold-soft);border-radius:10px;padding:12px 14px;font-size:14px}
+.warn b{color:var(--gold)}
+.danger{background:var(--danger-soft);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--danger-ink)}
+.q{display:flex;flex-direction:column;gap:8px}
+.qh{display:flex;align-items:center;gap:10px}
+.qh::after{content:"";flex:1;height:1px;background:var(--line)}
+.hint{font-size:13px;color:var(--muted)}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pair{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:8px}
+.pair .side{font-size:13px;color:var(--muted);text-align:center}
+.list{display:flex;flex-direction:column;gap:8px}
+.opt{font:inherit;font-size:14px;color:var(--ink);background:var(--chip);border:1px solid transparent;border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;min-height:44px;transition:background .15s,border-color .15s;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.seg .opt{justify-content:center;text-align:center;padding:10px 6px}
+.opt:hover{border-color:var(--accent)}
+.opt.on{background:var(--accent);color:var(--accent-ink)}
+.opt:focus-visible,.btn:focus-visible,.slot:focus-within,.dot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:6px;background:var(--gold-soft);color:var(--gold);white-space:nowrap}
+.opt.on .tag{background:rgba(255,255,255,.22);color:inherit}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;font-size:15px;border-radius:10px;padding:11px 18px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-height:46px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);flex:1}
+.btn.ghost{flex:1}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{font:inherit;font-size:14px;background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
+.remain{font-size:13px;color:var(--muted)}
+.slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.slot{position:relative;border:1px dashed var(--line);border-radius:12px;background:var(--bg);aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;padding:10px;cursor:pointer;overflow:hidden;max-width:100%}
+.slot input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.slot svg{width:44px;height:52px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.slot b{font-size:14px}
+.slot small{font-size:12px;color:var(--muted)}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .rm{position:absolute;right:8px;top:8px;z-index:2;font:inherit;font-size:12px;border:0;border-radius:8px;padding:3px 8px;background:var(--surface);color:var(--ink);cursor:pointer}
+.slot .lbl{position:absolute;left:8px;bottom:8px;z-index:2;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;background:var(--surface)}
+.small{font-size:13px;color:var(--muted)}
+.mark{display:flex;flex-direction:column;gap:10px}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+.legend button{font:inherit;font-size:12px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.legend button.on{background:var(--gold);border-color:var(--gold);color:var(--surface)}
+.stage{position:relative;border-radius:12px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;max-width:100%}
+.stage img{display:block;width:100%;pointer-events:none}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.stage line{stroke:#F2C14E;stroke-width:2;vector-effect:non-scaling-stroke}
+.dot{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:2px solid #fff;background:#D9822B;box-shadow:0 1px 4px rgba(0,0,0,.45);cursor:grab;padding:0;touch-action:none}
+.dot.on{background:#F2C14E;transform:scale(1.2)}
+.dot span{position:absolute;left:24px;top:-2px;white-space:nowrap;font-size:11px;font-weight:700;color:#fff;background:rgba(20,28,18,.72);padding:1px 6px;border-radius:6px;pointer-events:none}
+/* results */
+.sum{background:var(--gold-soft);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.sum .k{font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:13px;padding:3px 10px;border-radius:99px;background:var(--surface);border:1px solid var(--line)}
+.meter{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.meter div{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
+.meter i{height:5px;border-radius:99px;background:var(--line)}
+.meter .on i{background:var(--gold)}
+.meter .on{color:var(--ink);font-weight:700}
+.three{position:relative;border-radius:12px;background:radial-gradient(ellipse at 50% 35%,var(--surface),var(--stage));border:1px solid var(--line);height:460px;overflow:hidden;cursor:grab;touch-action:pan-y}
+.three canvas{display:block}
+.three .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;color:var(--muted)}
+.views{display:flex;gap:8px;flex-wrap:wrap}
+.views .btn{font-size:14px;padding:6px 14px;min-height:38px;font-weight:500}
+.views .btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.key{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.key span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.sec{display:flex;flex-direction:column;gap:2px}
+.sec h4{font-size:12px;font-weight:700;color:var(--accent);margin:12px 0 4px;letter-spacing:.06em}
+.row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14px}
+.row span:first-child{color:var(--muted)}
+.row .v{font-weight:700;color:var(--bad);text-align:right}
+.row .v.ok{font-weight:400;color:var(--ink)}
+.sec + .sec{border-top:1px solid var(--line)}
+ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.plan{display:flex;flex-direction:column;gap:10px}
+.step{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.step .n{font-size:12px;font-weight:700;color:var(--accent)}
+.step h3{font-family:var(--serif);font-size:16px}
+.step .why{font-size:12px;color:var(--muted)}
+.step p{font-size:14px}
+.cta{background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.cta a{align-self:flex-start;background:var(--surface);color:var(--ink);font-weight:700;text-decoration:none;padding:10px 18px;border-radius:10px}
+.cta .info{font-size:13px;opacity:.92;display:flex;flex-direction:column;gap:2px;user-select:text}
+.disc{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+.toast{font-size:13px;color:var(--accent);min-height:1.2em}
+@media (max-width:460px){
+  .card{padding:16px}
+  .seg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .three{height:380px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <div class="eyebrow">宥芯健康顧問 · 功能性歪斜篩檢</div>
+    <h1>脊椎歪斜自我評估</h1>
+    <p class="lead">上傳正面、背面、側面照片，在照片上標出頭、肩峰、脊椎、骨盆到足踝的標線，找出身體往哪一側歪、哪裡在代償，以及該從哪裡開始回正。</p>
+    <p class="byline">由運動傷害防護員 James 設計（臺師大運動科學碩士，主修運動生物力學）</p>
+  </header>
+  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+  <div class="stepnote" id="stepnote"></div>
+  <main class="card" id="app" aria-live="polite"></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+const SIDE={L:"左",R:"右"};
+const ROW4=(a,b,c)=>[["L",a],[b[0],b[1]],["R",c],["U","不確定"]];
+const STEPS=[
+ {id:"basic",label:"基本資料",title:"先確認幾件事",qs:[
+  {k:"age",q:"你的年齡層",type:"list",opts:[["u18","未滿 18 歲（成長期）"],["a18","18 至 40 歲"],["a41","41 歲以上"]]},
+  {k:"flags",q:"最近有出現下列情況嗎？可複選。",type:"multi",opts:[["night","夜間痛醒或休息時仍持續疼痛"],["numb","下肢麻木、刺痛或無力"],["bladder","大小便控制出現異常"],["prog","幾個月內歪斜明顯加重"],["none","以上都沒有"]]}
+ ]},
+ {id:"photo",label:"上傳照片",custom:true},
+ {id:"fb",label:"正背面",title:"正面與背面：左右是否對稱",note:"赤腳、穿貼身衣物，雙腳與肩同寬自然站立。左右都以你自己的左右為準。有照片的題目已經依標線填好，請逐題確認。",qs:[
+  {k:"head",q:"頭部往哪一側傾斜？",hint:"看兩眼或兩耳連線，較低的一側就是傾斜方向。",type:"row",opts:ROW4("往左傾",["C","居中"],"往右傾")},
+  {k:"shoulder",q:"哪一側肩膀比較高？",hint:"看兩側肩峰，也就是肩膀最外側的骨頭。",type:"row",opts:ROW4("左側",["E","等高"],"右側")},
+  {k:"scap",q:"哪一側肩胛下角比較高？",hint:"從背面看兩側肩胛骨最下方的尖角。",type:"row",opts:ROW4("左側",["E","等高"],"右側")},
+  {k:"pelvis",q:"哪一側骨盆比較高？",hint:"雙手放在兩側骨盆上緣，比較高度。",type:"row",opts:ROW4("左側",["E","等高"],"右側")},
+  {k:"trunk",q:"上半身整體偏向哪一側？",hint:"胸口或頸椎底部是否偏離兩腳中間的垂直線。",type:"row",opts:ROW4("偏左",["C","置中"],"偏右")},
+  {k:"waist",q:"哪一側的腰側空隙比較大？",hint:"手臂自然下垂，看手臂與腰之間的空隙。",type:"row",opts:ROW4("左側",["E","差不多"],"右側")},
+  {k:"thor",q:"胸椎（兩片肩胛骨之間）往哪一側彎出？",hint:"請人用手指沿著脊椎突起的骨頭往下摸，看是否偏離中線。",type:"row",opts:ROW4("凸向左",["S","直"],"凸向右")},
+  {k:"lumb",q:"腰椎往哪一側彎出？",hint:"同樣沿著腰部的脊椎往下摸。",type:"row",opts:ROW4("凸向左",["S","直"],"凸向右")}
+ ]},
+ {id:"side",label:"側面",title:"側面：頭、胸、腰、骨盆的前後位置",note:"側身站在鏡子或鏡頭前，自然站立不刻意挺胸。",qs:[
+  {k:"ear",q:"耳朵相對肩膀的位置？",hint:"正常時耳垂大約在肩峰正上方。",type:"list",opts:[["ok","在肩膀正上方"],["mild","稍微往前"],["severe","明顯往前"],["U","不確定"]]},
+  {k:"tback",q:"上背的弧度？",type:"list",opts:[["ok","正常"],["mild","稍微圓背"],["severe","明顯駝背"],["U","不確定"]]},
+  {k:"lback",q:"腰部的弧度？",type:"list",opts:[["ok","正常"],["hyper","弧度過大，腰往前凹、臀部後翹"],["flat","偏平，腰部幾乎沒有弧度"],["U","不確定"]]},
+  {k:"ptilt",q:"骨盆的前後方向？",hint:"一手放骨盆前方突起的骨頭，一手放後腰窩的骨頭。前面明顯低很多是前傾，前面比後面高是後傾。",type:"list",opts:[["ant","前傾"],["neu","中立"],["post","後傾"],["U","不確定"]]},
+  {k:"sway",q:"骨盆是否往前推、上身往後靠？",type:"list",opts:[["yes","是"],["no","否"],["U","不確定"]]}
+ ]},
+ {id:"leg",label:"下肢",title:"下肢：膝蓋、小腿與足跟的排列",note:"赤腳站在硬地板上，雙腳與骨盆同寬，腳尖自然朝前。",qs:[
+  {k:"knee",q:"膝蓋的對位？",hint:"X 型是膝蓋往內靠，O 型是膝蓋往外分開。",type:"pair",opts:[["X","X 型"],["N","正常"],["O","O 型"],["U","不確定"]]},
+  {k:"pat",q:"膝蓋骨朝哪個方向？",hint:"腳尖朝前站好，膝蓋骨朝內代表股骨內轉，朝外代表外轉。",type:"pair",opts:[["in","朝內"],["fwd","朝前"],["out","朝外"],["U","不確定"]]},
+  {k:"toe",q:"膝蓋骨朝前時，腳尖朝哪個方向？",hint:"內八代表脛骨內轉，外八代表脛骨外轉。",type:"pair",opts:[["in","內八"],["fwd","正前"],["out","外八"],["U","不確定"]]},
+  {k:"heel",q:"從後面看，腳跟往哪邊倒？",hint:"腳跟往內倒、跟腱呈弧形是外翻（扁平足常見）；往外倒是內翻。",type:"pair",opts:[["ev","外翻"],["vert","垂直"],["inv","內翻"],["U","不確定"]]}
+ ]},
+ {id:"bend",label:"前彎",title:"前彎：背部有沒有隆起",note:"雙腳併攏、膝蓋伸直，雙手合十往前下彎到背部接近水平。請人蹲低視線從後方看背部兩側高低。",qs:[
+  {k:"bendT",q:"胸背部（肋骨區）哪一側隆起比較高？",hint:"一側明顯鼓起代表胸廓往那一側旋轉。",type:"row",opts:ROW4("左側",["E","一致"],"右側")},
+  {k:"bendL",q:"腰部哪一側隆起比較高？",type:"row",opts:ROW4("左側",["E","一致"],"右側")}
+ ]},
+ {id:"sit",label:"坐姿重測",title:"坐姿：排除骨盆與下肢的影響",note:"坐在平坦的椅子上，雙腳平放地面再做一次前彎。坐姿排除了雙腳長短與足部的影響，用來確認隆起是不是功能性的。",qs:[
+  {k:"sitHump",q:"前彎時，背部的隆起有什麼變化？",type:"list",opts:[["gone","完全消失"],["less","明顯變小"],["same","幾乎沒有改變"],["none","站姿本來就沒有隆起"],["U","不確定"]]},
+  {k:"sitPelvis",q:"站姿時骨盆有高低差，坐下之後呢？",type:"list",opts:[["sym","坐下後變得對稱"],["asym","坐下後仍然不對稱"],["none","站姿本來就等高"],["U","不確定"]]}
+ ]},
+ {id:"func",label:"功能測試",title:"功能：比較左右兩側的活動能力",note:"照片看不出這部分，需要你自己做。動作都在不痛的範圍內做。",qs:[
+  {k:"rot",q:"坐姿雙手抱胸向左、向右轉身，哪一側比較難轉？",hint:"骨盆固定不動，比較兩側轉過去的角度。",type:"row",opts:ROW4("向左較難",["E","差不多"],"向右較難")},
+  {k:"sideb",q:"站姿手沿大腿外側往下滑，哪一側側彎幅度比較小？",type:"row",opts:ROW4("左側較小",["E","差不多"],"右側較小")},
+  {k:"sls",q:"單腳站立 10 秒，哪一腳比較不穩？",hint:"旁邊放一張椅子或靠牆，確保安全。",type:"row",opts:ROW4("左腳",["E","差不多"],"右腳")},
+  {k:"breath",q:"深吸一口氣，哪一側的胸廓擴張比較少？",hint:"雙手放在兩側下肋，感受哪一側比較不會被撐開。",type:"row",opts:ROW4("左側",["E","差不多"],"右側")}
+ ]}
+];
+const PHOTO_STEP=1, FIRST_Q=2;
+
+/* ---------- state ---------- */
+const S={step:0,a:{flags:[]},pre:{},photos:{},marks:{},marking:false,active:{},busy:false,msg:"",done:false};
+const STORE="youcore-spine-v1";
+try{const d=JSON.parse(localStorage.getItem(STORE)||"null");if(d&&d.a){S.a=d.a;S.a.flags=S.a.flags||[];}}catch(e){}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({a:S.a}))}catch(e){}}
+
+let sample=null, canImages=false;
+if(window.claude&&claude.use){claude.use("sample").then(async s=>{
+  sample=s; if(!s) return;
+  try{const lim=await s.limits(); canImages=!!(lim&&lim.images);}catch(e){canImages=false}
+  if(S.step===PHOTO_STEP&&!S.done) render();
+}).catch(()=>{});}
+
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- question rendering ---------- */
+function optBtn(k,v,label,seg){
+  const on=k==="flags"?S.a.flags.includes(v):S.a[k]===v;
+  const pre=S.pre[k]===v;
+  return `<button type="button" class="opt${on?" on":""}" data-k="${k}" data-v="${v}" aria-pressed="${on}">${esc(label)}${pre?'<span class="tag">照片</span>':""}</button>`;
+}
+function qHTML(q){
+  let body="";
+  if(q.type==="row") body=`<div class="seg">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
+  else if(q.type==="list"||q.type==="multi") body=`<div class="list">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
+  else if(q.type==="pair") body=["L","R"].map(s=>`<div class="pair"><span class="side">${SIDE[s]}</span><div class="seg">${q.opts.map(o=>optBtn(q.k+s,o[0],o[1])).join("")}</div></div>`).join("");
+  return `<div class="q"><div class="qh"><h3>${esc(q.q)}</h3></div>${q.hint?`<p class="hint">${esc(q.hint)}</p>`:""}${body}</div>`;
+}
+function remaining(st){
+  let n=0;
+  for(const q of st.qs){
+    if(q.type==="pair"){if(!S.a[q.k+"L"])n++;if(!S.a[q.k+"R"])n++;}
+    else if(q.type==="multi"){if(!S.a.flags.length)n++;}
+    else if(!S.a[q.k])n++;
+  }
+  return n;
+}
+function header(){
+  const bar=document.getElementById("bar"),note=document.getElementById("stepnote");
+  if(S.done){bar.style.width="100%";note.textContent="評估完成";return}
+  bar.style.width=((S.step+1)/STEPS.length*100)+"%";
+  note.textContent=`第 ${S.step+1} / ${STEPS.length} 步 · ${STEPS[S.step].label}`;
+}
+function render(){
+  header();
+  if(S.done){renderResults();return}
+  disposeThree();
+  const st=STEPS[S.step];
+  if(st.custom){renderPhoto();return}
+  const n=remaining(st), last=S.step===STEPS.length-1;
+  app.innerHTML=`<h2>${esc(st.title)}</h2>${st.note?`<div class="note">${esc(st.note)}</div>`:""}
+  ${st.qs.map(qHTML).join("")}
+  <div class="actions">${S.step>0?'<button type="button" class="btn" data-act="prev">上一步</button>':""}
+  <button type="button" class="btn primary" data-act="next" ${n?"disabled":""}>${last?"看結果":"下一步"}</button></div>
+  ${n?`<p class="remain">還有 ${n} 題未作答</p>`:""}`;
+}
+
+/* ---------- photo step ---------- */
+const FIG={
+ front:'<svg viewBox="0 0 44 52"><circle cx="22" cy="7" r="5"/><path d="M14 16h16v16H14zM16 32v18M28 32v18M14 16l-3 15M30 16l3 15"/></svg>',
+ back:'<svg viewBox="0 0 44 52"><circle cx="22" cy="7" r="5"/><path d="M14 16h16v16H14zM16 32v18M28 32v18M14 16l-3 15M30 16l3 15M22 17v14" stroke-dasharray="2 2"/></svg>',
+ side:'<svg viewBox="0 0 44 52"><circle cx="22" cy="7" r="5"/><path d="M19 16h6v16h-6zM20 32v18M24 32v18M22 18v13"/></svg>',
+ bend:'<svg viewBox="0 0 44 52"><circle cx="35" cy="20" r="4"/><path d="M8 30l22-8M10 30v20M16 30v20M28 23l2 12"/></svg>'
+};
+const SLOTS=[["front","正面","面向鏡頭站直，雙手自然下垂"],["back","背面","背對鏡頭站直"],["side","側面","側身站直，手自然下垂"],["bend","前彎背面（選填）","背對鏡頭，彎腰前傾"]];
+const MARKS={
+ front:[["earL","左耳",.56,.11],["earR","右耳",.44,.11],["shL","左肩峰",.64,.21],["shR","右肩峰",.36,.21],["plL","左骨盆上緣",.6,.45],["plR","右骨盆上緣",.4,.45],["knL","左膝",.57,.7],["knR","右膝",.43,.7],["anL","左踝",.56,.93],["anR","右踝",.44,.93]],
+ back:[["c7","頸椎底（第 7 頸椎）",.5,.17],["scL","左肩胛下角",.41,.33],["scR","右肩胛下角",.59,.33],["sac","臀溝上端",.5,.52]],
+ side:[["ear","耳垂",.5,.11],["sh","肩峰",.5,.22],["hip","大轉子（髖外側）",.5,.5],["ank","外踝",.5,.93],["toe","腳尖",.62,.96]]
+};
+const LINES={front:[["earL","earR"],["shL","shR"],["plL","plR"],["plL","knL"],["knL","anL"],["plR","knR"],["knR","anR"]],back:[["scL","scR"],["c7","sac"]],side:[["ear","sh"],["sh","hip"],["hip","ank"],["ank","toe"]]};
+const markable=()=>["front","back","side"].filter(v=>S.photos[v]);
+
+function renderPhoto(){
+  const any=markable().length>0, anyPhoto=Object.keys(S.photos).length>0;
+  if(S.marking&&any){renderMarking();return}
+  S.marking=false;
+  const aiOK=sample&&canImages;
+  app.innerHTML=`<h2>上傳你的照片</h2>
+  <div class="note">全身入鏡（頭到腳），手機放在肚臍高度並保持水平，距離約 2 至 3 公尺，背景素淨。穿貼身衣物或運動內衣與短褲、赤腳，雙腳與骨盆同寬自然站立。請別人幫忙拍，前鏡頭自拍常會左右相反。</div>
+  <div class="slots">${SLOTS.map(([v,t,d])=>{
+    const p=S.photos[v];
+    return `<label class="slot" for="ph-${v}">${p?`<img src="${p.url}" alt="${t}照片"><span class="lbl">${t}</span><button type="button" class="rm" data-act="rm" data-v="${v}">移除</button>`:`${FIG[v]}<b>${t}</b><small>${d}</small>`}
+    <input type="file" accept="image/jpeg,image/png,image/webp" id="ph-${v}" data-photo="${v}" aria-label="上傳${t}照片"></label>`}).join("")}</div>
+  <p class="small">頁面本身不保存照片。按下 Claude 分析時，照片會送給 Claude，使用你自己的 Claude 額度，第一次會先問你是否允許。不想露臉可以把頭部裁掉，頭部相關的題目就改用問答。</p>
+  ${S.msg?`<div class="warn">${esc(S.msg)}</div>`:(aiOK?"":`<div class="warn">這個環境不能用 Claude 分析照片。你可以上傳照片後自己拖曳標記點，或改用問答。</div>`)}
+  <div class="actions"><button type="button" class="btn" data-act="prev">上一步</button>
+  ${aiOK?`<button type="button" class="btn ghost" data-act="mark" ${any?"":"disabled"}>自己標記</button><button type="button" class="btn primary" data-act="ai" ${anyPhoto&&!S.busy?"":"disabled"}>${S.busy?"Claude 分析中…":"用 Claude 分析"}</button>`
+        :`<button type="button" class="btn primary" data-act="mark" ${any?"":"disabled"}>自己標記</button>`}</div>
+  <button type="button" class="link" data-act="skip">不用照片，改用問答</button>`;
+}
+function renderMarking(){
+  const views=markable();
+  app.innerHTML=`<h2>在照片上標記</h2>
+  <div class="note">拖曳圓點到對應的骨頭位置，或先點下方的部位名稱，再點照片上的位置。左右都是你自己的左右，正面照裡你的左邊在畫面右側。</div>
+  ${views.map(v=>{
+    const pts=MARKS[v]; S.marks[v]=S.marks[v]||Object.fromEntries(pts.map(p=>[p[0],[p[2],p[3]]]));
+    S.active[v]=S.active[v]||pts[0][0];
+    return `<section class="mark" data-view="${v}"><h3>${SLOTS.find(s=>s[0]===v)[1]}</h3>
+    <div class="legend">${pts.map(p=>`<button type="button" data-pt="${p[0]}" class="${S.active[v]===p[0]?"on":""}">${p[1]}</button>`).join("")}</div>
+    <div class="stage" data-stage="${v}"><img src="${S.photos[v].url}" alt=""><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    ${pts.map(p=>`<button type="button" class="dot${S.active[v]===p[0]?" on":""}" data-dot="${p[0]}" aria-label="${p[1]}"><span>${p[1]}</span></button>`).join("")}</div></section>`}).join("")}
+  <div class="actions"><button type="button" class="btn" data-act="unmark">返回照片</button><button type="button" class="btn primary" data-act="apply">套用標線並繼續</button></div>`;
+  views.forEach(drawMarks);
+}
+function drawMarks(v){
+  const stage=app.querySelector(`[data-stage="${v}"]`); if(!stage) return;
+  const m=S.marks[v];
+  stage.querySelectorAll(".dot").forEach(d=>{const p=m[d.dataset.dot];d.style.left=p[0]*100+"%";d.style.top=p[1]*100+"%";d.classList.toggle("on",S.active[v]===d.dataset.dot)});
+  stage.querySelector("svg").innerHTML=LINES[v].map(([a,b])=>`<line x1="${m[a][0]*100}" y1="${m[a][1]*100}" x2="${m[b][0]*100}" y2="${m[b][1]*100}"/>`).join("");
+  const leg=app.querySelector(`[data-view="${v}"] .legend`);
+  leg&&leg.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.pt===S.active[v]));
+}
+let drag=null;
+app.addEventListener("pointerdown",e=>{
+  const stage=e.target.closest(".stage"); if(!stage) return;
+  const v=stage.dataset.stage, dot=e.target.closest(".dot");
+  if(dot){S.active[v]=dot.dataset.dot;drag={v,stage,id:dot.dataset.dot};dot.setPointerCapture(e.pointerId);e.preventDefault();drawMarks(v);return}
+  const r=stage.getBoundingClientRect(), id=S.active[v];
+  S.marks[v][id]=[clamp((e.clientX-r.left)/r.width),clamp((e.clientY-r.top)/r.height)];
+  const pts=MARKS[v], i=pts.findIndex(p=>p[0]===id); S.active[v]=pts[(i+1)%pts.length][0];
+  drawMarks(v);
+});
+app.addEventListener("pointermove",e=>{
+  if(!drag) return; const r=drag.stage.getBoundingClientRect();
+  S.marks[drag.v][drag.id]=[clamp((e.clientX-r.left)/r.width),clamp((e.clientY-r.top)/r.height)];
+  drawMarks(drag.v);
+});
+const endDrag=()=>{drag=null};
+app.addEventListener("pointerup",endDrag);app.addEventListener("pointercancel",endDrag);
+const clamp=x=>Math.max(0,Math.min(1,x));
+
+/* turn marks into answers; thresholds are screening heuristics, not measurements */
+function applyMarks(){
+  const pre={};
+  const P=(v,id)=>{const p=S.marks[v][id],ph=S.photos[v];return {x:p[0]*ph.w,y:p[1]*ph.h}};
+  const deg=(a,b)=>Math.atan2(Math.abs(a.y-b.y),Math.abs(a.x-b.x))*180/Math.PI;
+  const unit=(a,b)=>{const dx=a.x-b.x,dy=a.y-b.y,l=Math.hypot(dx,dy)||1;return {x:dx/l,y:dy/l,l}};
+  const higher=(L,R,th)=>deg(L,R)<th?null:(L.y<R.y?"L":"R");
+  if(S.marks.front&&S.photos.front){
+    const f=id=>P("front",id);
+    const eL=f("earL"),eR=f("earR"); pre.head=deg(eL,eR)<2?"C":(eL.y>eR.y?"L":"R");
+    pre.shoulder=higher(f("shL"),f("shR"),1.5)||"E";
+    pre.pelvis=higher(f("plL"),f("plR"),1.5)||"E";
+    const lv=unit(f("shL"),f("shR"));
+    const ms={x:(f("shL").x+f("shR").x)/2,y:(f("shL").y+f("shR").y)/2}, ma={x:(f("anL").x+f("anR").x)/2,y:(f("anL").y+f("anR").y)/2};
+    const shift=((ms.x-ma.x)*lv.x+(ms.y-ma.y)*lv.y)/lv.l;
+    pre.trunk=Math.abs(shift)<.08?"C":(shift>0?"L":"R");
+    for(const s of ["L","R"]){
+      const h=f("pl"+s),k=f("kn"+s),a=f("an"+s);
+      const ha={x:a.x-h.x,y:a.y-h.y},len=Math.hypot(ha.x,ha.y)||1;
+      const t=((k.x-h.x)*ha.x+(k.y-h.y)*ha.y)/(len*len);
+      const proj={x:h.x+ha.x*t,y:h.y+ha.y*t};
+      const lat=s==="L"?1:-1;
+      const dev=((k.x-proj.x)*lv.x+(k.y-proj.y)*lv.y)*lat/len;
+      pre["knee"+s]=dev<-.03?"X":dev>.03?"O":"N";
+    }
+  }
+  if(S.marks.back&&S.photos.back){
+    const b=id=>P("back",id);
+    pre.scap=higher(b("scL"),b("scR"),1.5)||"E";
+    if(!pre.trunk){
+      const lv=unit(b("scL"),b("scR")),c7=b("c7"),sac=b("sac");
+      const shift=((c7.x-sac.x)*lv.x+(c7.y-sac.y)*lv.y)/lv.l;
+      pre.trunk=Math.abs(shift)<.08?"C":(shift>0?"L":"R");
+    }
+  }
+  if(S.marks.side&&S.photos.side){
+    const s=id=>P("side",id);
+    const ear=s("ear"),sh=s("sh"),hip=s("hip"),ank=s("ank"),toe=s("toe");
+    const fw=Math.sign(toe.x-ank.x)||1, H=Math.abs(ank.y-ear.y)||1;
+    const fh=(ear.x-sh.x)*fw/H; pre.ear=fh>.06?"severe":fh>.025?"mild":"ok";
+    const t=(hip.y-ank.y)/((sh.y-ank.y)||1), lineX=ank.x+(sh.x-ank.x)*t;
+    pre.sway=(hip.x-lineX)*fw/H>.03?"yes":"no";
+  }
+  setPre(pre);
+}
+function setPre(pre){
+  for(const k in pre){if(pre[k]){S.a[k]=pre[k];S.pre[k]=pre[k]}}
+  save();
+}
+async function runAI(){
+  const files=SLOTS.map(s=>s[0]).filter(v=>S.photos[v]);
+  S.busy=true;S.msg="";render();
+  const order=files.map((v,i)=>`第 ${i+1} 張：${SLOTS.find(s=>s[0]===v)[1]}`).join("；");
+  const prompt=`你是運動傷害防護員，協助做「功能性脊椎歪斜」的姿勢篩檢。以下照片依序是：${order}。
+左右一律以「照片中這個人自己的左右」為準（正面照中他的左側在畫面右邊；背面照中他的左側在畫面左邊）。
+只依照片可見的情況判斷，看不清楚或沒有對應照片就填 "U"。只回傳一個 JSON 物件，不要其他文字，欄位與允許值：
+{"head":"L|C|R|U"（頭往哪側傾，較低的耳朵那側）,"shoulder":"L|E|R|U"（哪側肩峰較高）,"scap":"L|E|R|U"（哪側肩胛下角較高）,"pelvis":"L|E|R|U"（哪側骨盆上緣較高）,"trunk":"L|C|R|U"（上身偏向哪側）,"waist":"L|E|R|U"（哪側腰側空隙較大）,"thor":"L|S|R|U"（胸椎凸向哪側）,"lumb":"L|S|R|U"（腰椎凸向哪側）,"ear":"ok|mild|severe|U"（頭部前移程度）,"tback":"ok|mild|severe|U"（圓背程度）,"lback":"ok|hyper|flat|U"（腰椎弧度）,"ptilt":"ant|neu|post|U","sway":"yes|no|U"（骨盆前推上身後靠）,"kneeL":"X|N|O|U","kneeR":"X|N|O|U","heelL":"ev|vert|inv|U","heelR":"ev|vert|inv|U","bendT":"L|E|R|U"（前彎時哪側胸背較高）,"bendL":"L|E|R|U"（前彎時哪側腰部較高）}
+差異不明顯時選中間值（C、E、S、ok、neu、N、vert）。`;
+  try{
+    const out=await sample.json(prompt,{images:files.map(v=>S.photos[v].file)});
+    const allowed={};STEPS.forEach(st=>st.qs&&st.qs.forEach(q=>{
+      if(q.type==="pair")["L","R"].forEach(s=>allowed[q.k+s]=q.opts.map(o=>o[0]));
+      else allowed[q.k]=q.opts.map(o=>o[0]);
+    }));
+    const pre={};
+    for(const k in out){const v=String(out[k]);if(allowed[k]&&allowed[k].includes(v)&&v!=="U")pre[k]=v;}
+    setPre(pre);
+    S.busy=false;S.step=FIRST_Q;render();window.scrollTo({top:0});
+  }catch(e){
+    S.busy=false;
+    S.msg=({not_granted:"你沒有允許使用 Claude，可以改用自己標記或問答。",rate_limited:"Claude 用量暫時到上限，請稍後再試，或先自己標記。",image_rejected:"有照片格式不支援，請換成 JPG 或 PNG 再試。",images_unavailable:"這個環境不能傳照片給 Claude，請改用自己標記。",invalid_json:"Claude 這次的回覆讀不懂，請再按一次。",refused:"Claude 無法分析這組照片，請改用自己標記。"})[e&&e.code]||"分析沒有完成，請再試一次，或改用自己標記。";
+    render();
+  }
+}
+app.addEventListener("change",e=>{
+  const inp=e.target.closest("[data-photo]"); if(!inp||!inp.files[0]) return;
+  const v=inp.dataset.photo, file=inp.files[0], url=URL.createObjectURL(file);
+  const img=new Image(); img.onload=()=>{
+    if(S.photos[v]) URL.revokeObjectURL(S.photos[v].url);
+    S.photos[v]={file,url,w:img.naturalWidth,h:img.naturalHeight}; delete S.marks[v]; S.msg=""; render();
+  }; img.src=url;
+});
+
+/* ---------- clicks ---------- */
+app.addEventListener("click",e=>{
+  const o=e.target.closest(".opt");
+  if(o){
+    const k=o.dataset.k,v=o.dataset.v;
+    if(k==="flags"){
+      let f=S.a.flags;
+      if(v==="none") f=f.includes("none")?[]:["none"];
+      else{f=f.filter(x=>x!=="none");f=f.includes(v)?f.filter(x=>x!==v):f.concat(v)}
+      S.a.flags=f;
+    }else S.a[k]=v;
+    save();
+    const y=window.scrollY; render(); window.scrollTo({top:y});
+    return;
+  }
+  const pt=e.target.closest(".legend button");
+  if(pt){const v=pt.closest("[data-view]").dataset.view;S.active[v]=pt.dataset.pt;drawMarks(v);return}
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const act=b.dataset.act;
+  if(act==="rm"){e.preventDefault();const v=b.dataset.v;URL.revokeObjectURL(S.photos[v].url);delete S.photos[v];delete S.marks[v];render();return}
+  if(act==="prev"){S.step=Math.max(0,S.step-1);S.marking=false}
+  else if(act==="next"){if(S.step===STEPS.length-1)S.done=true;else S.step++}
+  else if(act==="skip"){S.step=FIRST_Q}
+  else if(act==="mark"){S.marking=true}
+  else if(act==="unmark"){S.marking=false}
+  else if(act==="apply"){applyMarks();S.marking=false;S.step=FIRST_Q}
+  else if(act==="ai"){runAI();return}
+  else if(act==="edit"){S.done=false;S.step=FIRST_Q}
+  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
+  else if(act==="copy"){copySummary(b);return}
+  else if(act==="view"){setView(+b.dataset.v);document.querySelectorAll(".views .btn").forEach(x=>x.classList.toggle("on",x===b));return}
+  else return;
+  render(); window.scrollTo({top:0});
+});
+
+/* ---------- analysis ---------- */
+const A=()=>S.a;
+const LBL={
+ head:{L:"向左傾",R:"向右傾",C:"居中"},shoulder:{L:"左肩較高",R:"右肩較高",E:"等高"},scap:{L:"左側較高",R:"右側較高",E:"等高"},
+ bendT:{L:"左側較高",R:"右側較高",E:"一致"},bendL:{L:"左側較高",R:"右側較高",E:"一致"},
+ pelvis:{L:"左側較高",R:"右側較高",E:"等高"},trunk:{L:"偏左",R:"偏右",C:"置中"},waist:{L:"左側較大",R:"右側較大",E:"差不多"},
+ thor:{L:"凸向左",R:"凸向右",S:"直"},lumb:{L:"凸向左",R:"凸向右",S:"直"},
+ ear:{ok:"正常",mild:"輕度前移",severe:"明顯前移"},tback:{ok:"正常",mild:"輕度圓背",severe:"明顯駝背"},
+ lback:{ok:"正常",hyper:"弧度過大",flat:"偏平"},ptilt:{ant:"前傾",neu:"中立",post:"後傾"},sway:{yes:"骨盆前推",no:"無"},
+ knee:{X:"膝外翻（X 型）",O:"膝內翻（O 型）",N:"對位正常"},pat:{in:"內轉",out:"外轉",fwd:"中立"},
+ toe:{in:"內轉（內八）",out:"外轉（外八）",fwd:"中立"},heel:{ev:"外翻",inv:"內翻",vert:"中立"},
+ rot:{L:"向左較受限",R:"向右較受限",E:"對稱"},sideb:{L:"向左幅度較小",R:"向右幅度較小",E:"對稱"},
+ sls:{L:"左腳較不穩",R:"右腳較不穩",E:"對稱"},breath:{L:"左側較少",R:"右側較少",E:"對稱"},
+ sitHump:{gone:"坐姿完全消失",less:"坐姿明顯變小",same:"坐姿幾乎沒變",none:"無隆起"},sitPelvis:{sym:"坐下後對稱",asym:"坐下後仍不對稱",none:"站姿等高"}
+};
+const NORMAL=new Set(["C","E","S","ok","neu","no","N","fwd","vert","U","none","gone","sym"]);
+const dev=k=>{const v=A()[k];return v&&!NORMAL.has(v)};
+const lr=k=>{const v=A()[k];return v==="L"||v==="R"?v:null};
+const opp=s=>s==="L"?"R":"L";
+const lab=(k,base)=>{const v=A()[k];if(!v||v==="U")return "不確定";return (LBL[base||k]||{})[v]||v};
+
+const SECTIONS=[
+ ["頭頸",[["頭部側傾","head"],["頭部前移","ear"]]],
+ ["肩胛與胸廓",[["肩峰連線","shoulder"],["肩胛下角","scap"],["胸椎弧度","tback"],["前彎胸背隆起","bendT"]]],
+ ["脊椎",[["軀幹位移","trunk"],["腰側空隙","waist"],["胸椎側彎","thor"],["腰椎側彎","lumb"],["腰椎弧度","lback"],["前彎腰部隆起","bendL"]]],
+ ["骨盆",[["骨盆高低","pelvis"],["骨盆前後傾","ptilt"],["骨盆前推","sway"]]],
+ ["髖與膝",[["左膝","kneeL","knee"],["右膝","kneeR","knee"],["左股骨","patL","pat"],["右股骨","patR","pat"]]],
+ ["小腿與足跟",[["左脛骨","toeL","toe"],["右脛骨","toeR","toe"],["左足跟","heelL","heel"],["右足跟","heelR","heel"]]],
+ ["動作功能",[["軀幹旋轉","rot"],["側屈","sideb"],["單腳站","sls"],["胸廓擴張","breath"]]]
+];
+const CHIP={head:v=>"頭"+LBL.head[v],ear:v=>"頭部前移",shoulder:v=>LBL.shoulder[v],scap:v=>(SIDE[v])+"肩胛較高",tback:v=>LBL.tback[v],
+ bendT:v=>"胸廓向"+SIDE[v]+"旋轉",trunk:v=>"軀幹"+LBL.trunk[v],waist:v=>SIDE[v]+"腰側空隙大",thor:v=>"胸椎"+LBL.thor[v],lumb:v=>"腰椎"+LBL.lumb[v],
+ lback:v=>"腰椎"+LBL.lback[v],bendL:v=>"腰椎向"+SIDE[v]+"旋轉",pelvis:v=>"骨盆"+SIDE[v]+"高",ptilt:v=>"骨盆"+LBL.ptilt[v],sway:v=>"骨盆前推",
+ kneeL:v=>"左膝"+(v==="X"?"外翻":"內翻"),kneeR:v=>"右膝"+(v==="X"?"外翻":"內翻"),patL:v=>"左股骨"+LBL.pat[v],patR:v=>"右股骨"+LBL.pat[v],
+ toeL:v=>"左脛骨"+LBL.pat[v],toeR:v=>"右脛骨"+LBL.pat[v],heelL:v=>"左足跟"+LBL.heel[v],heelR:v=>"右足跟"+LBL.heel[v]};
+
+function analyze(){
+  const a=A();
+  const chips=[];
+  for(const k in CHIP) if(dev(k)) chips.push(CHIP[k](a[k]));
+  const funcN=["rot","sideb","sls","breath"].filter(dev).length;
+  const n=chips.length+funcN;
+  const level=n<=1?0:n<=4?1:n<=8?2:3;
+  const LV=[["大致對稱","各部位大致對稱。維持現在的活動習慣，6 個月後可以再自我檢查一次。"],
+    ["輕度功能性歪斜","少數部位有差異，多半和日常姿勢習慣有關，針對下方幾個重點調整即可。"],
+    ["中度功能性歪斜","多個部位出現差異，身體已經開始用代償維持平衡。建議依下方順序調整，4 到 6 週後重測。"],
+    ["明顯功能性歪斜","大部分部位都有差異，身體已經形成穩定的代償模式。建議依下方順序系統性調整，4 到 6 週後用同樣條件重拍比較。"]];
+
+  /* structural vs functional */
+  let struct=null;
+  const hump=lr("bendT")||lr("bendL");
+  if(hump){
+    if(a.sitHump==="same") struct=["建議確認是否為結構性側彎。","前彎隆起在坐姿幾乎沒有改變，代表脊椎本身可能有旋轉。建議到骨科或復健科安排一次站立全脊椎 X 光量測 Cobb 角，再決定運動調整的方式。"];
+    else if(a.sitHump==="less") struct=["建議確認是否有結構成分。","前彎隆起在坐姿只減少一部分，可能混有結構性成分。建議安排一次站立全脊椎 X 光量測 Cobb 角，同時可以開始功能性調整。"];
+    else if(a.sitHump==="gone") struct=["隆起偏向功能性。","坐下後隆起消失，比較可能來自骨盆或下肢（長短腳、足部排列）的代償，從骨盆與下肢開始調整效果最好。"];
+  }
+  if(lr("pelvis")&&a.sitPelvis==="sym"){
+    const legNote="站姿骨盆的高低差在坐下後消失，代表差異多半來自雙腳長短或足弓、膝蓋的排列。";
+    struct=struct?[struct[0],struct[1]+" "+legNote]:["骨盆高低差來自下肢。",legNote];
+  }
+  const youth=a.age==="u18"&&hump;
+
+  /* compensation patterns */
+  const pats=[];
+  const t=lr("thor"),l=lr("lumb");
+  if(t&&l&&t!==l) pats.push(["S 型代償",`胸椎凸向${SIDE[t]}、腰椎凸向${SIDE[l]}，上下兩段往相反方向彎，互相平衡。`]);
+  else if(t||l) pats.push(["C 型代償",t&&l?`胸椎與腰椎都凸向${SIDE[t]}，整條脊椎往同一側彎成一道弧。`:`${t?"胸椎":"腰椎"}凸向${SIDE[t||l]}，以單一段的側彎為主。`]);
+  if(t&&lr("bendT")===t) pats.push(["側彎合併旋轉",`前彎時${SIDE[t]}側胸背較高，旋轉方向與胸椎弧度一致，胸廓呈現立體的扭轉。`]);
+  if(l&&lr("bendL")===l) pats.push(["腰段旋轉",`前彎時${SIDE[l]}側腰部較高，腰椎同時有側彎與旋轉。`]);
+  const sh=lr("shoulder"),pv=lr("pelvis");
+  if(sh&&pv&&sh!==pv) pats.push(["肩骨盆反向",`骨盆${SIDE[pv]}高、${SIDE[sh]}肩高，軀幹用側彎維持兩眼水平。`]);
+  if(sh&&pv&&sh===pv) pats.push(["單側上提",`${SIDE[sh]}肩與${SIDE[pv]}側骨盆同時偏高，整側軀幹往上提，常見於習慣單側背包或單腳承重。`]);
+  for(const s of ["L","R"]){
+    const parts=[];
+    if(a["heel"+s]==="ev")parts.push("足跟外翻");
+    if(a["pat"+s]==="in")parts.push("股骨內轉");
+    if(a["knee"+s]==="X")parts.push("膝外翻");
+    if(parts.length>=2) pats.push([`${SIDE[s]}下肢內旋鏈`,`${SIDE[s]}側${parts.join("、")}。足部塌陷會帶動小腿與大腿往內轉。`]);
+  }
+  if(a.ptilt==="ant"||a.lback==="hyper") pats.push(["骨盆前傾型","骨盆前傾或腰椎前凸增加，常見髖屈肌與下背偏緊、臀肌與下腹控制不足。"]);
+  if(a.ptilt==="post"||a.lback==="flat") pats.push(["平背型","骨盆後傾、腰椎弧度變平，常見腿後肌偏緊。"]);
+  if(a.sway==="yes") pats.push(["搖擺背型","骨盆往前推、上身往後靠，身體靠韌帶而不是肌肉撐住站姿。"]);
+  if(dev("ear")&&dev("tback")) pats.push(["上交叉型","頭部前移合併圓肩駝背，頸後與胸前偏緊，深層頸屈肌與下斜方肌較弱。"]);
+  else if(dev("ear")) pats.push(["頭部前移","耳朵落在肩膀前方，頸後肌群長時間出力撐住頭的重量。"]);
+  const fn=[["rot",LBL.rot],["sideb",{L:"側屈向左幅度較小",R:"側屈向右幅度較小"}],["sls",{L:"單腳站左腳較不穩",R:"單腳站右腳較不穩"}],["breath",{L:"胸廓擴張左側較少",R:"胸廓擴張右側較少"}]]
+    .filter(([k])=>lr(k)).map(([k,m])=>(k==="rot"?"軀幹旋轉":"")+m[a[k]]);
+  if(fn.length) pats.push(["動作不對稱",fn.join("、")+"。"]);
+
+  /* plan */
+  const plan=[];
+  const tags=ks=>ks.filter(dev).map(k=>CHIP[k]?CHIP[k](a[k]):LBL[k][a[k]]).join("、");
+  if(pv||lr("trunk")){
+    const hi=pv;
+    plan.push(["骨盆水平與重心回中",tags(["pelvis","trunk"]),hi?`放鬆${SIDE[hi]}側腰方肌，強化${SIDE[hi]}側臀中肌，伸展${SIDE[opp(hi)]}側髖外側，再到鏡子前練習讓骨盆回到水平、重心回到兩腳中間。`:"站在鏡子前練習把重心移回兩腳中間，配合往反方向的側移控制。"]);
+  }
+  if(t) plan.push(["胸廓旋轉呼吸",tags(["thor","bendT"]),`把吸氣導向凹側（${SIDE[opp(t)]}側），讓那一側的肋骨撐開，配合反向的側移與旋轉；凸側（${SIDE[t]}側）練習收回。`]);
+  if(l) plan.push(["腰椎側向穩定",tags(["lumb","bendL"]),`延展腰椎凹側（${SIDE[opp(l)]}側），在中立位置訓練側腹與深層核心的左右對稱控制。`]);
+  if(a.ptilt==="ant"||a.lback==="hyper") plan.push(["骨盆前傾調整",tags(["ptilt","lback"]),"伸展髖屈肌與下背，強化臀大肌與下腹，練習站姿與走路時的骨盆中立控制。"]);
+  if(a.ptilt==="post"||a.lback==="flat") plan.push(["骨盆位置與腰椎弧度",tags(["ptilt","lback"]),"放鬆腿後肌，恢復腰椎自然弧度，訓練髖屈肌與背伸肌的平衡。"]);
+  if(a.sway==="yes") plan.push(["重心回到足中",tags(["sway"]),"把站姿重心從腳跟移回足中，強化下腹與腹斜肌，讓骨盆回到腳踝正上方。"]);
+  const kx=["L","R"].filter(s=>a["knee"+s]==="X"||a["pat"+s]==="in");
+  if(kx.length) plan.push(["髖外旋與膝蓋對位",tags(kx.flatMap(s=>["knee"+s,"pat"+s])),"強化臀中肌與髖外旋肌，蹲下與單腳站時讓膝蓋對準第二腳趾。"]);
+  const ko=["L","R"].filter(s=>a["knee"+s]==="O");
+  if(ko.length) plan.push(["膝蓋外開調整",tags(ko.map(s=>"knee"+s)),"強化內收肌與足弓，練習膝蓋朝前的深蹲與單腳站。"]);
+  const fe=["L","R"].filter(s=>a["heel"+s]==="ev"||a["toe"+s]==="in");
+  if(fe.length) plan.push(["足弓與足跟對位",tags(fe.flatMap(s=>["heel"+s,"toe"+s])),"用短足運動建立足弓，強化脛後肌與足底內在肌，站立時體重平均分配在腳跟、大拇趾根部與小趾根部。"]);
+  const fi=["L","R"].filter(s=>a["heel"+s]==="inv"||a["toe"+s]==="out");
+  if(fi.length) plan.push(["足跟外側負重調整",tags(fi.flatMap(s=>["heel"+s,"toe"+s])),"增加踝關節活動度，訓練腓骨肌，讓體重回到足部內側。"]);
+  if(dev("tback")||sh||lr("scap")) plan.push(["胸椎伸展與肩胛穩定",tags(["tback","shoulder","scap"]),"增加胸椎伸展活動度、放鬆胸小肌，強化下斜方肌與前鋸肌，讓兩側肩胛位置對稱。"]);
+  if(lr("head")||dev("ear")) plan.push(["頸部回正",tags(["head","ear"]),"收下巴訓練深層頸屈肌，放鬆上斜方肌與枕下肌群，讓頭回到肩膀正上方。"]);
+  if(lr("rot")||lr("sideb")) plan.push(["軀幹旋轉與側屈對稱",[lr("rot")&&"旋轉"+LBL.rot[a.rot],lr("sideb")&&"側屈"+LBL.sideb[a.sideb]].filter(Boolean).join("、"),"先增加受限方向的旋轉與側屈活動度，再加入兩側對稱的控制訓練。"]);
+  if(lr("sls")||lr("breath")) plan.push(["單腳穩定與呼吸對稱",[lr("sls")&&LBL.sls[a.sls],lr("breath")&&"胸廓擴張"+LBL.breath[a.breath]].filter(Boolean).join("、"),"單腳站穩定訓練從較不穩的一側開始，搭配側躺呼吸讓擴張較少的一側打開。"]);
+  if(!plan.length) plan.push(["維持目前的對稱","各部位無明顯差異","每週 2 到 3 次全身肌力訓練，搭配每天 5 分鐘的呼吸與脊椎活動度練習。"]);
+
+  return {chips,level,lv:LV[level],struct,youth,pats,plan};
+}
+
+/* ---------- results ---------- */
+function renderResults(){
+  const r=analyze(), a=A();
+  const flags=(a.flags||[]).filter(f=>f!=="none");
+  const FL={night:"夜間痛醒或休息時持續疼痛",numb:"下肢麻木、刺痛或無力",bladder:"大小便控制異常",prog:"幾個月內歪斜明顯加重"};
+  const rowHTML=([name,k,base])=>{const v=a[k];const ok=!dev(k);return `<div class="row"><span>${name}</span><span class="v${ok?" ok":""}">${esc(lab(k,base))}</span></div>`};
+  app.innerHTML=`
+  ${flags.length?`<div class="danger"><b>請先就醫再開始運動調整。</b> 你勾選了：${flags.map(f=>FL[f]).join("、")}。這些可能和神經壓迫或其他需要醫師評估的狀況有關，請先到骨科、神經科或復健科檢查。</div>`:""}
+  <div class="sum"><div class="k">評估結果</div><h2>${r.lv[0]}</h2><p>${r.lv[1]}</p>
+  ${r.chips.length?`<div class="chips">${r.chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}
+  <div class="meter">${["對稱","輕度","中度","明顯"].map((x,i)=>`<div class="${i===r.level?"on":""}"><i></i>${x}</div>`).join("")}</div></div>
+  ${r.struct?`<div class="warn"><b>${esc(r.struct[0])}</b> ${esc(r.struct[1])}</div>`:""}
+  ${r.youth?`<div class="danger">成長期的側彎有機會隨身高增加而進展，前彎有隆起時請盡快讓骨科醫師評估。</div>`:""}
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <h2>3D 骨骼模型</h2><p class="small">依你的結果調整骨骼位置，角度放大 2 倍顯示。左右拖曳可以旋轉。</p>
+    <div class="three" id="three" aria-label="依評估結果調整的 3D 骨骼模型"></div>
+    <div class="views">${["正面","背面","左側","右側"].map((x,i)=>`<button type="button" class="btn${i===0?" on":""}" data-act="view" data-v="${i}">${x}</button>`).join("")}</div>
+    <div class="key"><span style="--c:var(--diff)">有差異的部位</span><span style="--c:var(--ref)">肩線、骨盆線與鉛垂參考</span></div>
+  </section>
+  <section><h2>各部位檢查</h2>
+  ${SECTIONS.map(([h,rows])=>`<div class="sec"><h4>${h}</h4>${rows.map(rowHTML).join("")}</div>`).join("")}</section>
+  <section style="display:flex;flex-direction:column;gap:10px"><h2>你的代償模式</h2>
+  ${r.pats.length?`<ul class="pat">${r.pats.map(p=>`<li><b>${esc(p[0])}</b>：${esc(p[1])}</li>`).join("")}</ul>`:`<p>目前沒有明顯的代償模式。</p>`}</section>
+  <section class="plan"><h2>回正運動方向</h2><p class="small">依你的結果排出調整順序，從骨盆與脊椎的位置開始，再處理下肢與上背。</p>
+  ${r.plan.map((p,i)=>`<div class="step"><div class="n">${i===0?"第一優先":`第 ${i+1} 步`}</div><h3>${esc(p[0])}</h3><div class="why">${esc(p[1])}</div><p>${esc(p[2])}</p></div>`).join("")}</section>
+  <div class="cta"><p>你的回正計畫從「${esc(r.plan[0][0])}」開始。想知道實際角度與肌力差多少，來宥芯做一次專業健康檢測：ROM、動作品質與力量評估，建立你的身體雷達圖，4 到 6 週後用數據回測。</p>
+    <a href="https://page.line.me/374lyfap" target="_blank" rel="noopener">Line 預約專業健康檢測</a>
+    <div class="info"><span>Line ID @374lyfap · 電話 (02)2653-9433 · IG @youcore.healthadvisors</span><span>台北市南港區成福路 51 之 3 號 1 樓（後山埤站旁）</span><span>週二至週日 10:00–20:30</span></div></div>
+  <p class="disc">這份結果是自我篩檢，照片標線是依標記點估算的角度，會受拍攝角度、距離與衣物影響，不能取代醫師的診斷。前彎隆起在坐姿仍然存在時，需要站立全脊椎 X 光才能確認是否為結構性脊椎側彎。</p>
+  <div class="actions"><button type="button" class="btn primary" data-act="copy">複製結果摘要</button><button type="button" class="btn ghost" data-act="edit">回去修改答案</button><button type="button" class="btn ghost" data-act="restart">重新評估</button></div>
+  <p class="toast" id="toast" role="status"></p>`;
+  initThree(document.getElementById("three"));
+}
+
+function summaryText(){
+  const r=analyze(),a=A();
+  const lines=[`脊椎歪斜自我評估｜${r.lv[0]}`, r.chips.length?"發現："+r.chips.join("、"):"各部位大致對稱"];
+  if(r.struct) lines.push(r.struct[0]+r.struct[1]);
+  lines.push("","各部位檢查：");
+  SECTIONS.forEach(([h,rows])=>lines.push(`【${h}】`+rows.map(([n,k,b])=>`${n} ${lab(k,b)}`).join("；")));
+  lines.push("","代償模式："+(r.pats.map(p=>p[0]).join("、")||"無明顯代償"));
+  lines.push("","回正順序：");
+  r.plan.forEach((p,i)=>lines.push(`${i+1}. ${p[0]}：${p[2]}`));
+  lines.push("","宥芯健康顧問 · Line 預約 https://page.line.me/374lyfap · (02)2653-9433");
+  return lines.join("\n");
+}
+function copySummary(btn){
+  const txt=summaryText(), toast=document.getElementById("toast");
+  const fallback=()=>{const ta=document.createElement("textarea");ta.value=txt;ta.setAttribute("readonly","");ta.style.cssText="width:100%;min-height:180px;font:inherit;font-size:13px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px";toast.replaceWith(ta);ta.id="toast";ta.select();};
+  try{navigator.clipboard.writeText(txt).then(()=>{toast.textContent="已複製結果摘要"},fallback)}catch(e){fallback()}
+}
+
+/* ---------- 3D skeleton (three.js) ---------- */
+let T=null;
+function disposeThree(){
+  if(!T) return; cancelAnimationFrame(T.raf); T.ro&&T.ro.disconnect(); T.renderer.dispose(); T.renderer.domElement.remove(); T=null;
+}
+function css(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+function setView(i){if(!T)return;const ang=[0,Math.PI,Math.PI/2,-Math.PI/2][i];let d=ang-T.theta;d=Math.atan2(Math.sin(d),Math.cos(d));T.target=T.theta+d}
+function initThree(el){
+  disposeThree();
+  if(!window.THREE){el.innerHTML='<div class="fallback">3D 模型沒有載入，下方的各部位檢查不受影響。</div>';return}
+  let renderer;
+  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true})}catch(e){el.innerHTML='<div class="fallback">這個裝置不支援 3D 顯示，下方的各部位檢查不受影響。</div>';return}
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(30,1,.1,20);
+  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  el.appendChild(renderer.domElement);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x888877,.85));
+  const dl=new THREE.DirectionalLight(0xffffff,.75);dl.position.set(1.5,3,2.5);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0xffffff,.35);dl2.position.set(-2,1.5,-2.5);scene.add(dl2);
+  const mats={bone:new THREE.MeshStandardMaterial({roughness:.65,metalness:0}),diff:new THREE.MeshStandardMaterial({roughness:.55,metalness:0}),
+    dark:new THREE.MeshStandardMaterial({color:0x2a2a26,roughness:.9}),ground:new THREE.MeshBasicMaterial({transparent:true,opacity:.55}),
+    ref:new THREE.LineBasicMaterial({transparent:true,opacity:.8})};
+  const paint=()=>{mats.bone.color.set(css("--bone"));mats.diff.color.set(css("--diff"));mats.ground.color.set(css("--ground"));mats.ref.color.set(css("--ref"))};
+  paint();
+  scene.add(buildSkeleton(mats));
+  T={renderer,scene,cam,el,theta:0,target:0,raf:0,mats,paint};
+  const size=()=>{const w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()};
+  size(); if(window.ResizeObserver){T.ro=new ResizeObserver(size);T.ro.observe(el)}
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let dragX=null;
+  el.addEventListener("pointerdown",e=>{dragX=e.clientX;el.setPointerCapture(e.pointerId)});
+  el.addEventListener("pointermove",e=>{if(dragX===null)return;const d=(e.clientX-dragX)*.01;dragX=e.clientX;T.theta-=d;T.target=T.theta});
+  const up=()=>{dragX=null};el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+  const loop=()=>{
+    if(!T) return;
+    T.theta+= reduce?(T.target-T.theta):(T.target-T.theta)*.12;
+    const R=3.7;cam.position.set(Math.sin(T.theta)*R,1.08,Math.cos(T.theta)*R);cam.lookAt(0,.9,0);
+    renderer.render(scene,cam); T.raf=requestAnimationFrame(loop);
+  };loop();
+}
+if(window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>T&&T.paint());
+new MutationObserver(()=>T&&T.paint()).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+function buildSkeleton(m){
+  const a=A(), AMP=2, D=k=>dev(k);
+  const root=new THREE.Group();
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+  const mesh=(geo,mat)=>new THREE.Mesh(geo,mat);
+  const up=V(0,1,0);
+  const rod=(p,q,r,mat,parent)=>{const d=q.clone().sub(p),len=d.length();const c=mesh(new THREE.CylinderGeometry(r,r*.9,len,12),mat);c.position.copy(p).add(q).multiplyScalar(.5);c.quaternion.setFromUnitVectors(up,d.normalize());(parent||root).add(c);return c};
+  const ball=(p,r,mat,parent,sc)=>{const s=mesh(new THREE.SphereGeometry(r,20,14),mat);s.position.copy(p);if(sc)s.scale.set(sc[0],sc[1],sc[2]);(parent||root).add(s);return s};
+  const sgn=v=>v==="L"?1:v==="R"?-1:0;   // +x is the person's left
+
+  /* ground + references */
+  const g=mesh(new THREE.CircleGeometry(.55,48),m.ground);g.rotation.x=-Math.PI/2;g.position.y=0;root.add(g);
+  const refLine=(pts)=>{const geo=new THREE.BufferGeometry().setFromPoints(pts);root.add(new THREE.Line(geo,m.ref))};
+  refLine([V(0,0,0),V(0,1.9,0)]);
+
+  /* pelvis */
+  const pTilt=sgn(a.pelvis)*.035*AMP, pAnt=(a.ptilt==="ant"?.12:a.ptilt==="post"?-.12:0)*AMP/2;
+  const pelvis=new THREE.Group();pelvis.position.set(0,.96,a.sway==="yes"?.05:0);pelvis.rotation.set(pAnt,0,pTilt);root.add(pelvis);
+  const pm=(D("pelvis")||D("ptilt")||D("sway"))?m.diff:m.bone;
+  ball(V(.085,.02,0),1,pm,pelvis,[.075,.07,.04]);ball(V(-.085,.02,0),1,pm,pelvis,[.075,.07,.04]);
+  const sac=mesh(new THREE.BoxGeometry(.06,.1,.035),pm);sac.position.set(0,0,-.03);pelvis.add(sac);
+  const pub=mesh(new THREE.TorusGeometry(.055,.012,8,24,Math.PI),pm);pub.position.set(0,-.06,.04);pub.rotation.set(Math.PI/2+.4,0,Math.PI);pelvis.add(pub);
+  refLine([V(-.25,.96,0),V(.25,.96,0)]);
+
+  /* spine curve */
+  const bump=(t,c,w)=>Math.exp(-Math.pow((t-c)/w,2));
+  const aT=sgn(a.thor)*.022*AMP, aL=sgn(a.lumb)*.02*AMP, shift=sgn(a.trunk)*.02*AMP;
+  const kT=a.tback==="mild"?1.6:a.tback==="severe"?2.4:1, kL=a.lback==="hyper"?2:a.lback==="flat"?.2:1;
+  const fh=a.ear==="mild"?.04:a.ear==="severe"?.08:0;
+  const sw=a.sway==="yes"?.05:0;
+  const lat=t=>shift*t+aL*bump(t,.15,.13)+aT*bump(t,.55,.17);
+  const sag=t=>sw*(1-t*1.6)+.025*kL*bump(t,.1,.12)-.03*kT*bump(t,.55,.2)+.012*bump(t,.92,.07)+fh*Math.max(0,(t-.78)/.22);
+  const N=24, y0=1.0, y1=1.6;
+  for(let i=0;i<N;i++){
+    const t=i/(N-1), y=y0+(y1-y0)*t;
+    const reg=i<5?"L":i<17?"T":"C";
+    const isDiff=reg==="L"?(D("lumb")||D("lback")||D("bendL")):reg==="T"?(D("thor")||D("tback")||D("bendT")):(D("ear")||D("head"));
+    const s=reg==="L"?[.052,.032,.042]:reg==="T"?[.04,.024,.034]:[.03,.018,.028];
+    const b=mesh(new THREE.BoxGeometry(s[0],s[1],s[2]),isDiff?m.diff:m.bone);
+    b.position.set(lat(t),y,sag(t)-.02);
+    const dt=.02,ang=Math.atan2(lat(t+dt)-lat(t-dt),(y1-y0)*dt*2);b.rotation.z=-ang;
+    root.add(b);
+  }
+  const at=y=>(y-y0)/(y1-y0);
+
+  /* rib cage */
+  const ribT=new THREE.Group(); const tc=at(1.28);
+  ribT.position.set(lat(tc),1.28,sag(tc));
+  ribT.rotation.y=sgn(a.bendT)*.09*AMP;
+  root.add(ribT);
+  const rm=(D("thor")||D("bendT")||D("breath"))?m.diff:m.bone;
+  for(let j=0;j<11;j++){
+    const y=1.14+j*.028, t=at(y);
+    const r=.07+.065*Math.sin(Math.min(1,(11-j)/8)*Math.PI/2)*(j<9?1:.9);
+    const holder=new THREE.Group();holder.scale.set(1,1,.72);
+    holder.position.set(lat(t)-ribT.position.x,y-1.28,sag(t)-ribT.position.z+r*.72-.005);
+    holder.rotation.x=.22;
+    const gap=j>8?1.6:.7;
+    const tor=mesh(new THREE.TorusGeometry(r,.0075,6,40,Math.PI*2-gap),rm);
+    tor.rotation.set(Math.PI/2,0,Math.PI/2+gap/2);
+    holder.add(tor);ribT.add(holder);
+  }
+  const st=mesh(new THREE.BoxGeometry(.03,.2,.015),rm);st.position.set(0,.02,.17);st.rotation.x=.18;ribT.add(st);
+
+  /* shoulder girdle + arms */
+  const ts=at(1.45);
+  const sg=new THREE.Group();sg.position.set(lat(ts),1.45,sag(ts)+.01);sg.rotation.z=sgn(a.shoulder)*.035*AMP;root.add(sg);
+  const shm=D("shoulder")?m.diff:m.bone, scm=D("scap")?m.diff:m.bone;
+  for(const s of [1,-1]){
+    rod(V(0,0,.05),V(.17*s,.02,0),.011,shm,sg);
+    ball(V(.185*s,.015,-.005),.025,shm,sg);
+    const sc=mesh(new THREE.BoxGeometry(.085,.12,.01),scm);
+    sc.position.set(.1*s,-.07+(lr("scap")?(sgn(a.scap)*s>0?.012*AMP:-.006*AMP):0),-.085);sc.rotation.z=.15*s;sg.add(sc);
+    rod(V(.195*s,0,-.005),V(.22*s,-.3,-.01),.017,m.bone,sg);
+    ball(V(.22*s,-.3,-.01),.022,m.bone,sg);
+    rod(V(.22*s,-.3,-.01),V(.235*s,-.56,.03),.013,m.bone,sg);
+    ball(V(.236*s,-.6,.035),1,m.bone,sg,[.025,.045,.015]);
+  }
+  refLine([V(-.3,1.45,0),V(.3,1.45,0)]);
+
+  /* skull */
+  const head=new THREE.Group();head.position.set(lat(1),1.7,sag(1)+.01);head.rotation.z=-sgn(a.head)*.06*AMP;root.add(head);
+  const hm=(D("head")||D("ear"))?m.diff:m.bone;
+  ball(V(0,.02,0),1,hm,head,[.086,.095,.1]);
+  const jaw=mesh(new THREE.BoxGeometry(.09,.04,.07),hm);jaw.position.set(0,-.075,.035);head.add(jaw);
+  ball(V(.033,.015,.083),.019,m.dark,head);ball(V(-.033,.015,.083),.019,m.dark,head);
+  ball(V(0,-.02,.092),.009,m.dark,head);
+
+  /* legs */
+  pelvis.updateMatrixWorld(true);
+  for(const s of [1,-1]){
+    const side=s>0?"L":"R";
+    const hip=pelvis.localToWorld(V(.09*s,-.05,.02));
+    const kv=a["knee"+side], kx=kv==="X"?-.03*AMP/2:kv==="O"?.03*AMP/2:0;
+    const knee=V((.095+kx)*s,.5,.015), ank=V(.1*s,.08,0);
+    const thighM=(D("knee"+side)||D("pat"+side))?m.diff:m.bone, shinM=(D("toe"+side))?m.diff:m.bone, footM=(D("heel"+side)||D("toe"+side))?m.diff:m.bone;
+    ball(hip,.028,thighM);
+    rod(hip,knee,.022,thighM);
+    const kn=ball(knee,.03,thighM);kn.scale.set(1.1,1,1);
+    const pat=a["pat"+side]; ball(V(knee.x+(pat==="in"?-.015*s:pat==="out"?.015*s:0),knee.y+.005,knee.z+.03),.016,thighM);
+    rod(knee,ank,.018,shinM);
+    ball(ank,.022,footM);
+    const foot=new THREE.Group();foot.position.copy(ank);
+    const tv=a["toe"+side];foot.rotation.y=(tv==="out"?.3:tv==="in"?-.3:0)*s;
+    const hv=a["heel"+side];foot.rotation.z=(hv==="ev"?-.18:hv==="inv"?.18:0)*s*AMP/2;
+    const fb=mesh(new THREE.BoxGeometry(.07,.035,.2),footM);fb.position.set(0,-.05,.06);foot.add(fb);
+    root.add(foot);
+  }
+  return root;
+}
+
+render();
+})();
+</script>
+
+</body>
+</html>
