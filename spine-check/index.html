@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片標線、3D 骨骼模型與回正運動順序。">
+<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片自動辨識、3D 骨骼模型與回正運動順序。">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -203,7 +203,7 @@ const STEPS=[
 const PHOTO_STEP=1, FIRST_Q=2;
 
 /* ---------- state ---------- */
-const S={step:0,a:{flags:[]},pre:{},photos:{},marks:{},marking:false,active:{},busy:false,msg:"",done:false};
+const S={step:0,a:{flags:[]},pre:{},photos:{},marks:{},moved:{},auto:{},marking:false,active:{},busy:false,msg:"",done:false};
 const STORE="youcore-spine-v1";
 try{const d=JSON.parse(localStorage.getItem(STORE)||"null");if(d&&d.a){S.a=d.a;S.a.flags=S.a.flags||[];}}catch(e){}
 function save(){try{localStorage.setItem(STORE,JSON.stringify({a:S.a}))}catch(e){}}
@@ -287,17 +287,21 @@ function renderPhoto(){
     const p=S.photos[v];
     return `<label class="slot" for="ph-${v}">${p?`<img src="${p.url}" alt="${t}照片"><span class="lbl">${t}</span><button type="button" class="rm" data-act="rm" data-v="${v}">移除</button>`:`${FIG[v]}<b>${t}</b><small>${d}</small>`}
     <input type="file" accept="image/jpeg,image/png,image/webp" id="ph-${v}" data-photo="${v}" aria-label="上傳${t}照片"></label>`}).join("")}</div>
-  <p class="small">頁面本身不保存照片。按下 Claude 分析時，照片會送給 Claude，使用你自己的 Claude 額度，第一次會先問你是否允許。不想露臉可以把頭部裁掉，頭部相關的題目就改用問答。</p>
-  ${S.msg?`<div class="warn">${esc(S.msg)}</div>`:(aiOK?"":`<div class="warn">這個環境不能用 Claude 分析照片。你可以上傳照片後自己拖曳標記點，或改用問答。</div>`)}
+  <p class="small">${aiOK?"頁面本身不保存照片。按下 Claude 分析時，照片會送給 Claude，使用你自己的 Claude 額度，第一次會先問你是否允許。":"照片只在你的手機或電腦上辨識，不會上傳，也不會被保存。第一次自動分析需要下載約 10 MB 的辨識模型，建議連 Wi-Fi。"}不想露臉可以把頭部裁掉，頭部相關的題目就改用問答。</p>
+  ${S.msg?`<div class="warn">${esc(S.msg)}</div>`:""}
   <div class="actions"><button type="button" class="btn" data-act="prev">上一步</button>
   ${aiOK?`<button type="button" class="btn ghost" data-act="mark" ${any?"":"disabled"}>自己標記</button><button type="button" class="btn primary" data-act="ai" ${anyPhoto&&!S.busy?"":"disabled"}>${S.busy?"Claude 分析中…":"用 Claude 分析"}</button>`
-        :`<button type="button" class="btn primary" data-act="mark" ${any?"":"disabled"}>自己標記</button>`}</div>
+        :`<button type="button" class="btn ghost" data-act="mark" ${any&&!S.busy?"":"disabled"}>自己標記</button><button type="button" class="btn primary" data-act="auto" ${any&&!S.busy?"":"disabled"}>${S.busy?"辨識中…":"自動分析照片"}</button>`}</div>
+  ${any||aiOK?"":`<p class="small">自動分析需要正面、背面或側面其中至少一張照片。</p>`}
   <button type="button" class="link" data-act="skip">不用照片，改用問答</button>`;
 }
 function renderMarking(){
   const views=markable();
-  app.innerHTML=`<h2>在照片上標記</h2>
-  <div class="note">拖曳圓點到對應的骨頭位置，或先點下方的部位名稱，再點照片上的位置。左右都是你自己的左右，正面照裡你的左邊在畫面右側。</div>
+  const auto=views.some(v=>S.auto[v]);
+  app.innerHTML=`<h2>${auto?"確認自動標記":"在照片上標記"}</h2>
+  <div class="note">${auto?"已經自動標好標記點。請檢查每個點的位置，不準的地方直接拖曳微調，再按下方的套用。":"拖曳圓點到對應的骨頭位置，或先點下方的部位名稱，再點照片上的位置。"}左右都是你自己的左右，正面照裡你的左邊在畫面右側。</div>
+  ${S.auto.back?`<div class="warn">背面照的<b>肩胛下角</b>無法自動偵測，請把這兩個點拖到肩胛骨最下方的尖角；不調整的話，這題留到後面自己回答。</div>`:""}
+  ${S.msg?`<div class="warn">${esc(S.msg)}</div>`:""}
   ${views.map(v=>{
     const pts=MARKS[v]; S.marks[v]=S.marks[v]||Object.fromEntries(pts.map(p=>[p[0],[p[2],p[3]]]));
     S.active[v]=S.active[v]||pts[0][0];
@@ -323,12 +327,14 @@ app.addEventListener("pointerdown",e=>{
   if(dot){S.active[v]=dot.dataset.dot;drag={v,stage,id:dot.dataset.dot};dot.setPointerCapture(e.pointerId);e.preventDefault();drawMarks(v);return}
   const r=stage.getBoundingClientRect(), id=S.active[v];
   S.marks[v][id]=[clamp((e.clientX-r.left)/r.width),clamp((e.clientY-r.top)/r.height)];
+  (S.moved[v]=S.moved[v]||{})[id]=true;
   const pts=MARKS[v], i=pts.findIndex(p=>p[0]===id); S.active[v]=pts[(i+1)%pts.length][0];
   drawMarks(v);
 });
 app.addEventListener("pointermove",e=>{
   if(!drag) return; const r=drag.stage.getBoundingClientRect();
   S.marks[drag.v][drag.id]=[clamp((e.clientX-r.left)/r.width),clamp((e.clientY-r.top)/r.height)];
+  (S.moved[drag.v]=S.moved[drag.v]||{})[drag.id]=true;
   drawMarks(drag.v);
 });
 const endDrag=()=>{drag=null};
@@ -362,8 +368,8 @@ function applyMarks(){
     }
   }
   if(S.marks.back&&S.photos.back){
-    const b=id=>P("back",id);
-    pre.scap=higher(b("scL"),b("scR"),1.5)||"E";
+    const b=id=>P("back",id), mv=S.moved.back||{};
+    if(!S.auto.back||mv.scL||mv.scR) pre.scap=higher(b("scL"),b("scR"),1.5)||"E";
     if(!pre.trunk){
       const lv=unit(b("scL"),b("scR")),c7=b("c7"),sac=b("sac");
       const shift=((c7.x-sac.x)*lv.x+(c7.y-sac.y)*lv.y)/lv.l;
@@ -379,6 +385,61 @@ function applyMarks(){
     pre.sway=(hip.x-lineX)*fw/H>.03?"yes":"no";
   }
   setPre(pre);
+}
+/* on-device pose detection (MediaPipe); photos never leave the device */
+const MP="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+let poseP=null;
+function loadPose(){
+  if(!poseP){
+    poseP=(async()=>{
+      const vision=await import(MP+"/vision_bundle.mjs");
+      const fs=await vision.FilesetResolver.forVisionTasks(MP+"/wasm");
+      const opts=delegate=>({baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task",delegate},runningMode:"IMAGE",numPoses:1});
+      try{return await vision.PoseLandmarker.createFromOptions(fs,opts("GPU"))}
+      catch(e){return await vision.PoseLandmarker.createFromOptions(fs,opts("CPU"))}
+    })();
+    poseP.catch(()=>{poseP=null});
+  }
+  return poseP;
+}
+function placeFromPose(v,lm){
+  const P=i=>[clamp(lm[i].x),clamp(lm[i].y)];
+  const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+  const mid=(a,b)=>lerp(a,b,.5);
+  if(v==="front") return {earL:P(7),earR:P(8),shL:P(11),shR:P(12),
+    plL:lerp(P(23),P(11),.12),plR:lerp(P(24),P(12),.12),knL:P(25),knR:P(26),anL:P(27),anR:P(28)};
+  if(v==="side"){
+    const vis=ids=>ids.reduce((s,i)=>s+(lm[i].visibility||0),0);
+    const L=vis([7,11,23,25,27])>=vis([8,12,24,26,28]);
+    const [e,s,h,a,t]=L?[7,11,23,27,31]:[8,12,24,28,32];
+    return {ear:P(e),sh:P(s),hip:P(h),ank:P(a),toe:P(t)};
+  }
+  /* back view: the person's left is on the image left; only midline points are reliable */
+  const sh=[P(11),P(12)].sort((a,b)=>a[0]-b[0]), hp=[P(23),P(24)].sort((a,b)=>a[0]-b[0]);
+  const shM=mid(sh[0],sh[1]), hpM=mid(hp[0],hp[1]);
+  const sc=(s)=>{const p=lerp(s,shM,.35);return [p[0],s[1]+(hpM[1]-shM[1])*.3]};
+  return {c7:lerp(shM,hpM,-.06),scL:sc(sh[0]),scR:sc(sh[1]),sac:lerp(hpM,shM,.06)};
+}
+async function autoAnalyze(){
+  S.busy=true;S.msg="";render();
+  try{
+    const det=await loadPose();
+    const missed=[];
+    for(const v of markable()){
+      const img=new Image(); img.src=S.photos[v].url; await img.decode();
+      const lm=(det.detect(img).landmarks||[])[0];
+      const name=SLOTS.find(s=>s[0]===v)[1];
+      if(!lm){missed.push(name);delete S.marks[v];S.auto[v]=false;continue}
+      S.marks[v]=placeFromPose(v,lm); S.moved[v]={}; S.auto[v]=true;
+    }
+    S.busy=false; S.marking=true;
+    S.msg=missed.length?`${missed.join("、")}照片沒有偵測到完整的人，這張請自己拖曳標記點，或重拍全身入鏡的照片。`:"";
+    render(); window.scrollTo({top:0});
+  }catch(e){
+    S.busy=false;
+    S.msg="自動辨識沒有載入成功，可能是網路不穩或瀏覽器版本太舊。請再按一次，或改用自己標記。";
+    render();
+  }
 }
 function setPre(pre){
   for(const k in pre){if(pre[k]){S.a[k]=pre[k];S.pre[k]=pre[k]}}
@@ -414,7 +475,7 @@ app.addEventListener("change",e=>{
   const v=inp.dataset.photo, file=inp.files[0], url=URL.createObjectURL(file);
   const img=new Image(); img.onload=()=>{
     if(S.photos[v]) URL.revokeObjectURL(S.photos[v].url);
-    S.photos[v]={file,url,w:img.naturalWidth,h:img.naturalHeight}; delete S.marks[v]; S.msg=""; render();
+    S.photos[v]={file,url,w:img.naturalWidth,h:img.naturalHeight}; delete S.marks[v]; delete S.moved[v]; S.auto[v]=false; S.msg=""; render();
   }; img.src=url;
 });
 
@@ -441,12 +502,13 @@ app.addEventListener("click",e=>{
   if(act==="prev"){S.step=Math.max(0,S.step-1);S.marking=false}
   else if(act==="next"){if(S.step===STEPS.length-1)S.done=true;else S.step++}
   else if(act==="skip"){S.step=FIRST_Q}
-  else if(act==="mark"){S.marking=true}
-  else if(act==="unmark"){S.marking=false}
-  else if(act==="apply"){applyMarks();S.marking=false;S.step=FIRST_Q}
+  else if(act==="mark"){S.marking=true;S.msg=""}
+  else if(act==="unmark"){S.marking=false;S.msg=""}
+  else if(act==="apply"){applyMarks();S.marking=false;S.msg="";S.step=FIRST_Q}
   else if(act==="ai"){runAI();return}
+  else if(act==="auto"){autoAnalyze();return}
   else if(act==="edit"){S.done=false;S.step=FIRST_Q}
-  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
+  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};S.moved={};S.auto={};for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
   else if(act==="copy"){copySummary(b);return}
   else if(act==="view"){setView(+b.dataset.v);document.querySelectorAll(".views .btn").forEach(x=>x.classList.toggle("on",x===b));return}
   else return;
