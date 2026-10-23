@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片自動辨識、3D 骨骼模型、前後測角度對比與一頁式 PDF 報告。">
+<meta name="description" content="宥芯健康顧問：8 步驟功能性脊椎歪斜自我評估，照片自動辨識、關節角度分析、前後測對比與一頁式 PDF 報告。">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -137,6 +137,7 @@ ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .cmp thead th{font-size:12px;color:var(--muted);font-weight:500;background:var(--bg)}
 .cmp thead th:first-child{background:var(--bg)}
 .cmp tr:last-child td{border-bottom:0}
+.cmp .how{font-size:11px;color:var(--muted);white-space:normal;max-width:22ch;line-height:1.4}
 .cmp .cur{font-weight:700}
 .cmp .better{color:var(--accent);font-weight:700}
 .cmp .worse{color:var(--bad);font-weight:700}
@@ -145,13 +146,21 @@ ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .histbar .btn{font-size:13px;min-height:36px;padding:6px 12px;font-weight:500}
 .q input.txt,.field input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
 .q input.txt:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
-.field{display:flex;flex-direction:column;gap:6px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.meta{display:grid;grid-template-columns:1.4fr 1fr .8fr;gap:10px}
+@media (max-width:520px){.meta{grid-template-columns:1fr 1fr}.meta .field:first-child{grid-column:1/-1}}
+.infobar{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.infobar b{color:var(--ink)}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:99px}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.mild{background:var(--gold-soft);color:var(--gold)}
+.pill.bad{background:var(--danger-soft);color:var(--danger-ink)}
 .field input{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
 .field input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 /* one-page A4 report, rendered off-screen at 794×1123 CSS px; fixed print colors, independent of theme */
 .rp{position:fixed;left:-10000px;top:0;width:794px;height:1123px;overflow:hidden;background:#FFFFFF;color:#1C2B1A;font-family:var(--sans);--fs:10px;font-size:var(--fs);line-height:1.5}
 .rp *{box-sizing:border-box}
-.rp-in{height:100%;display:flex;flex-direction:column;gap:12px;padding:26px 30px 22px}
+.rp-in{min-height:100%;display:flex;flex-direction:column;gap:9px;padding:24px 30px 20px;transform-origin:0 0}
 .rp-hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #1C2B1A;padding-bottom:10px}
 .rp-hd .ey{font-size:9px;letter-spacing:.18em;font-weight:700;color:#4A6741}
 .rp-hd h1{font-family:var(--serif);font-size:24px;margin:2px 0 0;line-height:1.25}
@@ -175,11 +184,11 @@ ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .rp h3 small{font-family:var(--sans);font-size:8.5px;font-weight:400;color:#5F6A5B}
 .rp-views{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .rp-views figure{margin:0;background:#F7F4EE;border-radius:8px;display:flex;flex-direction:column;align-items:center;padding:4px 0 5px}
-.rp-views img{height:150px;width:auto;max-width:100%;display:block}
+.rp-views img{height:122px;width:auto;max-width:100%;display:block}
 .rp-views figcaption{font-size:9px;font-weight:700}
 .rp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 12px}
 .rp-sec h4{font-size:8.5px;font-weight:700;color:#4A6741;letter-spacing:.08em;margin:0 0 2px;border-bottom:1px solid #DDD6C7;padding-bottom:2px}
-.rp-row{display:flex;justify-content:space-between;gap:6px;line-height:1.55}
+.rp-row{display:flex;justify-content:space-between;gap:6px;line-height:1.45}
 .rp-row span:first-child{color:#5F6A5B}
 .rp-row .v{font-weight:700;color:#A3482F;text-align:right}.rp-row .v.ok{font-weight:400;color:#1C2B1A}
 .rp-pat{margin:0;padding-left:14px;columns:2;column-gap:22px}
@@ -197,6 +206,8 @@ ul.pat{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
 .rp .cmp{font-size:inherit;white-space:nowrap;width:100%}
 .rp .cmp th,.rp .cmp td{padding:2px 6px;border-bottom:1px solid #E6E0D3;background:transparent;position:static;color:#1C2B1A}
 .rp .cmp thead th{font-size:8.5px;color:#5F6A5B;background:#F4F0E8;line-height:1.3}
+.rp .cmp .pill{font-size:8px;padding:0 6px}
+.rp .cmp .pill.ok{background:#E3E8DC;color:#4A6741}.rp .cmp .pill.mild{background:#F1E7D3;color:#8A5A14}.rp .cmp .pill.bad{background:#F5DDD4;color:#8A2F1C}
 .rp .cmp .better{color:#3E6B34}.rp .cmp .worse{color:#A3482F}.rp .cmp .same{color:#7A8476}
 @media (max-width:460px){
   .card{padding:16px}
@@ -226,7 +237,7 @@ const SIDE={L:"左",R:"右"};
 const ROW4=(a,b,c)=>[["L",a],[b[0],b[1]],["R",c],["U","不確定"]];
 const STEPS=[
  {id:"basic",label:"基本資料",title:"先確認幾件事",qs:[
-  {k:"name",q:"姓名或暱稱",hint:"用來比對前後測。同一個人每次請輸入一樣的名字，紀錄只存在這台裝置上。",type:"text"},
+  {k:"meta",type:"meta"},
   {k:"age",q:"你的年齡層",type:"list",opts:[["u18","未滿 18 歲（成長期）"],["a18","18 至 40 歲"],["a41","41 歲以上"]]},
   {k:"flags",q:"最近有出現下列情況嗎？可複選。",type:"multi",opts:[["night","夜間痛醒或休息時仍持續疼痛"],["numb","下肢麻木、刺痛或無力"],["bladder","大小便控制出現異常"],["prog","幾個月內歪斜明顯加重"],["none","以上都沒有"]]}
  ]},
@@ -281,19 +292,37 @@ function save(){try{localStorage.setItem(STORE,JSON.stringify({a:S.a}))}catch(e)
 const HKEY="youcore-spine-history-v1";
 function loadHist(){try{const h=JSON.parse(localStorage.getItem(HKEY)||"[]");return Array.isArray(h)?h:[]}catch(e){return []}}
 function saveHist(h){try{localStorage.setItem(HKEY,JSON.stringify(h.slice(-80)))}catch(e){}}
-function historyFor(name){const n=(name||"").trim();return loadHist().filter(r=>(r.name||"")===n).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:0)}
+const histKey=r=>(r.date||"")+"|"+(r.t||"");
+function historyFor(name){const n=(name||"").trim();return loadHist().filter(r=>(r.name||"")===n).sort((a,b)=>histKey(a)<histKey(b)?-1:histKey(a)>histKey(b)?1:0)}
+const nthOf=(r,hist)=>r.nth||hist.indexOf(r)+1;
+const shortDate=d=>(d||"").replace(/^(\d{4})-(\d{2})-(\d{2})$/,"$1/$2/$3");
 function recordResult(r){
   const h=loadHist();
   if(!S.recId) S.recId=Date.now().toString(36);
-  const rec={id:S.recId,t:new Date().toISOString(),date:taipeiDate(),name:S.name||"",level:r.level,lv:r.lv[0],n:r.n,m:S.m||{}};
+  const rec={id:S.recId,t:new Date().toISOString(),date:S.date||taipeiDate(),nth:S.nth||null,name:S.name||"",level:r.level,lv:r.lv[0],n:r.n,m:S.m||{}};
   const i=h.findIndex(x=>x.id===rec.id);
-  if(i>=0){rec.t=h[i].t;rec.date=h[i].date;h[i]=rec}else h.push(rec);
+  if(i>=0){rec.t=h[i].t;h[i]=rec}else h.push(rec);
   saveHist(h);
 }
-const METRICS=[["shoulder","肩峰傾斜","左高","右高"],["scap","肩胛下角傾斜","左高","右高"],["pelvis","骨盆傾斜","左高","右高"],
-  ["headTilt","頭部側傾","左傾","右傾"],["trunk","軀幹側移角","偏左","偏右"],["kneeL","左膝額狀面角","O 型","X 型"],["kneeR","右膝額狀面角","O 型","X 型"],
-  ["fh","耳肩線前傾角","前","後"],["sway","骨盆前移角","前推","後靠"]];
+/* [key, name, positive label, negative label, how it is measured, screening reference: normal below a, marked below b] */
+const METRICS=[
+  ["headTilt","頭部側傾角","左傾","右傾","正面：兩耳連線與水平線的夾角",2,4],
+  ["fh","頭部前移角","前","後","側面：耳垂—肩峰連線與鉛垂線的夾角",15,30],
+  ["shoulder","肩峰傾斜角","左高","右高","正面：兩側肩峰連線與水平線的夾角",1.5,3],
+  ["scap","肩胛下角傾斜角","左高","右高","背面：兩側肩胛下角連線與水平線的夾角",1.5,3],
+  ["trunk","軀幹側移角","偏左","偏右","正面：兩踝中點到兩肩中點連線與鉛垂線的夾角",1.5,3],
+  ["lean","軀幹前後傾角","前傾","後傾","側面：大轉子—肩峰連線與鉛垂線的夾角",5,10],
+  ["pelvis","骨盆傾斜角","左高","右高","正面：兩側骨盆上緣連線與水平線的夾角",1.5,3],
+  ["sway","骨盆前移角","前推","後靠","側面：外踝—大轉子連線相對外踝—肩峰連線的角度",2.5,5],
+  ["kneeL","左膝額狀面角","O 型","X 型","正面：左側髖—膝—踝連線偏離直線的角度",5,10],
+  ["kneeR","右膝額狀面角","O 型","X 型","正面：右側髖—膝—踝連線偏離直線的角度",5,10],
+  ["kneeSag","膝關節矢狀面角","超伸","屈曲","側面：髖—膝—踝連線偏離直線的角度",5,10]];
 const fmtDeg=(v,d)=>v==null?"—":Math.abs(v)<.05?"0.0°":`${v>0?d[2]:d[3]} ${Math.abs(v).toFixed(1)}°`;
+function gradeCell(v,d){
+  if(v==null) return `<td class="same">—</td>`;
+  const a=Math.abs(v), g=a<d[5]?["ok","正常"]:a<d[6]?["mild","輕度"]:["bad","明顯"];
+  return `<td><span class="pill ${g[0]}">${g[1]}</span></td>`;
+}
 function diffCell(cur,ref,unit){
   if(cur==null||ref==null) return `<td class="same">—</td>`;
   const d=Math.abs(cur)-Math.abs(ref), th=unit==="°"?.3:.5;
@@ -301,13 +330,19 @@ function diffCell(cur,ref,unit){
   const v=unit==="°"?Math.abs(d).toFixed(1)+"°":Math.abs(d)+" 處";
   return d<0?`<td class="better">${unit==="°"?"改善":"減少"} ${v}</td>`:`<td class="worse">增加 ${v}</td>`;
 }
-function compareTable(hist,maxCols){
-  const cols=hist.slice(-maxCols), first=hist[0], prev=hist[hist.length-2], cur=hist[hist.length-1];
+/* joint-angle analysis for this test, plus earlier tests and the change against the last and the first one */
+function angleTable(hist,maxPrev,showHow){
+  const cur=hist[hist.length-1], prevs=hist.slice(0,-1), cols=prevs.slice(-maxPrev), multi=prevs.length>0;
+  const first=hist[0], prev=prevs[prevs.length-1];
   const rows=METRICS.filter(d=>hist.some(r=>r.m&&r.m[d[0]]!=null));
-  const head=`<tr><th>項目</th>${cols.map(r=>`<th>第 ${hist.indexOf(r)+1} 次<br>${r.date.slice(5).replace("-","/")}</th>`).join("")}<th>較上次</th><th>較第 1 次</th></tr>`;
-  const body=rows.map(d=>`<tr><td>${d[1]}</td>${cols.map(r=>`<td class="${r===cur?"cur":""}">${fmtDeg(r.m&&r.m[d[0]],d)}</td>`).join("")}${diffCell(cur.m[d[0]],prev.m&&prev.m[d[0]],"°")}${diffCell(cur.m[d[0]],first.m&&first.m[d[0]],"°")}</tr>`).join("")
-    +`<tr><td>有差異的部位數</td>${cols.map(r=>`<td class="${r===cur?"cur":""}">${r.n} 處</td>`).join("")}${diffCell(cur.n,prev.n,"處")}${diffCell(cur.n,first.n,"處")}</tr>`;
-  return {html:`<table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table>`,angles:rows.length};
+  if(!rows.length) return null;
+  const th=r=>`第 ${nthOf(r,hist)} 次<br>${shortDate(r.date).slice(5)}`;
+  const head=`<tr><th>關節角度</th>${cols.map(r=>`<th>${th(r)}</th>`).join("")}<th>本次<br>${shortDate(cur.date).slice(5)}</th><th>參考範圍</th><th>判讀</th>${multi?"<th>較上次</th><th>較第 1 次</th>":""}</tr>`;
+  const body=rows.map(d=>{
+    const v=cur.m&&cur.m[d[0]];
+    return `<tr><td>${d[1]}${showHow?`<div class="how">${d[4]}</div>`:""}</td>${cols.map(r=>`<td>${fmtDeg(r.m&&r.m[d[0]],d)}</td>`).join("")}<td class="cur">${fmtDeg(v,d)}</td><td class="same">&lt; ${d[5]}°</td>${gradeCell(v,d)}${multi?diffCell(v,prev.m&&prev.m[d[0]],"°")+diffCell(v,first.m&&first.m[d[0]],"°"):""}</tr>`;
+  }).join("")+(multi?`<tr><td>有差異的部位數</td>${cols.map(r=>`<td>${r.n} 處</td>`).join("")}<td class="cur">${cur.n} 處</td><td class="same">—</td><td class="same">—</td>${diffCell(cur.n,prev.n,"處")}${diffCell(cur.n,first.n,"處")}</tr>`:"");
+  return `<table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table>`;
 }
 
 let sample=null, canImages=false;
@@ -326,14 +361,20 @@ function optBtn(k,v,label,seg){
   const pre=S.pre[k]===v;
   return `<button type="button" class="opt${on?" on":""}" data-k="${k}" data-v="${v}" aria-pressed="${on}">${esc(label)}${pre?'<span class="tag">照片</span>':""}</button>`;
 }
+function prevCount(){return historyFor(S.name).filter(r=>r.id!==S.recId).length}
 function histNote(){
-  const n=historyFor(S.name).filter(r=>r.id!==S.recId).length;
-  return n?`找到「${esc(S.name||"未命名")}」之前的 ${n} 次紀錄，完成後會自動比較角度變化。`:"";
+  const n=prevCount();
+  return n?`找到「${esc(S.name||"未命名")}」之前的 ${n} 次紀錄，完成後會自動比較各關節角度的變化。`:"這個名字還沒有紀錄，這次會記為第 1 次。";
 }
 function qHTML(q){
   let body="";
-  if(q.type==="text") return `<div class="q"><div class="qh"><h3><label for="q-name">${esc(q.q)}</label></h3></div><p class="hint">${esc(q.hint)}</p>
-    <input class="txt" id="q-name" type="text" maxlength="20" autocomplete="off" placeholder="例如：王小明" value="${esc(S.name||"")}"><p class="small" id="histnote">${histNote()}</p></div>`;
+  if(q.type==="meta") return `<div class="q"><div class="qh"><h3>評估資料</h3></div>
+    <p class="hint">姓名用來比對前後測，同一個人每次請輸入一樣的名字。紀錄只存在這台裝置上。</p>
+    <div class="meta">
+      <div class="field"><label class="small" for="q-name">姓名或暱稱</label><input id="q-name" type="text" maxlength="20" autocomplete="off" placeholder="例如：王小明" value="${esc(S.name||"")}"></div>
+      <div class="field"><label class="small" for="q-date">評估日期</label><input id="q-date" type="date" value="${esc(S.date||taipeiDate())}"></div>
+      <div class="field"><label class="small" for="q-nth">第幾次評估</label><input id="q-nth" type="number" min="1" max="99" inputmode="numeric" placeholder="自動：第 ${prevCount()+1} 次" value="${S.nth||""}"></div>
+    </div><p class="small" id="histnote">${histNote()}</p></div>`;
   if(q.type==="row") body=`<div class="seg">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
   else if(q.type==="list"||q.type==="multi") body=`<div class="list">${q.opts.map(o=>optBtn(q.k,o[0],o[1])).join("")}</div>`;
   else if(q.type==="pair") body=["L","R"].map(s=>`<div class="pair"><span class="side">${SIDE[s]}</span><div class="seg">${q.opts.map(o=>optBtn(q.k+s,o[0],o[1])).join("")}</div></div>`).join("");
@@ -342,7 +383,7 @@ function qHTML(q){
 function remaining(st){
   let n=0;
   for(const q of st.qs){
-    if(q.type==="text") continue;
+    if(q.type==="meta") continue;
     if(q.type==="pair"){if(!S.a[q.k+"L"])n++;if(!S.a[q.k+"R"])n++;}
     else if(q.type==="multi"){if(!S.a.flags.length)n++;}
     else if(!S.a[q.k])n++;
@@ -380,9 +421,9 @@ const SLOTS=[["front","正面","面向鏡頭站直，雙手自然下垂"],["back
 const MARKS={
  front:[["earL","左耳",.56,.11],["earR","右耳",.44,.11],["shL","左肩峰",.64,.21],["shR","右肩峰",.36,.21],["plL","左骨盆上緣",.6,.45],["plR","右骨盆上緣",.4,.45],["knL","左膝",.57,.7],["knR","右膝",.43,.7],["anL","左踝",.56,.93],["anR","右踝",.44,.93]],
  back:[["c7","頸椎底（第 7 頸椎）",.5,.17],["scL","左肩胛下角",.41,.33],["scR","右肩胛下角",.59,.33],["sac","臀溝上端",.5,.52]],
- side:[["ear","耳垂",.5,.11],["sh","肩峰",.5,.22],["hip","大轉子（髖外側）",.5,.5],["ank","外踝",.5,.93],["toe","腳尖",.62,.96]]
+ side:[["ear","耳垂",.5,.11],["sh","肩峰",.5,.22],["hip","大轉子（髖外側）",.5,.5],["kn","膝外側中點",.5,.72],["ank","外踝",.5,.93],["toe","腳尖",.62,.96]]
 };
-const LINES={front:[["earL","earR"],["shL","shR"],["plL","plR"],["plL","knL"],["knL","anL"],["plR","knR"],["knR","anR"]],back:[["scL","scR"],["c7","sac"]],side:[["ear","sh"],["sh","hip"],["hip","ank"],["ank","toe"]]};
+const LINES={front:[["earL","earR"],["shL","shR"],["plL","plR"],["plL","knL"],["knL","anL"],["plR","knR"],["knR","anR"]],back:[["scL","scR"],["c7","sac"]],side:[["ear","sh"],["sh","hip"],["hip","kn"],["kn","ank"],["ank","toe"]]};
 const markable=()=>["front","back","side"].filter(v=>S.photos[v]);
 
 function renderPhoto(){
@@ -496,14 +537,21 @@ function applyMarks(){
   }
   if(S.marks.side&&S.photos.side){
     const s=id=>P("side",id);
-    const ear=s("ear"),sh=s("sh"),hip=s("hip"),ank=s("ank"),toe=s("toe");
-    const fw=Math.sign(toe.x-ank.x)||1, H=Math.abs(ank.y-ear.y)||1;
-    const fh=(ear.x-sh.x)*fw/H; pre.ear=fh>.06?"severe":fh>.025?"mild":"ok";
-    const t=(hip.y-ank.y)/((sh.y-ank.y)||1), lineX=ank.x+(sh.x-ank.x)*t;
-    pre.sway=(hip.x-lineX)*fw/H>.03?"yes":"no";
+    const ear=s("ear"),sh=s("sh"),hip=s("hip"),kn=S.marks.side.kn?s("kn"):null,ank=s("ank"),toe=s("toe");
+    const fw=Math.sign(toe.x-ank.x)||1;
     M.fh=R1(Math.atan2((ear.x-sh.x)*fw,Math.abs(sh.y-ear.y)||1)*DEG);
+    pre.ear=M.fh>30?"severe":M.fh>15?"mild":"ok";
     const ang=p=>Math.atan2((p.x-ank.x)*fw,Math.abs(ank.y-p.y)||1)*DEG;
     M.sway=R1(ang(hip)-ang(sh));
+    pre.sway=M.sway>2.5?"yes":"no";
+    M.lean=R1(Math.atan2((sh.x-hip.x)*fw,Math.abs(hip.y-sh.y)||1)*DEG);
+    if(kn){
+      /* knee behind the hip–ankle line means hyperextension (positive) */
+      const t=(kn.y-hip.y)/((ank.y-hip.y)||1), lx=hip.x+(ank.x-hip.x)*t;
+      const u={x:kn.x-hip.x,y:kn.y-hip.y},w={x:ank.x-kn.x,y:ank.y-kn.y};
+      const bend=Math.acos(Math.max(-1,Math.min(1,(u.x*w.x+u.y*w.y)/((Math.hypot(u.x,u.y)*Math.hypot(w.x,w.y))||1))))*DEG;
+      M.kneeSag=R1((kn.x-lx)*fw<0?bend:-bend);
+    }
   }
   S.m=M;
   setPre(pre);
@@ -533,8 +581,8 @@ function placeFromPose(v,lm){
   if(v==="side"){
     const vis=ids=>ids.reduce((s,i)=>s+(lm[i].visibility||0),0);
     const L=vis([7,11,23,25,27])>=vis([8,12,24,26,28]);
-    const [e,s,h,a,t]=L?[7,11,23,27,31]:[8,12,24,28,32];
-    return {ear:P(e),sh:P(s),hip:P(h),ank:P(a),toe:P(t)};
+    const [e,s,h,k,a,t]=L?[7,11,23,25,27,31]:[8,12,24,26,28,32];
+    return {ear:P(e),sh:P(s),hip:P(h),kn:P(k),ank:P(a),toe:P(t)};
   }
   /* back view: the person's left is on the image left; only midline points are reliable */
   const sh=[P(11),P(12)].sort((a,b)=>a[0]-b[0]), hp=[P(23),P(24)].sort((a,b)=>a[0]-b[0]);
@@ -548,7 +596,8 @@ async function autoAnalyze(){
     const det=await loadPose();
     const missed=[];
     for(const v of markable()){
-      const img=new Image(); img.src=S.photos[v].url; await img.decode();
+      const img=new Image();
+      await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=S.photos[v].url});
       const lm=(det.detect(img).landmarks||[])[0];
       const name=SLOTS.find(s=>s[0]===v)[1];
       if(!lm){missed.push(name);delete S.marks[v];S.auto[v]=false;continue}
@@ -579,6 +628,7 @@ async function runAI(){
   try{
     const out=await sample.json(prompt,{images:files.map(v=>S.photos[v].file)});
     const allowed={};STEPS.forEach(st=>st.qs&&st.qs.forEach(q=>{
+      if(!q.opts) return;
       if(q.type==="pair")["L","R"].forEach(s=>allowed[q.k+s]=q.opts.map(o=>o[0]));
       else allowed[q.k]=q.opts.map(o=>o[0]);
     }));
@@ -633,7 +683,7 @@ app.addEventListener("click",e=>{
   else if(act==="clearhist"){S.confirmClear=true;const y=window.scrollY;render();window.scrollTo({top:y});return}
   else if(act==="clearno"){S.confirmClear=false;const y=window.scrollY;render();window.scrollTo({top:y});return}
   else if(act==="clearyes"){const n=S.name||"";saveHist(loadHist().filter(r=>(r.name||"")!==n||r.id===S.recId));S.confirmClear=false;const y=window.scrollY;render();window.scrollTo({top:y});return}
-  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};S.moved={};S.auto={};S.m={};S.name="";S.recId=null;S.confirmClear=false;for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
+  else if(act==="restart"){S.done=false;S.step=0;S.a={flags:[]};S.pre={};S.marks={};S.moved={};S.auto={};S.m={};S.name="";S.date="";S.nth=null;S.recId=null;S.confirmClear=false;for(const v in S.photos)URL.revokeObjectURL(S.photos[v].url);S.photos={};S.msg="";save()}
   else if(act==="copy"){copySummary(b);return}
   else if(act==="pdf"){makePDF(b);return}
   else if(act==="view"){setView(+b.dataset.v);document.querySelectorAll(".views .btn").forEach(x=>x.classList.toggle("on",x===b));return}
@@ -654,13 +704,22 @@ const LBL={
  toe:{in:"內轉（內八）",out:"外轉（外八）",fwd:"中立"},heel:{ev:"外翻",inv:"內翻",vert:"中立"},
  rot:{L:"向左較受限",R:"向右較受限",E:"對稱"},sideb:{L:"向左幅度較小",R:"向右幅度較小",E:"對稱"},
  sls:{L:"左腳較不穩",R:"右腳較不穩",E:"對稱"},breath:{L:"左側較少",R:"右側較少",E:"對稱"},
+ age:{u18:"未滿 18 歲",a18:"18 至 40 歲",a41:"41 歲以上"},
  sitHump:{gone:"坐姿完全消失",less:"坐姿明顯變小",same:"坐姿幾乎沒變",none:"無隆起"},sitPelvis:{sym:"坐下後對稱",asym:"坐下後仍不對稱",none:"站姿等高"}
 };
 const NORMAL=new Set(["C","E","S","ok","neu","no","N","fwd","vert","U","none","gone","sym"]);
-const dev=k=>{const v=A()[k];return v&&!NORMAL.has(v)};
+const dev=k=>{
+  if(k==="age") return false;
+  if(k==="flags") return (A().flags||[]).some(f=>f!=="none");
+  const v=A()[k];return v&&!NORMAL.has(v);
+};
 const lr=k=>{const v=A()[k];return v==="L"||v==="R"?v:null};
 const opp=s=>s==="L"?"R":"L";
-const lab=(k,base)=>{const v=A()[k];if(!v||v==="U")return "不確定";return (LBL[base||k]||{})[v]||v};
+const FLAG_LBL={night:"夜間痛或休息痛",numb:"下肢麻木無力",bladder:"大小便異常",prog:"歪斜快速加重"};
+const lab=(k,base)=>{
+  if(k==="flags"){const f=(A().flags||[]).filter(x=>x!=="none");return f.length?f.map(x=>FLAG_LBL[x]).join("、"):"無"}
+  const v=A()[k];if(!v||v==="U")return "不確定";return (LBL[base||k]||{})[v]||v;
+};
 
 const SECTIONS=[
  ["頭頸",[["頭部側傾","head"],["頭部前移","ear"]]],
@@ -669,8 +728,10 @@ const SECTIONS=[
  ["骨盆",[["骨盆高低","pelvis"],["骨盆前後傾","ptilt"],["骨盆前推","sway"]]],
  ["髖與膝",[["左膝","kneeL","knee"],["右膝","kneeR","knee"],["左股骨","patL","pat"],["右股骨","patR","pat"]]],
  ["小腿與足跟",[["左脛骨","toeL","toe"],["右脛骨","toeR","toe"],["左足跟","heelL","heel"],["右足跟","heelR","heel"]]],
+ ["坐姿重測",[["前彎隆起變化","sitHump"],["坐姿骨盆高低","sitPelvis"]]],
  ["動作功能",[["軀幹旋轉","rot"],["側屈","sideb"],["單腳站","sls"],["胸廓擴張","breath"]]]
 ];
+const BASIC=["基本資料",[["年齡層","age"],["就醫警訊","flags"]]];
 const CHIP={head:v=>"頭"+LBL.head[v],ear:v=>"頭部前移",shoulder:v=>LBL.shoulder[v],scap:v=>(SIDE[v])+"肩胛較高",tback:v=>LBL.tback[v],
  bendT:v=>"胸廓向"+SIDE[v]+"旋轉",trunk:v=>"軀幹"+LBL.trunk[v],waist:v=>SIDE[v]+"腰側空隙大",thor:v=>"胸椎"+LBL.thor[v],lumb:v=>"腰椎"+LBL.lumb[v],
  lback:v=>"腰椎"+LBL.lback[v],bendL:v=>"腰椎向"+SIDE[v]+"旋轉",pelvis:v=>"骨盆"+SIDE[v]+"高",ptilt:v=>"骨盆"+LBL.ptilt[v],sway:v=>"骨盆前推",
@@ -763,11 +824,15 @@ function renderResults(){
   const r=analyze(), a=A();
   recordResult(r);
   const hist=historyFor(S.name), who=S.name?`「${esc(S.name)}」`:"這台裝置上未命名";
-  const cmp=hist.length>=2?compareTable(hist,6):null;
-  const cmpHTML=`<section style="display:flex;flex-direction:column;gap:10px"><h2>前後測對比</h2>
-    ${cmp?`<p class="small">${who}共 ${hist.length} 次評估。角度來自照片標線，越接近 0° 越對稱；每次請用同樣的距離、高度與站姿拍照，比較才準。</p>
-      <div class="tblwrap">${cmp.html}</div>${cmp.angles?"":`<p class="small">這幾次都沒有用照片標線，所以只比較有差異的部位數。下次上傳照片就能比較角度。</p>`}`
-      :`<p class="small">這是${who}的第 1 次評估${S.m&&Object.keys(S.m).length?"，照片量到的角度已經記下來":""}。4 到 6 週後用同樣的名字和拍攝條件重測，這裡就會列出每個角度和上一次、第一次相比改善了多少。</p>`}
+  const cur=hist.find(x=>x.id===S.recId)||hist[hist.length-1];
+  const nth=nthOf(cur,hist);
+  const tbl=angleTable(hist,5,true);
+  const infoHTML=`<div class="infobar"><span>姓名 <b>${esc(S.name||"未填")}</b></span><span>評估日期 <b>${shortDate(cur.date)}</b></span><span>第 <b>${nth}</b> 次評估</span></div>`;
+  const cmpHTML=`<section style="display:flex;flex-direction:column;gap:10px"><h2>關節角度分析${hist.length>1?"與前後測對比":""}</h2>
+    ${tbl?`<p class="small">角度由照片標記點計算，越接近 0° 越對稱。參考範圍是本工具的篩檢參考值，不是診斷標準。${hist.length>1?`${who}共 ${hist.length} 次評估，綠色代表比之前改善，紅色代表增加。`:""}每次請用同樣的距離、高度與站姿拍照，比較才準。</p>
+      <div class="tblwrap">${tbl}</div>`
+      :`<div class="warn">這次沒有用照片標線，所以沒有關節角度數據。回到第 2 步上傳正面、背面或側面照片，按「自動分析照片」或「自己標記」，就會量出頭部、肩峰、肩胛、軀幹、骨盆與膝關節的角度。</div>`}
+    ${hist.length<2?`<p class="small">這是${who}的第 1 次評估。4 到 6 週後用同樣的名字和拍攝條件重測，這裡就會列出每個角度和上一次、第一次相比改善了多少。</p>`:""}
     ${hist.length>=2?`<div class="histbar">${S.confirmClear?`<span class="small">確定要刪除${who}之前的 ${hist.length-1} 次紀錄嗎？</span><button type="button" class="btn" data-act="clearyes">確定刪除</button><button type="button" class="btn" data-act="clearno">取消</button>`:`<button type="button" class="btn" data-act="clearhist">刪除之前的紀錄</button>`}</div>`:""}
     <p class="small">紀錄只存在這台裝置的瀏覽器裡，換手機或清除瀏覽資料就會消失。下載 PDF 報告可以留存每次的結果。</p></section>`;
   const flags=(a.flags||[]).filter(f=>f!=="none");
@@ -775,6 +840,7 @@ function renderResults(){
   const rowHTML=([name,k,base])=>{const v=a[k];const ok=!dev(k);return `<div class="row"><span>${name}</span><span class="v${ok?" ok":""}">${esc(lab(k,base))}</span></div>`};
   app.innerHTML=`
   ${flags.length?`<div class="danger"><b>請先就醫再開始運動調整。</b> 你勾選了：${flags.map(f=>FL[f]).join("、")}。這些可能和神經壓迫或其他需要醫師評估的狀況有關，請先到骨科、神經科或復健科檢查。</div>`:""}
+  ${infoHTML}
   <div class="sum"><div class="k">評估結果</div><h2>${r.lv[0]}</h2><p>${r.lv[1]}</p>
   ${r.chips.length?`<div class="chips">${r.chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}
   <div class="meter">${["對稱","輕度","中度","明顯"].map((x,i)=>`<div class="${i===r.level?"on":""}"><i></i>${x}</div>`).join("")}</div></div>
@@ -788,7 +854,7 @@ function renderResults(){
     <div class="key"><span style="--c:var(--diff)">有差異的部位</span><span style="--c:var(--ref)">肩線、骨盆線與鉛垂參考</span></div>
   </section>
   <section><h2>各部位檢查</h2>
-  ${SECTIONS.map(([h,rows])=>`<div class="sec"><h4>${h}</h4>${rows.map(rowHTML).join("")}</div>`).join("")}</section>
+  ${[BASIC,...SECTIONS].map(([h,rows])=>`<div class="sec"><h4>${h}</h4>${rows.map(rowHTML).join("")}</div>`).join("")}</section>
   <section style="display:flex;flex-direction:column;gap:10px"><h2>你的代償模式</h2>
   ${r.pats.length?`<ul class="pat">${r.pats.map(p=>`<li><b>${esc(p[0])}</b>：${esc(p[1])}</li>`).join("")}</ul>`:`<p>目前沒有明顯的代償模式。</p>`}</section>
   <section class="plan"><h2>回正運動方向</h2><p class="small">依你的結果排出調整順序，從骨盆與脊椎的位置開始，再處理下肢與上背。</p>
@@ -805,10 +871,13 @@ function renderResults(){
 
 function summaryText(){
   const r=analyze(),a=A();
-  const lines=[`脊椎歪斜自我評估｜${r.lv[0]}`, r.chips.length?"發現："+r.chips.join("、"):"各部位大致對稱"];
+  const hist=historyFor(S.name), cur=hist.find(x=>x.id===S.recId)||hist[hist.length-1];
+  const lines=[`脊椎歪斜自我評估｜${r.lv[0]}`,`${S.name?S.name+" · ":""}${cur?shortDate(cur.date)+" · 第 "+nthOf(cur,hist)+" 次評估":""}`, r.chips.length?"發現："+r.chips.join("、"):"各部位大致對稱"];
+  const ms=METRICS.filter(d=>cur&&cur.m&&cur.m[d[0]]!=null);
+  if(ms.length) lines.push("","關節角度：",...ms.map(d=>`${d[1]} ${fmtDeg(cur.m[d[0]],d)}（參考 < ${d[5]}°）`));
   if(r.struct) lines.push(r.struct[0]+r.struct[1]);
   lines.push("","各部位檢查：");
-  SECTIONS.forEach(([h,rows])=>lines.push(`【${h}】`+rows.map(([n,k,b])=>`${n} ${lab(k,b)}`).join("；")));
+  [BASIC,...SECTIONS].forEach(([h,rows])=>lines.push(`【${h}】`+rows.map(([n,k,b])=>`${n} ${lab(k,b)}`).join("；")));
   lines.push("","代償模式："+(r.pats.map(p=>p[0]).join("、")||"無明顯代償"));
   lines.push("","回正順序：");
   r.plan.forEach((p,i)=>lines.push(`${i+1}. ${p[0]}：${p[2]}`));
@@ -823,9 +892,13 @@ function copySummary(btn){
 
 /* ---------- one-page PDF report ---------- */
 app.addEventListener("input",e=>{
-  if(e.target.id!=="q-name") return;
-  S.name=e.target.value.trim();
-  const hn=document.getElementById("histnote"); if(hn) hn.innerHTML=histNote();
+  const id=e.target.id;
+  if(id==="q-name"){
+    S.name=e.target.value.trim();
+    const hn=document.getElementById("histnote"); if(hn) hn.innerHTML=histNote();
+    const nt=document.getElementById("q-nth"); if(nt) nt.placeholder=`自動：第 ${prevCount()+1} 次`;
+  }else if(id==="q-date"){S.date=e.target.value}
+  else if(id==="q-nth"){const n=parseInt(e.target.value,10);S.nth=n>0&&n<100?n:null}
 });
 let downloadsNS=null;
 if(window.claude&&claude.use) claude.use("downloads").then(d=>{downloadsNS=d}).catch(()=>{});
@@ -860,10 +933,11 @@ function reportHTML(r,imgs,date){
   if(r.youth) notes.push(`<div class="rp-note bad"><b>成長期提醒。</b>前彎有隆起，側彎可能隨身高增加而進展，請盡快讓骨科醫師評估。</div>`);
   if(!notes.length) notes.push(`<div class="rp-note ok"><b>沒有需要就醫的警訊。</b>可以直接依右下方的順序開始功能性調整，4 到 6 週後用同樣條件重測。</div>`);
   const row=([n,k,b])=>`<div class="rp-row"><span>${n}</span><span class="v${dev(k)?"":" ok"}">${esc(lab(k,b))}</span></div>`;
-  const hist=historyFor(S.name), nth=Math.max(1,hist.findIndex(x=>x.id===S.recId)+1);
+  const hist=historyFor(S.name), cur=hist.find(x=>x.id===S.recId)||hist[hist.length-1], nth=nthOf(cur,hist);
+  const tbl=angleTable(hist,2,false);
   return `<div class="rp-in">
   <header class="rp-hd"><div><div class="ey">YOUCORE HEALTH ADVISORS · 宥芯健康顧問</div><h1>脊椎歪斜評估報告</h1></div>
-    <dl><dt>姓名</dt><dd>${esc(S.name||"—")}</dd><dt>評估日期</dt><dd>${date}</dd><dt>評估次數</dt><dd>第 ${nth} 次</dd><dt>評估方式</dt><dd>功能性歪斜自我篩檢</dd></dl></header>
+    <dl><dt>姓名</dt><dd>${esc(S.name||"—")}</dd><dt>評估日期</dt><dd>${shortDate(cur.date||date)}</dd><dt>評估次數</dt><dd>第 ${nth} 次</dd><dt>年齡層</dt><dd>${esc(lab("age"))}</dd><dt>就醫警訊</dt><dd>${esc(lab("flags"))}</dd></dl></header>
   <section class="rp-top">
     <div class="rp-sum"><div class="rp-k">評估結果</div><h2>${r.lv[0]}</h2><p style="margin:0">${r.lv[1]}</p>
       <div class="rp-meter">${["對稱","輕度","中度","明顯"].map((x,i)=>`<div class="${i===r.level?"on":""}"><i></i>${x}</div>`).join("")}</div>
@@ -872,7 +946,8 @@ function reportHTML(r,imgs,date){
   </section>
   ${imgs.length?`<section><h3>3D 骨骼模型<small>依評估結果調整骨骼位置，角度放大 2 倍顯示；橘色為有差異的部位，綠線為肩線、骨盆線與鉛垂參考</small></h3>
     <div class="rp-views">${imgs.map(([n,src])=>`<figure><img src="${src}" alt=""><figcaption>${n}</figcaption></figure>`).join("")}</div></section>`:""}
-  ${hist.length>=2?`<section><h3>前後測對比<small>角度來自照片標線，越接近 0° 越對稱；綠色為改善、紅色為增加</small></h3>${compareTable(hist,4).html}</section>`:""}
+  <section><h3>關節角度分析${hist.length>1?"與前後測對比":""}<small>由照片標記點計算，越接近 0° 越對稱；參考範圍為本工具篩檢參考值${hist.length>1?"；綠色為改善、紅色為增加":""}</small></h3>
+    ${tbl||`<p style="margin:0;color:#5F6A5B">本次未使用照片標線，沒有關節角度數據。</p>`}</section>
   <section><h3>各部位檢查</h3><div class="rp-grid">${SECTIONS.map(([h,rows])=>`<div class="rp-sec"><h4>${h}</h4>${rows.map(row).join("")}</div>`).join("")}</div></section>
   <section><h3>代償模式</h3>${r.pats.length?`<ul class="rp-pat">${r.pats.map(p=>`<li><b>${esc(p[0])}</b>：${esc(p[1])}</li>`).join("")}</ul>`:"<p style=\"margin:0\">目前沒有明顯的代償模式。</p>"}</section>
   <section><h3>回正運動順序<small>從骨盆與脊椎開始，再處理下肢與上背</small></h3><div class="rp-plan">${r.plan.map((p,i)=>`<div class="${i===0?"first":""}"><span class="n">${i+1}</span><span><b>${esc(p[0])}</b>　${esc(p[2])}</span></div>`).join("")}</div></section>
@@ -899,7 +974,12 @@ async function makePDF(btn){
     if(document.fonts&&document.fonts.ready) await Promise.race([document.fonts.ready,new Promise(res=>setTimeout(res,3000))]);
     /* shrink type until the whole report fits one A4 page */
     const inner=el.firstElementChild;
-    for(let fs=10;fs>=7;fs-=.25){el.style.setProperty("--fs",fs+"px");if(inner.scrollHeight<=el.clientHeight)break}
+    for(let fs=10;fs>=7.5;fs-=.25){el.style.setProperty("--fs",fs+"px");if(inner.scrollHeight<=el.clientHeight)break}
+    /* still too tall at the smallest readable size: scale the whole page down so the footer always fits */
+    if(inner.scrollHeight>el.clientHeight){
+      const k=el.clientHeight/inner.scrollHeight;
+      inner.style.width=(100/k)+"%";inner.style.transform=`scale(${k})`;
+    }
     const canvas=await html2canvas(el,{scale:2,backgroundColor:"#FFFFFF",logging:false,x:0,y:0,scrollX:0,scrollY:0,windowWidth:794,
       onclone:doc=>{const c=doc.querySelector(".rp");if(c){c.style.left="0";c.style.position="absolute"}}});
     const pdf=new window.jspdf.jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
