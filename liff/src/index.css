@@ -124,3 +124,66 @@ p { margin: 0; }
 .info dt { color: var(--ink-soft); font-size: 0.9rem; }
 .info dd { margin: 0; }
 .info a { color: var(--brand); }
+
+/* ── 量表 ─────────────────────────────────────────────────── */
+:root { --body: #E6DFD0; }
+.segmented.two { grid-template-columns: repeat(2, 1fr); }
+.tag.warn { background: #F3D9A4; margin-top: 0; }
+.banner { background: #F3D9A4; color: var(--ink); border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; font-weight: 700; }
+.banner.ok { background: #DCE8D6; }
+.note { margin-top: 10px; }
+
+.scale-card { display: grid; gap: 6px; }
+.scale-card-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.scale-card-head .tag { margin-top: 0; }
+.scale-card .row { margin-top: 6px; }
+.scale-card .btn { text-decoration: none; display: inline-flex; align-items: center; }
+.btn.primary.block { display: block; text-align: center; text-decoration: none; }
+
+.progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.progress div { height: 100%; background: var(--brand); transition: width 0.2s; }
+.question { font-size: 1.25rem; line-height: 1.5; min-height: 3em; }
+.row.spread { justify-content: space-between; }
+
+.nscale { display: grid; gap: 8px; }
+.nscale-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.nscale-btn {
+  font: inherit; font-weight: 700; font-size: 1.1rem; min-height: 48px; border-radius: 12px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.nscale-btn.on { background: hsl(calc(130 - 122 * var(--heat)) 35% 38%); border-color: transparent; color: #fff; }
+.nscale-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--ink-soft); }
+.btn.na.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.bodymap { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.bodymap svg { width: min(260px, 70vw); height: auto; }
+.bodymap .region { stroke: #C9BFA9; stroke-width: 1; cursor: pointer; transition: fill 0.15s; }
+.bodymap .region:hover { stroke: var(--brand); stroke-width: 2; }
+.bodymap .region.selected { stroke: var(--ink); stroke-width: 3; }
+.bodymap .region:focus-visible { outline: none; stroke: var(--brand); stroke-width: 3; }
+.side-note { display: flex; justify-content: space-between; width: min(260px, 70vw); font-size: 0.8rem; color: var(--ink-soft); }
+.sheet { border-color: var(--brand); box-shadow: 0 4px 16px rgba(28, 43, 26, 0.12); }
+.marked { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
+.marked li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.marked li:last-child { border-bottom: 0; }
+.marked button { font: inherit; background: none; border: 0; padding: 0; color: var(--brand); cursor: pointer; text-align: left; }
+
+.scores { display: grid; gap: 6px; margin: 8px 0 0; }
+.scores > div { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.scores dt { color: var(--ink-soft); }
+.scores dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.scores .main dt { color: var(--ink); font-weight: 700; }
+.scores .main dd { font-size: 1.6rem; color: var(--brand); }
+.delta { font-size: 0.8rem; margin-left: 8px; font-weight: 700; color: var(--ink-soft); }
+.delta.good { color: #3E7B3A; }
+.delta.bad { color: var(--danger); }
+
+.chart { margin: 8px 0 0; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .tick { font-size: 10px; fill: var(--ink-soft); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.8rem; color: var(--ink-soft); margin-top: 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; }
+.history { list-style: none; margin: 8px 0 0; padding: 0; }
+.history li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.history li:last-child { border-bottom: 0; }

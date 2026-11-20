@@ -61,6 +61,64 @@ export async function giveConsent(profileId) {
   if (error) throw error
 }
 
+// ── 量表與疼痛地圖 ──────────────────────────────────────────────
+
+const demoList = (k) => demoGet(k) ?? []
+const demoPush = (k, row) => {
+  const rows = demoList(k)
+  rows.push(row)
+  demoSet(k, rows)
+  return row
+}
+
+/** 送出量表答案（分數在前端用共用計分模組算好） */
+export async function saveResponse(profileId, config, answers, result) {
+  const row = {
+    profile_id: profileId,
+    questionnaire_key: config.key,
+    questionnaire_version: config.version,
+    answers,
+    scores: result,
+    computable: result.computable,
+  }
+  if (DEMO) return demoPush(`responses:${config.key}`, { ...row, id: crypto.randomUUID(), submitted_at: new Date().toISOString() })
+  const { data, error } = await supabase.from('questionnaire_responses').insert(row).select().single()
+  if (error) throw error
+  return data
+}
+
+/** 某份量表的歷次紀錄，舊到新 */
+export async function listResponses(profileId, key) {
+  if (DEMO) return demoList(`responses:${key}`)
+  const { data, error } = await supabase
+    .from('questionnaire_responses')
+    .select('id, questionnaire_version, scores, computable, submitted_at')
+    .eq('profile_id', profileId)
+    .eq('questionnaire_key', key)
+    .order('submitted_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
+export async function savePainMap(profileId, regions) {
+  const row = { profile_id: profileId, regions }
+  if (DEMO) return demoPush('painmaps', { ...row, id: crypto.randomUUID(), submitted_at: new Date().toISOString() })
+  const { data, error } = await supabase.from('pain_maps').insert(row).select().single()
+  if (error) throw error
+  return data
+}
+
+export async function listPainMaps(profileId) {
+  if (DEMO) return demoList('painmaps')
+  const { data, error } = await supabase
+    .from('pain_maps')
+    .select('id, regions, submitted_at')
+    .eq('profile_id', profileId)
+    .order('submitted_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
 export async function requestDeletion(profileId) {
   if (DEMO) return demoSet('deletion', new Date().toISOString())
   const { error } = await supabase.from('deletion_requests').insert({ profile_id: profileId })
