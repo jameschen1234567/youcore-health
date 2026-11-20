@@ -5,6 +5,8 @@ import { hasCurrentConsent } from './lib/api'
 import Consent from './pages/Consent'
 import Me from './pages/Me'
 import Placeholder from './pages/Placeholder'
+import ContentHome from './pages/ContentHome'
+import ContentDetail from './pages/ContentDetail'
 import TabBar from './components/TabBar'
 
 function Gate() {
@@ -27,7 +29,8 @@ function Gate() {
     <HashRouter>
       <div className="app">
         <Routes>
-          <Route path="/" element={<Placeholder title="衛教專區" desc="足部、肩頸、下背、訓練與恢復的衛教文章和短影音，內容由 Notion 同步。" milestone={2} />} />
+          <Route path="/" element={<ContentHome />} />
+          <Route path="/content/:id" element={<ContentDetail />} />
           <Route path="/scales" element={<Placeholder title="評估量表" desc="足部功能指數（FFI-TC）、疼痛分數與身體疼痛地圖，可追蹤前後變化。" milestone={3} />} />
           <Route path="/foot" element={<Placeholder title="足部初篩" desc="用一張 A4 紙，在家量出足長與足寬，拿到你的足型報告。" milestone={4} />} />
           <Route path="/me" element={<Me />} />
