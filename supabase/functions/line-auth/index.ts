@@ -63,7 +63,12 @@ Deno.serve(async (req) => {
       line_user_id: claims.sub,
       display_name: claims.name ?? null,
     });
-    if (pErr) return json({ error: "CREATE_PROFILE_FAILED" }, 500);
+    if (pErr) {
+      // 回滾剛建立的帳號，避免留下沒有 profile 的孤兒帳號導致下次登入卡住
+      await admin.auth.admin.deleteUser(created.user.id);
+      console.error("CREATE_PROFILE_FAILED", pErr.message);
+      return json({ error: "CREATE_PROFILE_FAILED" }, 500);
+    }
   } else if (claims.name) {
     await admin.from("profiles").update({ display_name: claims.name }).eq("id", existing.id);
   }
