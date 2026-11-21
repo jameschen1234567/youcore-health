@@ -12,6 +12,7 @@ import { downloadText, footCsv, footCsvFilename } from '../../lib/csv'
 import { REGION_LABELS } from '../../lib/bodyRegions'
 import { fmtDate } from '../../lib/format'
 import BodyMap from '../../components/BodyMap'
+import { deleteFootMeasurement } from '../../lib/api'
 import { DEMO } from '../../config'
 import OrderCard from '../../components/OrderCard'
 
@@ -39,7 +40,7 @@ export default function AdminClient() {
 
       <DeletionPanel data={data} onDone={() => navigate('/admin')} onChange={reload} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />
-      <Foot profileName={profile.display_name} rows={data.foot} />
+      <Foot profileName={profile.display_name} rows={data.foot} onChange={reload} />
       <Scales responses={data.responses} />
       <PainMap maps={data.painMaps} />
     </main>
@@ -174,7 +175,7 @@ function NoteEditor({ order, onSave }) {
 }
 
 // ── 足部量測 ──────────────────────────────────────────────────────────────
-function Foot({ profileName, rows }) {
+function Foot({ profileName, rows, onChange }) {
   const report = buildReport(rows)
   return (
     <section className="card">
@@ -183,16 +184,21 @@ function Foot({ profileName, rows }) {
       {report.diffWarning && <p className="banner warn">最新一次左右足長差 {toCm(report.lengthDiff)} cm，建議到店確認。</p>}
       <ul className="foot-rows">
         {[...rows].reverse().map((r) => (
-          <FootRow key={r.id} row={r} profileName={profileName} />
+          <FootRow key={r.id} row={r} profileName={profileName} onDeleted={onChange} />
         ))}
       </ul>
     </section>
   )
 }
 
-function FootRow({ row, profileName }) {
+function FootRow({ row, profileName, onDeleted }) {
   const [url, setUrl] = useState(null)
   const [photoErr, setPhotoErr] = useState(false)
+  const [del, setDel] = useState('idle') // idle | confirm | working | error
+  const doDelete = async () => {
+    setDel('working')
+    try { await deleteFootMeasurement(row); onDeleted() } catch { setDel('error') }
+  }
   const showPhoto = async () => {
     try { setUrl(await adminPhotoUrl(row.photo_path)) } catch { setPhotoErr(true) }
   }
@@ -208,7 +214,16 @@ function FootRow({ row, profileName }) {
       <div className="row">
         {row.photo_path && !url && <button className="link-btn" onClick={showPhoto}>看照片</button>}
         <button className="link-btn" onClick={() => downloadText(footCsvFilename(csvRow), footCsv([csvRow]))}>下載 CSV</button>
+        {del === 'idle' && <button className="link-btn danger-text" onClick={() => setDel('confirm')}>刪除</button>}
       </div>
+      {del !== 'idle' && (
+        <div className="row confirm-row">
+          <span className="small">確定刪除這筆{SIDE_LABELS[row.side]}量測？照片會一起刪除，無法復原。</span>
+          <button className="btn ghost" disabled={del === 'working'} onClick={() => setDel('idle')}>取消</button>
+          <button className="btn danger" disabled={del === 'working'} onClick={doDelete}>{del === 'working' ? '刪除中…' : '確定刪除'}</button>
+        </div>
+      )}
+      {del === 'error' && <p className="error small">刪除失敗，請稍後再試</p>}
       {photoErr && <p className="error small">照片載入失敗</p>}
       {url && <img className="foot-preview" src={url} alt={`${SIDE_LABELS[row.side]}照片`} />}
     </li>

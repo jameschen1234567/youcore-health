@@ -239,3 +239,12 @@ p .link-btn { margin-left: 8px; }
 .foot-rows .row { justify-content: flex-start; margin-top: 4px; }
 .foot-row-head { display: flex; justify-content: space-between; gap: 8px; }
 .order-card .row { flex-wrap: wrap; }
+
+/* 刪除類的文字按鈕、客戶端取消量測區塊 */
+.link-btn.danger-text { color: var(--danger); }
+.undo { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line, #ddd); }
+.undo .row { flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-start; }
+.undo .link-btn { white-space: nowrap; }
+.confirm-row { flex-wrap: wrap; justify-content: flex-start; align-items: center; width: 100%; }
+.confirm-row > .small { flex-basis: 100%; }
+.confirm-row .btn { white-space: nowrap; }

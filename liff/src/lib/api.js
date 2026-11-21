@@ -181,11 +181,29 @@ export async function listFootMeasurements(profileId) {
   if (DEMO) return demoList('foot')
   const { data, error } = await supabase
     .from('foot_measurements')
-    .select('id, side, length_mm, width_mm, width_class, quality_flags, algo_version, created_at')
+    .select('id, side, length_mm, width_mm, width_class, quality_flags, algo_version, photo_path, created_at')
     .eq('profile_id', profileId)
     .order('created_at', { ascending: true })
   if (error) throw error
   return data
+}
+
+/**
+ * 刪除一筆足部量測（含照片）。客戶只能刪自己 24 小時內的（資料庫 policy 把關），管理員不限。
+ * 先刪資料列再刪照片：資料列刪不掉（例如超過時限）就不會動到照片。
+ */
+export async function deleteFootMeasurement(row) {
+  if (DEMO) {
+    demoSet('foot', demoList('foot').filter((r) => r.id !== row.id))
+    return
+  }
+  const { data, error } = await supabase.from('foot_measurements').delete().eq('id', row.id).select('id')
+  if (error) throw error
+  if (!data?.length) throw new Error('DELETE_NOT_ALLOWED')
+  if (row.photo_path) {
+    // 照片刪除失敗不影響結果（資料列已刪），只留下無主檔案
+    await supabase.storage.from('foot-photos').remove([row.photo_path]).catch(() => {})
+  }
 }
 
 // ── 訂單（客戶只能看自己的；建立與更新在管理後台）──────────────────

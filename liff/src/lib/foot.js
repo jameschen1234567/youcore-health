@@ -48,5 +48,14 @@ export function buildReport(rows) {
   }
 }
 
+/** 客戶可自行刪除量測紀錄的時限（與資料庫 0006 policy 一致） */
+export const CLIENT_DELETE_HOURS = 24
+
+/** 這筆量測客戶還能不能自己刪 */
+export function canClientDelete(row, now = Date.now()) {
+  if (!row?.created_at) return false
+  return now - new Date(row.created_at).getTime() < CLIENT_DELETE_HOURS * 3600 * 1000
+}
+
 /** mm → 顯示用 cm，一位小數 */
 export const toCm = (mm) => (Math.round(Number(mm)) / 10).toFixed(1)

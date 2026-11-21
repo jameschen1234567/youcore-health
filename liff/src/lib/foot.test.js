@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildReport, footErrorMessage, toCm } from './foot'
+import { buildReport, canClientDelete, footErrorMessage, toCm } from './foot'
 
 const row = (side, length_mm, created_at, quality_flags = []) => ({ side, length_mm, width_mm: 95, created_at, quality_flags })
 
@@ -53,5 +53,18 @@ describe('其他', () => {
   it('mm 轉 cm', () => {
     expect(toCm(248.5)).toBe('24.9')
     expect(toCm('251.0')).toBe('25.1')
+  })
+})
+
+describe('客戶自行刪除時限', () => {
+  const now = Date.parse('2026-11-22T12:00:00Z')
+  it('24 小時內可刪', () => {
+    expect(canClientDelete({ created_at: '2026-11-22T00:00:00Z' }, now)).toBe(true)
+    expect(canClientDelete({ created_at: '2026-11-21T12:00:01Z' }, now)).toBe(true)
+  })
+  it('超過 24 小時或沒有時間就不能刪', () => {
+    expect(canClientDelete({ created_at: '2026-11-21T12:00:00Z' }, now)).toBe(false)
+    expect(canClientDelete({ created_at: '2026-11-01T00:00:00Z' }, now)).toBe(false)
+    expect(canClientDelete({}, now)).toBe(false)
   })
 })
