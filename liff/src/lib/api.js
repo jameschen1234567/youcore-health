@@ -32,11 +32,11 @@ export async function getContent(id) {
   return data
 }
 
-const demoKey = (k) => `youcore-demo:${k}`
-const demoGet = (k) => {
+export const demoKey = (k) => `youcore-demo:${k}`
+export const demoGet = (k) => {
   try { return JSON.parse(localStorage.getItem(demoKey(k))) } catch { return null }
 }
-const demoSet = (k, v) => {
+export const demoSet = (k, v) => {
   try { localStorage.setItem(demoKey(k), JSON.stringify(v)) } catch { /* 私密模式忽略 */ }
 }
 
@@ -63,7 +63,7 @@ export async function giveConsent(profileId) {
 
 // ── 量表與疼痛地圖 ──────────────────────────────────────────────
 
-const demoList = (k) => demoGet(k) ?? []
+export const demoList = (k) => demoGet(k) ?? []
 const demoPush = (k, row) => {
   const rows = demoList(k)
   rows.push(row)
@@ -184,6 +184,21 @@ export async function listFootMeasurements(profileId) {
     .select('id, side, length_mm, width_mm, width_class, quality_flags, algo_version, created_at')
     .eq('profile_id', profileId)
     .order('created_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
+// ── 訂單（客戶只能看自己的；建立與更新在管理後台）──────────────────
+
+export const ORDER_FIELDS = 'id, profile_id, product_type, status, note, notified_at, created_at, updated_at, events:order_events(status, created_at)'
+
+export async function listOrders(profileId) {
+  if (DEMO) return demoList('orders').filter((o) => o.profile_id === profileId)
+  const { data, error } = await supabase
+    .from('orders')
+    .select(ORDER_FIELDS)
+    .eq('profile_id', profileId)
+    .order('created_at', { ascending: false })
   if (error) throw error
   return data
 }

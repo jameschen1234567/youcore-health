@@ -199,3 +199,43 @@ p { margin: 0; }
 .foot-table thead th { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; }
 .foot-table tbody th { text-align: left; }
 .foot-table td { font-weight: 700; font-size: 1.05rem; }
+
+/* ── 訂單 ── */
+.section-title { margin: 8px 0 0; font-size: 1.05rem; }
+.tag.ok { background: #DCE8D6; color: var(--brand); }
+.tag.danger { background: #F6DAD3; color: var(--danger); }
+.order-steps { list-style: none; margin: 12px 0 4px; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.order-steps li { display: flex; flex-direction: column; align-items: center; text-align: center; font-size: 0.75rem; color: var(--ink-soft); position: relative; }
+.order-steps li::before { content: ""; position: absolute; top: 7px; left: -50%; width: 100%; height: 2px; background: var(--line); z-index: 0; }
+.order-steps li:first-child::before { display: none; }
+.order-steps li.done::before, .order-steps li.current::before { background: var(--brand); }
+.order-steps .dot { width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2px solid var(--line); z-index: 1; }
+.order-steps li.done .dot { background: var(--brand); border-color: var(--brand); }
+.order-steps li.current .dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.25); }
+.order-steps li.current .label { color: var(--ink); font-weight: 700; }
+.order-steps .when { font-size: 0.7rem; }
+
+/* ── 管理後台 ── */
+.banner.left { text-align: left; border: 0; cursor: pointer; font: inherit; font-weight: 700; }
+.search { font: inherit; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); min-height: 44px; }
+select { font: inherit; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); min-height: 44px; }
+.client-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.client-list a { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); color: var(--ink); text-decoration: none; }
+.client-list a > span:first-child { display: flex; flex-direction: column; }
+.client-list .badges { display: flex; gap: 6px; align-items: center; white-space: nowrap; }
+.tool-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.tool-row:first-of-type { border-top: 0; }
+.tool-row .btn { flex-shrink: 0; }
+.big-num { font-size: 1.4rem; font-weight: 700; white-space: nowrap; }
+.link-btn { background: none; border: 0; padding: 4px 0; margin-left: 0; color: var(--brand); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+p .link-btn { margin-left: 8px; }
+.order-card > .link-btn { align-self: flex-start; }
+.danger-card { border: 2px solid var(--danger); }
+.danger-card .confirm label { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.form-grid { display: grid; gap: 10px; margin-top: 10px; }
+.form-grid label { display: flex; flex-direction: column; gap: 4px; }
+.foot-rows { list-style: none; margin: 8px 0 0; padding: 0; }
+.foot-rows li { padding: 10px 0; border-top: 1px solid var(--line); }
+.foot-rows .row { justify-content: flex-start; margin-top: 4px; }
+.foot-row-head { display: flex; justify-content: space-between; gap: 8px; }
+.order-card .row { flex-wrap: wrap; }

@@ -13,6 +13,8 @@ import PainMapForm from './pages/PainMapForm'
 import PainMapHistory from './pages/PainMapHistory'
 import FootHome from './pages/FootHome'
 import FootMeasure from './pages/FootMeasure'
+import AdminHome from './pages/admin/AdminHome'
+import AdminClient from './pages/admin/AdminClient'
 import TabBar from './components/TabBar'
 
 function Gate() {
@@ -45,11 +47,20 @@ function Gate() {
           <Route path="/foot" element={<FootHome />} />
           <Route path="/foot/measure" element={<FootMeasure />} />
           <Route path="/me" element={<Me />} />
+          <Route path="/admin" element={<AdminOnly><AdminHome /></AdminOnly>} />
+          <Route path="/admin/client/:id" element={<AdminOnly><AdminClient /></AdminOnly>} />
         </Routes>
         <TabBar />
       </div>
     </HashRouter>
   )
+}
+
+// 介面上的把關；真正的權限由資料庫 RLS（is_admin）負責
+function AdminOnly({ children }) {
+  const { profile } = useAuth()
+  if (profile?.role !== 'admin') return <Message title="沒有權限" text="這個頁面只有管理員可以使用" />
+  return children
 }
 
 function Message({ title, text }) {

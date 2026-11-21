@@ -2,13 +2,13 @@
 // Demo 模式直接給一個假身份。
 import { createContext, useContext, useEffect, useState } from 'react'
 import liff from '@line/liff'
-import { DEMO, LIFF_ID } from '../config'
+import { DEMO, DEMO_ROLE, LIFF_ID } from '../config'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
 export const useAuth = () => useContext(AuthContext)
 
-const DEMO_PROFILE = { id: 'demo-user', display_name: '體驗用戶', role: 'client' }
+const DEMO_PROFILE = { id: 'demo-user', display_name: '體驗用戶', role: DEMO_ROLE }
 
 async function loginWithLine() {
   await liff.init({ liffId: LIFF_ID })

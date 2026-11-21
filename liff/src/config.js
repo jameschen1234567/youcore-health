@@ -1,5 +1,7 @@
 // 全域設定。Demo 模式不需要任何帳號即可預覽。
 export const DEMO = import.meta.env.VITE_DEMO === 'true'
+// Demo 模式要預覽管理後台時設 VITE_DEMO_ROLE=admin
+export const DEMO_ROLE = import.meta.env.VITE_DEMO_ROLE === 'admin' ? 'admin' : 'client'
 export const LIFF_ID = import.meta.env.VITE_LIFF_ID
 export const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 export const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
