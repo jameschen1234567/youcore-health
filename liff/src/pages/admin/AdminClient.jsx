@@ -15,6 +15,9 @@ import BodyMap from '../../components/BodyMap'
 import { deleteFootMeasurement } from '../../lib/api'
 import { DEMO } from '../../config'
 import OrderCard from '../../components/OrderCard'
+import AdminInfo from './AdminInfo'
+import AdminBody from './AdminBody'
+import AdminTraining from './AdminTraining'
 
 export default function AdminClient() {
   const { id } = useParams()
@@ -39,6 +42,9 @@ export default function AdminClient() {
       <p className="muted small">加入 {fmtDate(profile.created_at)}</p>
 
       <DeletionPanel data={data} onDone={() => navigate('/admin')} onChange={reload} />
+      <AdminInfo profileId={profile.id} />
+      <AdminBody profileId={profile.id} />
+      <AdminTraining profileId={profile.id} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />
       <Foot profileName={profile.display_name} rows={data.foot} onChange={reload} />
       <Scales responses={data.responses} />

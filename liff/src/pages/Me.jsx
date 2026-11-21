@@ -7,6 +7,9 @@ import { sortOrders } from '../lib/orders'
 import { fmtDate } from '../lib/format'
 import OrderCard from '../components/OrderCard'
 import { DEMO } from '../config'
+import ProfileInfoForm from '../components/ProfileInfoForm'
+import InfoSummary from '../components/InfoSummary'
+import { getProfileInfo, saveProfileInfo } from '../lib/training'
 
 export default function Me() {
   const { profile } = useAuth()
@@ -39,6 +42,8 @@ export default function Me() {
         <p className="big">{profile.display_name || '未命名'}</p>
         {DEMO && <p className="tag">Demo 模式</p>}
       </section>
+
+      <MyInfo profileId={profile.id} />
 
       {profile.role === 'admin' && (
         <Link className="btn primary block" to="/admin">進入管理後台</Link>
@@ -97,5 +102,32 @@ export default function Me() {
         {deletion === 'error' && <p className="error">送出失敗，請稍後再試，或直接聯繫客服。</p>}
       </section>
     </main>
+  )
+}
+
+function MyInfo({ profileId }) {
+  const [info, setInfo] = useState(null)
+  const [editing, setEditing] = useState(false)
+  const [error, setError] = useState(false)
+  useEffect(() => { getProfileInfo(profileId).then(setInfo).catch(() => setError(true)) }, [profileId])
+
+  return (
+    <section className="card">
+      <div className="row spread head-row">
+        <h2>基本資料</h2>
+        {info && !editing && <button className="link-btn" onClick={() => setEditing(true)}>修改</button>}
+      </div>
+      {error && <p className="error small">基本資料載入失敗</p>}
+      {info && (editing ? (
+        <ProfileInfoForm initial={info} heightLocked={info.height_cm != null} onCancel={() => setEditing(false)}
+          onSubmit={async (fields) => {
+            // 身高已填過就不送出（只有教練能改）
+            const payload = info.height_cm != null ? { ...fields, height_cm: info.height_cm } : fields
+            await saveProfileInfo(profileId, { ...payload, info_completed_at: info.info_completed_at })
+            setInfo({ ...info, ...payload })
+            setEditing(false)
+          }} />
+      ) : <InfoSummary info={info} />)}
+    </section>
   )
 }

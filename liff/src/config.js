@@ -14,4 +14,4 @@ export const FOOT_API_URL = import.meta.env.VITE_FOOT_API_URL?.replace(/\/$/, ''
 export const LINE_OA_ID = import.meta.env.VITE_LINE_OA_ID
 
 // 同意書版本：文字有改就要升版，所有客戶會被要求重新同意
-export const CONSENT_VERSION = '2026-11-draft'
+export const CONSENT_VERSION = '2026-11-draft2' // 加入基本資料、病史、身體組成、訓練紀錄

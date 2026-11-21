@@ -23,7 +23,7 @@ export default function AdminHome() {
   }, [])
 
   const shown = (clients ?? []).filter((c) =>
-    (!q || (c.display_name ?? '').toLowerCase().includes(q.toLowerCase())) &&
+    (!q || [c.display_name, c.full_name, c.phone].some((v) => (v ?? '').toLowerCase().includes(q.toLowerCase()))) &&
     (filter === 'all' || (filter === 'deletion' && c.deletion_pending) || (filter === 'orders' && c.open_orders > 0)))
   const pendingDeletion = (clients ?? []).filter((c) => c.deletion_pending).length
 
@@ -40,7 +40,7 @@ export default function AdminHome() {
       <Tools />
 
       <h2 className="section-title">客戶（{clients?.length ?? '…'}）</h2>
-      <input className="search" type="search" placeholder="搜尋 LINE 名稱" value={q} onChange={(e) => setQ(e.target.value)} />
+      <input className="search" type="search" placeholder="搜尋姓名、LINE 名稱或電話" value={q} onChange={(e) => setQ(e.target.value)} />
       <div className="chips">
         {FILTERS.map(([k, label]) => (
           <button key={k} className={`chip ${filter === k ? 'on' : ''}`} onClick={() => setFilter(k)}>{label}</button>
@@ -53,7 +53,7 @@ export default function AdminHome() {
           <li key={c.id}>
             <Link to={`/admin/client/${c.id}`}>
               <span>
-                <b>{c.display_name || '未命名'}</b>
+                <b>{c.full_name || c.display_name || '未命名'}{c.full_name && c.display_name ? <span className="muted small">（LINE：{c.display_name}）</span> : null}</b>
                 <span className="muted small">
                   加入 {fmtDate(c.created_at)}{c.last_foot_at ? `｜足部量測 ${fmtDate(c.last_foot_at)}` : ''}
                 </span>
