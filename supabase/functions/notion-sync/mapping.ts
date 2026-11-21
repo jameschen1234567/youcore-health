@@ -100,6 +100,8 @@ export function simplifyBlock(b: Any, children?: Block[]): Block | null {
     case "numbered_list_item":
     case "toggle":
       return { type: b.type, text: simplifyRichText(v.rich_text), ...kids };
+    case "heading_4": // Notion 新增的 H4，App 以 H3 樣式顯示
+      return { type: "heading_3", text: simplifyRichText(v.rich_text), ...kids };
     case "callout":
       return { type: "callout", text: simplifyRichText(v.rich_text), icon: v.icon?.emoji ?? null, ...kids };
     case "divider":

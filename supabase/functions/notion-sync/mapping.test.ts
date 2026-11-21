@@ -78,6 +78,7 @@ describe("simplifyBlock", () => {
       type: "toggle", text: [{ text: "標" }], children: [child],
     });
     expect(simplifyBlock(blk("heading_2", { rich_text: [rt("H")] }))).toEqual({ type: "heading_2", text: [{ text: "H" }] });
+    expect(simplifyBlock(blk("heading_4", { rich_text: [rt("H4")] }))).toEqual({ type: "heading_3", text: [{ text: "H4" }] });
   });
 
   it("callout keeps emoji icon", () => {
