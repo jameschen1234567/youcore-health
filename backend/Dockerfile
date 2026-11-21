@@ -16,7 +16,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN python -c "from ultralytics import YOLO; YOLO('yolov8m-pose.pt')"
 
 # Copy source code
-COPY main.py biomechanics.py pose_analyzer.py pdf_report.py ./
+# 複製全部原始碼（排除清單見 .dockerignore）
+COPY . .
 
 EXPOSE 8000
 

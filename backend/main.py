@@ -10,6 +10,7 @@ from auth import get_current_user, require_admin
 from routers.auth_router import router as auth_router
 from routers.admin_router import router as admin_router
 from routers.client_router import router as client_router
+from routers.foot_router import router as foot_router
 from pose_analyzer import analyze_video_file
 from pdf_report import generate_pdf_report
 
@@ -33,6 +34,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(client_router)
+app.include_router(foot_router)
 
 TMP = Path(tempfile.gettempdir()) / "motion_analysis"
 TMP.mkdir(exist_ok=True)

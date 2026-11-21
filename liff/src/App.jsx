@@ -4,7 +4,6 @@ import { AuthProvider, useAuth } from './auth/AuthProvider'
 import { hasCurrentConsent } from './lib/api'
 import Consent from './pages/Consent'
 import Me from './pages/Me'
-import Placeholder from './pages/Placeholder'
 import ContentHome from './pages/ContentHome'
 import ContentDetail from './pages/ContentDetail'
 import Scales from './pages/Scales'
@@ -12,6 +11,8 @@ import QuestionnaireForm from './pages/QuestionnaireForm'
 import ScaleHistory from './pages/ScaleHistory'
 import PainMapForm from './pages/PainMapForm'
 import PainMapHistory from './pages/PainMapHistory'
+import FootHome from './pages/FootHome'
+import FootMeasure from './pages/FootMeasure'
 import TabBar from './components/TabBar'
 
 function Gate() {
@@ -41,7 +42,8 @@ function Gate() {
           <Route path="/scales/painmap/history" element={<PainMapHistory />} />
           <Route path="/scales/:key" element={<QuestionnaireForm />} />
           <Route path="/scales/:key/history" element={<ScaleHistory />} />
-          <Route path="/foot" element={<Placeholder title="足部初篩" desc="用一張 A4 紙，在家量出足長與足寬，拿到你的足型報告。" milestone={4} />} />
+          <Route path="/foot" element={<FootHome />} />
+          <Route path="/foot/measure" element={<FootMeasure />} />
           <Route path="/me" element={<Me />} />
         </Routes>
         <TabBar />

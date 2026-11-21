@@ -1,0 +1,7 @@
+{
+  "_說明": "足寬分類門檻（足寬／足長 比例）。由 James 依手量資料訂定後填入；未填時報告不顯示寬度分類。",
+  "width_ratio_thresholds": {
+    "narrow_below": null,
+    "wide_above": null
+  }
+}

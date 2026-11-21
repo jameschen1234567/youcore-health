@@ -28,9 +28,9 @@
 - [x] 3.4 結果頁、趨勢圖、回測提醒
 
 ## 里程碑 4：足部 A1
-- [ ] 4.1 `backend/foot_measure.py` 演算法＋pytest（合成測試圖＋實拍標記圖）
-- [ ] 4.2 `backend/routers/foot_router.py`：`POST /foot/measure`、Supabase JWT 驗證、大小與頻率限制
-- [ ] 4.3 前端拍照教學、上傳、錯誤提示、報告頁
+- [x] 4.1 `backend/foot_measure.py` 演算法＋pytest（合成測試圖＋實拍標記圖）
+- [x] 4.2 `backend/routers/foot_router.py`：`POST /foot/measure`、Supabase JWT 驗證、大小與頻率限制
+- [x] 4.3 前端拍照教學、上傳、錯誤提示、報告頁
 - [ ] 4.4 James／Nicole 準確度驗收（≤ 5 mm）
 
 ## 里程碑 5：訂單與後台

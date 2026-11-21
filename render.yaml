@@ -9,4 +9,9 @@ services:
     envVars:
       - key: MAX_UPLOAD_MB
         value: "200"
+      # 足部量測 API 驗證 Supabase 登入用（到 Render 後台填值，不要寫進程式碼）
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_JWT_SECRET   # 只有專案還在用舊制 JWT secret 時才需要
+        sync: false
     healthCheckPath: /health
