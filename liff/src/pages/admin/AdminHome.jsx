@@ -59,6 +59,7 @@ export default function AdminHome() {
                 </span>
               </span>
               <span className="badges">
+                {c.role === 'admin' && <span className="tag">管理員</span>}
                 {c.deletion_pending && <span className="tag danger">待刪除</span>}
                 {c.open_orders > 0 && <span className="tag">訂單 {c.open_orders}</span>}
                 <span aria-hidden="true">›</span>

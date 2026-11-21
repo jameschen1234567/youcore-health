@@ -23,7 +23,8 @@ export async function adminListClients() {
     }]
   }
   const [profiles, foot, dels, orders] = await Promise.all([
-    supabase.from('profiles').select('id, display_name, role, created_at').eq('role', 'client').order('created_at', { ascending: false }),
+    // 管理員也列出來（可以替自己建測試訂單、看自己的資料）
+    supabase.from('profiles').select('id, display_name, role, created_at').order('created_at', { ascending: false }),
     supabase.from('foot_measurements').select('profile_id, created_at').order('created_at', { ascending: false }),
     supabase.from('deletion_requests').select('profile_id').eq('status', 'pending'),
     supabase.from('orders').select('profile_id, status').neq('status', 'picked_up'),
