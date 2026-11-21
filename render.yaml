@@ -4,7 +4,7 @@ services:
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
-    plan: starter          # $7/月，不會睡眠；免費方案會休眠 15 分鐘
+    plan: free             # 內部測試先用免費方案（閒置 15 分鐘會休眠）；正式開放改回 starter（$7/月）
     region: singapore      # 亞洲節點，台灣連線較快
     envVars:
       - key: MAX_UPLOAD_MB

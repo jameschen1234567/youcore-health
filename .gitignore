@@ -19,3 +19,6 @@ frontend/.env.local
 # OS
 .DS_Store
 Thumbs.db
+
+# Supabase CLI 本機暫存（link 資訊）
+supabase/.temp/
