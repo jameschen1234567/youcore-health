@@ -1,6 +1,7 @@
 """
 JWT authentication helpers.
 """
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -12,7 +13,13 @@ from jose import JWTError, jwt
 from database import get_conn
 
 # ── Config ────────────────────────────────────────────────────────────────────
-SECRET_KEY  = "youcore-secret-key-change-in-production-2025"
+# 簽發登入 token 的密鑰：一律從環境變數讀取（repo 是公開的，不能寫在程式碼裡）
+# Render 上沒設定就拒絕啟動；本機開發才使用臨時值
+SECRET_KEY = os.environ.get("JWT_SECRET_KEY")
+if not SECRET_KEY:
+    if os.environ.get("RENDER"):
+        raise RuntimeError("JWT_SECRET_KEY 未設定")
+    SECRET_KEY = "local-dev-only-not-for-production"
 ALGORITHM   = "HS256"
 EXPIRE_DAYS = 7
 
