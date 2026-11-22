@@ -1,0 +1,16 @@
+{
+  "name": "宥芯健筋療育所",
+  "short_name": "宥芯",
+  "description": "宥芯健筋療育所客戶專屬 App：衛教、量表、足部初篩、訓練紀錄",
+  "lang": "zh-Hant-TW",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4F0E8",
+  "theme_color": "#1C2B1A",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
