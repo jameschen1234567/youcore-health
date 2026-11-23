@@ -3,6 +3,7 @@
 import { DEMO, LINE_OA_ID } from '../config'
 import { supabase } from './supabase'
 import { demoGet, demoList, demoSet } from './api'
+import { demoApplyPackage } from './packages'
 
 export const OPEN = '10:00'
 export const CLOSE = '20:30'
@@ -233,7 +234,11 @@ export async function adminListBookings(fromIso, toIso) {
 
 /** 標記完成／未到 */
 export async function adminSetBookingStatus(id, status) {
-  if (DEMO) return demoUpdate(id, { status })
+  if (DEMO) {
+    const b = demoList('bookings').find((x) => x.id === id)
+    if (b) demoApplyPackage(b, b.status, status)
+    return demoUpdate(id, { status })
+  }
   unwrap(await supabase.from('bookings').update({ status, updated_at: new Date().toISOString() }).eq('id', id))
 }
 

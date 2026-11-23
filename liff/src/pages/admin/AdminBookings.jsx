@@ -7,6 +7,7 @@ import {
   addDays, rescheduleBooking, startTimes, taipei, taipeiDate, taipeiTime,
 } from '../../lib/booking'
 import { adminListClients } from '../../lib/adminApi'
+import { adminUsagesForBookings } from '../../lib/packages'
 
 const ALL_TIMES = startTimes(30) // 管理員可選 10:00–20:00 每 30 分的開始時間
 
@@ -18,6 +19,7 @@ export default function AdminBookings() {
   useEffect(() => { if (/^\d{4}-\d{2}-\d{2}$/.test(paramDate ?? '')) setDate(paramDate) }, [paramDate])
   const [rows, setRows] = useState(null)
   const [blocked, setBlocked] = useState([])
+  const [usage, setUsage] = useState({})
   const [services, setServices] = useState([])
   const [err, setErr] = useState('')
 
@@ -25,7 +27,10 @@ export default function AdminBookings() {
     const from = taipei(date, '00:00').toISOString()
     const to = taipei(addDays(date, 1), '00:00').toISOString()
     return Promise.all([adminListBookings(from, to), listBlocked(from, to), listServices({ all: true })])
-      .then(([r, b, s]) => { setRows(r); setBlocked(b); setServices(s) })
+      .then(async ([r, b, s]) => {
+        setRows(r); setBlocked(b); setServices(s)
+        setUsage(await adminUsagesForBookings(r.filter((x) => x.status === 'completed').map((x) => x.id)).catch(() => ({})))
+      })
       .catch(() => setErr('載入失敗'))
   }, [date])
   useEffect(() => { reload() }, [reload])
@@ -56,7 +61,7 @@ export default function AdminBookings() {
         </p>
       ))}
       {rows && active.length === 0 && <p className="muted">這天沒有預約</p>}
-      {active.map((b) => <BookingItem key={b.id} b={b} onChanged={reload} />)}
+      {active.map((b) => <BookingItem key={b.id} b={b} usage={usage[b.id]} onChanged={reload} />)}
       {cancelled.length > 0 && (
         <p className="muted small">已取消：{cancelled.map((b) => `${taipeiTime(new Date(b.starts_at))} ${name(b)}`).join('、')}</p>
       )}
@@ -70,7 +75,7 @@ export default function AdminBookings() {
 
 const name = (b) => b.profile?.full_name || b.profile?.display_name || '客戶'
 
-function BookingItem({ b, onChanged }) {
+function BookingItem({ b, usage, onChanged }) {
   const [mode, setMode] = useState(null) // null | cancel | no_show | move
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -94,6 +99,11 @@ function BookingItem({ b, onChanged }) {
       </div>
       <p><Link to={`/admin/client/${b.profile_id}`}>{name(b)}</Link>{b.profile?.phone ? <span className="muted small">｜{b.profile.phone}</span> : null}</p>
       <p className="muted small">{b.service?.name}{b.note ? `｜備註：${b.note}` : ''}</p>
+      {b.status === 'completed' && !b.service?.is_trial && (
+        usage
+          ? <p className="small ok-text">已扣 1 堂｜課程包剩 {usage.remaining} 堂</p>
+          : <p className="small error">未扣堂：這位客戶沒有可用的「{b.service?.name}」課程包</p>
+      )}
       {err && <p className="error small">{err}</p>}
 
       {b.status === 'booked' && mode === null && (
