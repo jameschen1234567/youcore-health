@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
-  CLOSE, OPEN, STATUS_LABELS, adminAddBlocked, adminDeleteBlocked, adminListBookings, adminSetBookingStatus,
+  CLOSE, OPEN, STATUS_LABELS, WEEKLY_REASONS, adminAddBlocked, adminCancelSeriesFrom, adminCreateWeekly, adminDeleteBlocked, adminListBookings, adminSetBookingStatus,
   adminUpdateService, bookingErrorText, cancelBooking, createBooking, fmtDateLabel, fmtSlot, listBlocked, listServices,
   addDays, rescheduleBooking, startTimes, taipei, taipeiDate, taipeiTime,
 } from '../../lib/booking'
@@ -14,6 +14,8 @@ export default function AdminBookings() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const [date, setDate] = useState(() => (/^\d{4}-\d{2}-\d{2}$/.test(params.get('date') ?? '') ? params.get('date') : taipeiDate(new Date())))
+  const paramDate = params.get('date')
+  useEffect(() => { if (/^\d{4}-\d{2}-\d{2}$/.test(paramDate ?? '')) setDate(paramDate) }, [paramDate])
   const [rows, setRows] = useState(null)
   const [blocked, setBlocked] = useState([])
   const [services, setServices] = useState([])
@@ -85,7 +87,10 @@ function BookingItem({ b, onChanged }) {
     <section className="card">
       <div className="row spread">
         <b>{taipeiTime(new Date(b.starts_at))}–{taipeiTime(new Date(b.ends_at))}</b>
-        <span className={`pill ${b.status}`}>{STATUS_LABELS[b.status]}</span>
+        <span className="row tight">
+          {b.series_id && <span className="pill series">🔁 固定</span>}
+          <span className={`pill ${b.status}`}>{STATUS_LABELS[b.status]}</span>
+        </span>
       </div>
       <p><Link to={`/admin/client/${b.profile_id}`}>{name(b)}</Link>{b.profile?.phone ? <span className="muted small">｜{b.profile.phone}</span> : null}</p>
       <p className="muted small">{b.service?.name}{b.note ? `｜備註：${b.note}` : ''}</p>
@@ -113,7 +118,10 @@ function BookingItem({ b, onChanged }) {
         <div className="row confirm-row">
           <span className="small">取消這筆預約？客戶會收到 LINE 通知。</span>
           <button className="btn ghost" onClick={() => setMode(null)}>返回</button>
-          <button className="btn danger" disabled={busy} onClick={() => run(() => cancelBooking(b.id, { asAdmin: true }))}>確定取消</button>
+          <button className="btn danger" disabled={busy} onClick={() => run(() => cancelBooking(b.id, { asAdmin: true }))}>只取消這堂</button>
+          {b.series_id && (
+            <button className="btn danger" disabled={busy} onClick={() => run(() => adminCancelSeriesFrom(b.id))}>這堂及之後的固定預約全部取消</button>
+          )}
         </div>
       )}
       {mode === 'move' && (
@@ -142,7 +150,8 @@ function TimeSelect({ value, onChange }) {
 function AddForClient({ date, services, onDone }) {
   const [open, setOpen] = useState(false)
   const [clients, setClients] = useState(null)
-  const [form, setForm] = useState({ profile: '', service: '', time: OPEN, note: '' })
+  const [form, setForm] = useState({ profile: '', service: '', time: OPEN, note: '', repeat: false, weeks: 8 })
+  const [result, setResult] = useState(null) // 每週重複的建立結果
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
 
@@ -154,13 +163,36 @@ function AddForClient({ date, services, onDone }) {
     setBusy(true)
     setErr('')
     try {
-      await createBooking(form.service, taipei(date, form.time).toISOString(), form.note, form.profile, { asAdmin: true })
-      setOpen(false)
-      setForm({ profile: '', service: '', time: OPEN, note: '' })
+      const startIso = taipei(date, form.time).toISOString()
+      if (form.repeat) {
+        setResult(await adminCreateWeekly(form.profile, form.service, startIso, Number(form.weeks), form.note))
+      } else {
+        await createBooking(form.service, startIso, form.note, form.profile, { asAdmin: true })
+        setOpen(false)
+      }
+      setForm({ profile: '', service: '', time: OPEN, note: '', repeat: false, weeks: 8 })
       await onDone()
     } catch (e) { setErr(bookingErrorText(e)) } finally { setBusy(false) }
   }
 
+  if (result) {
+    const ok = result.filter((r) => r.ok), bad = result.filter((r) => !r.ok)
+    return (
+      <section className="card">
+        <h2>固定預約已建立 {ok.length} 堂</h2>
+        {ok.length > 0 && <p className="small">客戶會收到一則 LINE 彙整通知。</p>}
+        {bad.length > 0 && (
+          <>
+            <p className="error small">以下 {bad.length} 週沒有排進去，需要另外處理：</p>
+            <ul className="plain-list">
+              {bad.map((r) => <li key={r.slot_start} className="small">{fmtSlot(r.slot_start)}｜{WEEKLY_REASONS[r.reason] ?? r.reason}</li>)}
+            </ul>
+          </>
+        )}
+        <button className="btn primary block" onClick={() => { setResult(null); setOpen(false) }}>完成</button>
+      </section>
+    )
+  }
   if (!open) return <button className="btn ghost block" onClick={() => setOpen(true)}>＋ 代客預約（{fmtDateLabel(date).md}）</button>
   return (
     <section className="card">
@@ -180,10 +212,22 @@ function AddForClient({ date, services, onDone }) {
         </label>
         <label className="small">開始時間<TimeSelect value={form.time} onChange={(t) => setForm((f) => ({ ...f, time: t }))} /></label>
         <label className="small">備註<input className="search" value={form.note} maxLength={200} onChange={set('note')} placeholder="選填" /></label>
+        <label className="small full check-row">
+          <input type="checkbox" checked={form.repeat} onChange={(e) => setForm((f) => ({ ...f, repeat: e.target.checked }))} />
+          每週重複（每週{fmtDateLabel(date).wd} {form.time}）
+        </label>
+        {form.repeat && (
+          <label className="small full">重複幾週（含這週）
+            <select value={form.weeks} onChange={set('weeks')}>
+              {Array.from({ length: 25 }, (_, i) => i + 2).map((n) => <option key={n} value={n}>{n} 週</option>)}
+            </select>
+            <span className="muted">遇到已被預約或關閉的那週會自動跳過，最後列出給你。</span>
+          </label>
+        )}
         {err && <p className="error small full">{err}</p>}
         <div className="row full">
           <button className="btn ghost" onClick={() => setOpen(false)} disabled={busy}>取消</button>
-          <button className="btn primary" onClick={save} disabled={busy}>{busy ? '儲存中…' : '建立預約'}</button>
+          <button className="btn primary" onClick={save} disabled={busy}>{busy ? '儲存中…' : form.repeat ? `建立 ${form.weeks} 週固定預約` : '建立預約'}</button>
         </div>
       </div>
     </section>

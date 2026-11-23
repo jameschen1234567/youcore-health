@@ -41,3 +41,23 @@ export function adminMessage(ev: Event, service: string, startsAt: string, clien
   const when = ev === "rescheduled" && oldStartsAt ? `${fmtWhen(oldStartsAt)} → ${fmtWhen(startsAt)}` : fmtWhen(startsAt);
   return `${label}｜${client}\n${when}\n${service}`;
 }
+
+export type SeriesEvent = "series" | "series_cancelled";
+
+/** 每週固定預約：整批建立／整批取消的彙整訊息（客戶） */
+export function clientSeriesMessage(ev: SeriesEvent, service: string, starts: string[], name?: string | null): string {
+  const hi = name ? `${name} 您好，` : "您好，";
+  const list = starts.map((s) => `• ${fmtWhen(s)}`);
+  if (ev === "series") {
+    return [`${hi}已為您排好每週固定預約 ✅`, "", `💪 ${service}｜共 ${starts.length} 堂`, ...list, ...FOOTER,
+      "⚠️ 無故未到累計 3 次將暫停線上預約權限。"].join("\n");
+  }
+  return [`${hi}以下 ${starts.length} 堂「${service}」固定預約已取消：`, ...list, "", "有任何問題歡迎直接傳訊息給我們。"].join("\n");
+}
+
+/** 每週固定預約（管理員） */
+export function adminSeriesMessage(ev: SeriesEvent, service: string, starts: string[], client: string): string {
+  const label = ev === "series" ? "🔁 固定預約" : "❌ 取消固定預約";
+  const range = starts.length ? `${fmtWhen(starts[0])} 起` : "";
+  return `${label}｜${client}\n${service}｜共 ${starts.length} 堂\n${range}`;
+}

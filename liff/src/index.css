@@ -356,3 +356,9 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .cal-legend .sw.completed { background: #D9D5CC; }
 .cal-legend .sw.no_show { background: #fff; border: 1.5px solid #B3261E; }
 .cal-legend .sw.closed { background: repeating-linear-gradient(45deg, #EFEBE3 0 3px, #D4CEC2 3px 6px); }
+
+/* ── 每週固定預約 ───────────────────────────────────────── */
+.pill.series { background: #E6EDE3; color: var(--brand); }
+.row.tight { margin-top: 0; gap: 6px; align-items: center; }
+.form-grid label.check-row, .check-row { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 8px; }
+.form-grid .check-row input { width: 18px; height: 18px; flex: none; margin: 0; }

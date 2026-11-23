@@ -3,7 +3,7 @@
 // 環境變數：LINE_MESSAGING_TOKEN、CRON_SECRET、SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
-import { adminMessage, clientMessage, type Event } from "./message.ts";
+import { adminMessage, adminSeriesMessage, clientMessage, clientSeriesMessage, type Event, type SeriesEvent } from "./message.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -32,19 +32,22 @@ Deno.serve(async (req) => {
   const cron = Deno.env.get("CRON_SECRET");
   if (!cron || req.headers.get("x-cron-secret") !== cron) return json({ error: "UNAUTHORIZED" }, 401);
 
-  let body: { booking_id?: string; event?: Event; old_starts_at?: string | null };
+  let body: {
+    booking_id?: string; event?: Event | SeriesEvent; old_starts_at?: string | null;
+    series_id?: string; booking_ids?: string[];
+  };
   try {
     body = await req.json();
   } catch {
     return json({ error: "BAD_REQUEST" }, 400);
   }
-  if (!body.booking_id || !["created", "rescheduled", "cancelled"].includes(body.event ?? "")) {
-    return json({ error: "BAD_REQUEST" }, 400);
-  }
-
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false },
   });
+  if (body.event === "series" || body.event === "series_cancelled") return await seriesNotify(db, body);
+  if (!body.booking_id || !["created", "rescheduled", "cancelled"].includes(body.event ?? "")) {
+    return json({ error: "BAD_REQUEST" }, 400);
+  }
   const { data: b, error } = await db.from("bookings")
     .select("id, starts_at, cancelled_by, service:services(name), profile:profiles(line_user_id, display_name, full_name)")
     .eq("id", body.booking_id).maybeSingle();
@@ -71,3 +74,43 @@ Deno.serve(async (req) => {
   }
   return errors.length ? json({ error: errors.join("; ") }, 502) : json({ ok: true });
 });
+
+// 每週固定預約：整批建立（series_id）或整批取消（booking_ids）只發一則彙整
+// deno-lint-ignore no-explicit-any
+async function seriesNotify(db: any, body: { event?: string; series_id?: string; booking_ids?: string[] }): Promise<Response> {
+  const ev = body.event as SeriesEvent;
+  let q = db.from("bookings")
+    .select("id, starts_at, status, service:services(name), profile:profiles(line_user_id, display_name, full_name)")
+    .order("starts_at");
+  if (ev === "series") {
+    if (!body.series_id) return json({ error: "BAD_REQUEST" }, 400);
+    q = q.eq("series_id", body.series_id).eq("status", "booked");
+  } else {
+    if (!Array.isArray(body.booking_ids) || body.booking_ids.length === 0) return json({ error: "BAD_REQUEST" }, 400);
+    q = q.in("id", body.booking_ids.slice(0, 60));
+  }
+  const { data: rows, error } = await q;
+  if (error) return json({ error: error.message }, 500);
+  if (!rows?.length) return json({ skipped: true });
+
+  // deno-lint-ignore no-explicit-any
+  const first = rows[0] as any;
+  const service = first.service?.name ?? "預約";
+  const p = first.profile;
+  const name = p?.full_name || p?.display_name || "客戶";
+  // deno-lint-ignore no-explicit-any
+  const starts = rows.map((r: any) => r.starts_at as string);
+  const errors: string[] = [];
+
+  if (p?.line_user_id) {
+    const e = await push(p.line_user_id, clientSeriesMessage(ev, service, starts, p.full_name || p.display_name));
+    if (e) errors.push(e);
+  }
+  const { data: admins } = await db.from("profiles").select("line_user_id").eq("role", "admin");
+  for (const a of admins ?? []) {
+    if (!a.line_user_id || a.line_user_id === p?.line_user_id) continue;
+    const e = await push(a.line_user_id, adminSeriesMessage(ev, service, starts, name));
+    if (e) errors.push(e);
+  }
+  return errors.length ? json({ error: errors.join("; ") }, 502) : json({ ok: true });
+}

@@ -121,6 +121,7 @@ const ERRORS = {
   TOO_MANY: `同時最多保留 ${MAX_ACTIVE} 筆預約`,
   NOT_BOOKABLE: '這項服務目前請傳訊息預約',
   NOT_ACTIVE: '這筆預約已經不是有效狀態',
+  BAD_WEEKS: '重複週數需介於 2–26 週',
   NEED_ACCESS: '正式課程需購課後由我們開通，目前可以先預約體驗課程',
   TRIAL_USED: '這項體驗課程已經預約過了，每人限 1 次',
 }
@@ -150,7 +151,7 @@ const DEMO_SERVICES = [
 ]
 const demoServices = () => demoGet('services') ?? DEMO_SERVICES
 const SVC = 'service:services(id, name, duration_min, buffer_min, is_trial)'
-const BOOKING_FIELDS = `id, profile_id, service_id, starts_at, ends_at, block_until, status, cancelled_by, note, created_at, ${SVC}`
+const BOOKING_FIELDS = `id, profile_id, service_id, starts_at, ends_at, block_until, status, cancelled_by, note, created_at, series_id, ${SVC}`
 
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 
@@ -251,6 +252,28 @@ export async function adminSetBookingAccess(profileId, granted) {
   }
 }
 
+/** 每週固定預約（管理員）：回傳 [{ slot_start, ok, reason: null | 'PAST' | 'CLOSED' | 'TAKEN' }] */
+export async function adminCreateWeekly(profileId, serviceId, firstIso, weeks, note = '') {
+  if (DEMO) return demoCreateWeekly(profileId, serviceId, firstIso, weeks, note)
+  return unwrap(await supabase.rpc('create_weekly_bookings', {
+    p_profile: profileId, p_service: serviceId, p_first: firstIso, p_weeks: weeks, p_note: note || null,
+  }))
+}
+
+/** 取消同一系列這堂（含）之後所有還沒開始的預約，回傳取消筆數 */
+export async function adminCancelSeriesFrom(id) {
+  if (DEMO) {
+    const b = demoList('bookings').find((x) => x.id === id)
+    const now = new Date().toISOString()
+    const hit = demoList('bookings').filter((x) => x.series_id && x.series_id === b?.series_id && x.status === 'booked' && x.starts_at >= b.starts_at && x.starts_at > now)
+    hit.forEach((x) => demoUpdate(x.id, { status: 'cancelled', cancelled_by: 'admin' }))
+    return hit.length
+  }
+  return unwrap(await supabase.rpc('cancel_series_from', { p_id: id }))
+}
+
+export const WEEKLY_REASONS = { PAST: '時間已過', CLOSED: '碰到關閉時段', TAKEN: '已被預約' }
+
 export async function listBlocked(fromIso, toIso) {
   if (DEMO) return demoList('blocked').filter((b) => b.ends_at > fromIso && b.starts_at < toIso).sort(byStart)
   return unwrap(await supabase.from('blocked_times').select('id, starts_at, ends_at, reason')
@@ -323,6 +346,25 @@ async function demoCreate(serviceId, startsIso, note, profileId, asAdmin) {
   const times = { starts_at: t.starts_at, ends_at: t.ends_at, block_until: t.block_until }
   demoSet('bookings', [...demoList('bookings'), { id, profile_id: profileId, service_id: t.svc.id, ...times, status: 'booked', cancelled_by: null, note: note?.trim() || null, created_at: new Date().toISOString() }])
   return id
+}
+async function demoCreateWeekly(profileId, serviceId, firstIso, weeks, note) {
+  if (weeks < 2 || weeks > 26) throw new Error('BAD_WEEKS')
+  const series = crypto.randomUUID()
+  const out = []
+  for (let i = 0; i < weeks; i++) {
+    const startIso = new Date(new Date(firstIso).getTime() + i * 7 * 24 * H).toISOString()
+    if (new Date(startIso) < new Date()) { out.push({ slot_start: startIso, ok: false, reason: 'PAST' }); continue }
+    try {
+      const id = await demoCreate(serviceId, startIso, note, profileId, true)
+      demoUpdate(id, { series_id: series })
+      out.push({ slot_start: startIso, ok: true, reason: null })
+    } catch {
+      const t = demoTimes(serviceId, startIso)
+      const closed = demoList('blocked').some((b) => overlaps(new Date(t.starts_at).getTime(), new Date(t.block_until).getTime(), new Date(b.starts_at).getTime(), new Date(b.ends_at).getTime()))
+      out.push({ slot_start: startIso, ok: false, reason: closed ? 'CLOSED' : 'TAKEN' })
+    }
+  }
+  return out
 }
 async function demoReschedule(id, startsIso, asAdmin) {
   const b = demoList('bookings').find((x) => x.id === id)
