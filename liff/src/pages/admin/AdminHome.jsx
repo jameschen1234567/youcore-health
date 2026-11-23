@@ -1,9 +1,10 @@
-// 管理後台首頁：客戶列表、Notion 立即同步、足部數據匯出
+// 管理後台首頁：課程包提醒、客戶列表、Notion 立即同步、足部數據匯出
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { adminAllFoot, adminLastSync, adminListClients, adminRunSync } from '../../lib/adminApi'
 import { allFootCsvFilename, downloadText, footCsv } from '../../lib/csv'
 import { fmtDate } from '../../lib/format'
+import { adminListAllPackages, packageAlerts } from '../../lib/packages'
 
 const FILTERS = [
   ['all', '全部'],
@@ -41,6 +42,7 @@ export default function AdminHome() {
         <Link className="btn primary" to="/admin/bookings">預約管理</Link>
         <Link className="btn ghost" to="/admin/calendar">預約總表（行事曆）</Link>
       </div>
+      <PackageAlerts />
 
       <Tools />
 
@@ -136,6 +138,34 @@ function Tools() {
         </div>
         <button className="btn ghost" onClick={exportAll} disabled={exporting}>{exporting ? '匯出中…' : '匯出 CSV'}</button>
       </div>
+    </section>
+  )
+}
+
+// 課程包提醒：快到期、快用完、已到期還有剩（只有管理員看得到）
+function PackageAlerts() {
+  const [alerts, setAlerts] = useState(null)
+  useEffect(() => { adminListAllPackages().then((p) => setAlerts(packageAlerts(p))).catch(() => setAlerts([])) }, [])
+  const name = (p) => p.profile?.full_name || p.profile?.display_name || '客戶'
+  return (
+    <section className="card">
+      <div className="row spread head-row">
+        <h2>課程包提醒{alerts?.length ? `（${alerts.length}）` : ''}</h2>
+        <Link className="link-btn" to="/admin/packages">課程包總覽 ›</Link>
+      </div>
+      {alerts === null && <p className="muted small">載入中…</p>}
+      {alerts?.length === 0 && <p className="muted small">目前沒有快到期或快用完的課程包 👍</p>}
+      {alerts?.length > 0 && (
+        <ul className="plain-list">
+          {alerts.slice(0, 5).map((p) => (
+            <li key={p.id} className="row spread">
+              <Link className="small" to={`/admin/client/${p.profile_id}`}><b>{name(p)}</b>｜{p.service?.name}</Link>
+              <span className="small error">{p.reasons.join('、')}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {alerts?.length > 5 && <Link className="link-btn" to="/admin/packages">還有 {alerts.length - 5} 筆，查看全部 ›</Link>}
     </section>
   )
 }

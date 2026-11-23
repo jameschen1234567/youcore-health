@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { daysLeft, packageStats, pickPackage } from './packages'
+import { daysLeft, importedUsed, packageAlerts, packageStats, pickPackage } from './packages'
 
 const pkg = (id, fields) => ({ id, profile_id: 'u', service_id: 's', total: 10, expires_on: null, created_at: '2026-11-01T00:00:00Z', usages: [], ...fields })
 
@@ -36,4 +36,27 @@ describe('pickPackage', () => {
 it('daysLeft', () => {
   expect(daysLeft('2026-12-01', '2026-11-24')).toBe(7)
   expect(daysLeft(null)).toBeNull()
+})
+
+describe('總覽與導入', () => {
+  it('importedUsed', () => {
+    expect(importedUsed(20, '')).toBe(0)
+    expect(importedUsed(20, 12)).toBe(8)
+    expect(importedUsed(20, '20')).toBe(0)
+    expect(() => importedUsed(20, 21)).toThrow()
+    expect(() => importedUsed(20, -1)).toThrow()
+  })
+  it('packageAlerts', () => {
+    const list = [
+      pkg('soon', { expires_on: '2026-12-01' }),
+      pkg('low', { total: 10, usages: [{ amount: 8 }] }),
+      pkg('expiredLeft', { expires_on: '2026-11-01' }),
+      pkg('fine', { expires_on: '2027-06-01' }),
+      pkg('expiredEmpty', { expires_on: '2026-11-01', total: 1, usages: [{ amount: 1 }] }),
+    ]
+    const a = packageAlerts(list, '2026-11-24')
+    expect(a.map((x) => x.id)).toEqual(['soon', 'low', 'expiredLeft'])
+    expect(a[0].reasons[0]).toBe('7 天後到期')
+    expect(a[1].reasons[0]).toBe('剩 2 堂')
+  })
 })

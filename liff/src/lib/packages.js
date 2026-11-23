@@ -40,14 +40,60 @@ export async function adminListPackages(profileId) {
   return unwrap(await supabase.from('packages').select(PKG_FIELDS).eq('profile_id', profileId).order('created_at', { ascending: false }))
 }
 
-export async function adminCreatePackage({ profileId, serviceId, total, startsOn, expiresOn, note }) {
+/**
+ * 新增課程包。remaining（選填）：舊客導入時填目前剩幾堂，系統會自動記一筆「導入前已使用」= total − remaining
+ * 回傳新課程包 id
+ */
+export async function adminCreatePackage({ profileId, serviceId, total, startsOn, expiresOn, note, remaining }) {
   const row = {
     profile_id: profileId, service_id: serviceId, total: Number(total),
     starts_on: startsOn || todayTaipei(), expires_on: expiresOn || null, note: note?.trim() || null,
   }
-  if (!row.service_id || !(row.total >= 1)) throw new Error('BAD_INPUT')
-  if (DEMO) return demoSet('packages', [...demoPackages(), { id: crypto.randomUUID(), created_at: new Date().toISOString(), ...row }])
-  unwrap(await supabase.from('packages').insert(row))
+  if (!row.profile_id || !row.service_id || !(row.total >= 1)) throw new Error('BAD_INPUT')
+  const usedBefore = importedUsed(row.total, remaining)
+  let id
+  if (DEMO) {
+    id = crypto.randomUUID()
+    demoSet('packages', [...demoPackages(), { id, created_at: new Date().toISOString(), ...row }])
+  } else {
+    id = unwrap(await supabase.from('packages').insert(row).select('id').single()).id
+  }
+  if (usedBefore > 0) await adminAdjustPackage(id, usedBefore, '系統導入前已使用')
+  return id
+}
+
+/** 舊客導入：由「目前剩餘」換算導入前已使用堂數；沒填回傳 0，不合理（負數或超過總堂數）丟錯 */
+export function importedUsed(total, remaining) {
+  if (remaining === '' || remaining === null || remaining === undefined) return 0
+  const r = Number(remaining), t = Number(total)
+  if (!Number.isInteger(r) || r < 0 || r > t) throw new Error('BAD_REMAINING')
+  return t - r
+}
+
+/** 全部客人的課程包（總覽用） */
+export async function adminListAllPackages() {
+  if (DEMO) {
+    return demoPackages().map(demoWithJoins).map((p) => ({ ...p, profile: { id: p.profile_id, display_name: '體驗用戶', full_name: null } }))
+  }
+  return unwrap(await supabase.from('packages')
+    .select('id, profile_id, service_id, total, starts_on, expires_on, note, created_at, service:services(name), usages:package_usages(amount), profile:profiles(id, display_name, full_name)')
+    .order('expires_on', { ascending: true, nullsFirst: false }))
+}
+
+export const SOON_DAYS = 14 // 幾天內到期算「快到期」
+export const LOW_LEFT = 2 // 剩幾堂以下算「快用完」
+
+/** 需要注意的課程包：快到期、快用完、已到期但還有剩 → [{ ...pkg, st, reasons: [] }] */
+export function packageAlerts(pkgs, today = todayTaipei()) {
+  return pkgs.map((p) => {
+    const st = packageStats(p, today)
+    const left = daysLeft(p.expires_on, today)
+    const reasons = []
+    if (st.status === 'active' && left !== null && left <= SOON_DAYS) reasons.push(`${left} 天後到期`)
+    if (st.status === 'active' && st.remaining <= LOW_LEFT) reasons.push(`剩 ${st.remaining} 堂`)
+    if (st.expired && st.remaining > 0) reasons.push(`已到期，還有 ${st.remaining} 堂`)
+    return { ...p, st, reasons }
+  }).filter((p) => p.reasons.length > 0)
 }
 
 /** 改到期日（延期）、總堂數或備註 */

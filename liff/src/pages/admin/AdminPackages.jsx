@@ -148,33 +148,45 @@ function PackageItem({ p, onChanged }) {
   )
 }
 
-function AddPackage({ profileId, services, onCancel, onDone }) {
-  const [f, setF] = useState({ serviceId: '', total: 10, startsOn: '', expiresOn: '', note: '' })
+/** 新增課程包表單。沒給 profileId 時顯示客戶下拉（總覽頁用） */
+export function AddPackage({ profileId, clients, services, onCancel, onDone }) {
+  const [f, setF] = useState({ profileId: profileId ?? '', serviceId: '', total: 10, remaining: '', startsOn: '', expiresOn: '', note: '' })
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const set = (k) => (e) => setF((x) => ({ ...x, [k]: e.target.value }))
 
   async function save() {
+    if (!f.profileId) return setErr('請選客戶')
     if (!f.serviceId) return setErr('請選服務')
-    if (!(Number(f.total) >= 1)) return setErr('堂數至少 1 堂')
+    if (!(Number(f.total) >= 1)) return setErr('購買堂數至少 1 堂')
+    if (f.remaining !== '' && !(Number(f.remaining) >= 0 && Number(f.remaining) <= Number(f.total))) return setErr('目前剩餘要介於 0 到購買堂數之間')
     setBusy(true)
     setErr('')
-    try { await adminCreatePackage({ profileId, ...f }); await onDone() } catch { setErr('新增失敗，請稍後再試') } finally { setBusy(false) }
+    try { await adminCreatePackage(f); await onDone() } catch { setErr('新增失敗，請稍後再試') } finally { setBusy(false) }
   }
 
   return (
     <div className="form-grid two-col pkg-form">
+      {!profileId && (
+        <label className="small full">客戶
+          <select value={f.profileId} onChange={set('profileId')}>
+            <option value="">{clients ? '選擇客戶…' : '載入中…'}</option>
+            {(clients ?? []).map((c) => <option key={c.id} value={c.id}>{c.full_name || c.display_name || '未命名'}{c.phone ? `（${c.phone}）` : ''}</option>)}
+          </select>
+        </label>
+      )}
       <label className="small full">服務（課程包只能用在這項服務）
         <select value={f.serviceId} onChange={set('serviceId')}>
           <option value="">選擇服務…</option>
           {services.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
       </label>
-      <label className="small">堂數<input className="search" type="number" min="1" max="500" value={f.total} onChange={set('total')} /></label>
+      <label className="small">購買堂數<input className="search" type="number" min="1" max="500" value={f.total} onChange={set('total')} /></label>
+      <label className="small">目前剩餘（舊客才填）<input className="search" type="number" min="0" max="500" value={f.remaining} placeholder="新購買留空" onChange={set('remaining')} /></label>
       <label className="small">購買日<input className="search" type="date" value={f.startsOn} onChange={set('startsOn')} /></label>
       <label className="small">到期日<input className="search" type="date" value={f.expiresOn} onChange={set('expiresOn')} /></label>
       <label className="small">備註<input className="search" value={f.note} maxLength={200} placeholder="選填，例如：方案名稱" onChange={set('note')} /></label>
-      <p className="muted small full">購買日留空 = 今天；到期日留空 = 不限期。</p>
+      <p className="muted small full">購買日留空 = 今天；到期日留空 = 不限期。已經上過幾堂的舊客，填「目前剩餘」，系統會自動記一筆「導入前已使用」。</p>
       {err && <p className="error small full">{err}</p>}
       <div className="row full">
         <button className="btn ghost" onClick={onCancel} disabled={busy}>取消</button>
