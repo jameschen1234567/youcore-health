@@ -4,6 +4,7 @@ import { getContent } from '../lib/api'
 import { LINE_OA_ID } from '../config'
 import Blocks, { VideoEmbed } from '../components/Blocks'
 import { Cover } from './ContentHome'
+import { isVideoFile } from '../lib/video'
 
 export default function ContentDetail() {
   const { id } = useParams()
@@ -22,10 +23,16 @@ export default function ContentDetail() {
   if (item === undefined) return <Shell back={back}><p className="muted">載入中…</p></Shell>
   if (item === null) return <Shell back={back}><p className="muted">這篇內容已下架或不存在</p></Shell>
 
+  // 短影音：優先用內文裡自己上傳的影片檔放在最上方（沒有 YouTube 介面），其次才用「影片連結」
+  const body = item.body ?? []
+  const ownVideo = item.type === 'video' ? body.find((b) => b.type === 'video' && isVideoFile(b.url)) : null
+  const heroUrl = ownVideo?.url ?? item.video_url
+  const rest = ownVideo ? body.filter((b) => b !== ownVideo) : body
+
   return (
     <Shell back={back}>
       {item.type === 'video'
-        ? item.video_url ? <VideoEmbed url={item.video_url} title={item.title} /> : <Cover item={item} large />
+        ? heroUrl ? <VideoEmbed url={heroUrl} title={item.title} /> : <Cover item={item} large />
         : item.type !== 'brand' && <Cover item={item} large />}
 
       <header className="article-head">
@@ -35,7 +42,7 @@ export default function ContentDetail() {
       </header>
 
       <article className="article">
-        <Blocks blocks={item.body ?? []} />
+        <Blocks blocks={rest} />
       </article>
 
       {item.related_service && <ServiceCta service={item.related_service} />}

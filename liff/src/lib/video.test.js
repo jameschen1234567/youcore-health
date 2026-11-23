@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { toEmbedUrl, isVertical } from './video'
+import { toEmbedUrl, isVertical, isVideoFile } from './video'
 
 describe('toEmbedUrl', () => {
   it.each([
@@ -25,5 +25,13 @@ describe('isVertical', () => {
     expect(isVertical('https://youtube.com/shorts/x')).toBe(true)
     expect(isVertical('https://www.instagram.com/reel/x/')).toBe(true)
     expect(isVertical('https://www.youtube.com/watch?v=x')).toBe(false)
+  })
+})
+
+describe('isVideoFile', () => {
+  it('自己存的影片檔', () => {
+    expect(isVideoFile('https://x.supabase.co/storage/v1/object/public/content-images/p/b.mp4')).toBe(true)
+    expect(isVideoFile('https://youtu.be/abc')).toBe(false)
+    expect(isVideoFile(null)).toBe(false)
   })
 })

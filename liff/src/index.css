@@ -109,6 +109,7 @@ p { margin: 0; }
 
 .video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
 .video.vertical { aspect-ratio: 9 / 16; max-width: 360px; margin: 0 auto; }
+.video-file { display: block; width: 100%; max-height: 80vh; border-radius: var(--radius); background: #000; }
 .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 .cta { display: grid; gap: 8px; border-color: var(--accent); }
@@ -305,6 +306,9 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .slot.on { background: var(--brand); color: var(--brand-ink); }
 .slot:disabled { border-color: var(--line); background: #ECE8E0; color: #A39E93; cursor: not-allowed; }
 .slot.past:disabled b { text-decoration: line-through; }
+.slot.short:disabled { background: var(--surface); border-style: dashed; }
+.svc-group + .svc-group { margin-top: 10px; }
+.svc-group-title { margin: 0 0 6px; color: var(--brand); font-weight: 600; }
 .confirm-card { border: 2px solid var(--brand); }
 .rules { margin: 8px 0 12px; padding-left: 20px; line-height: 1.6; font-size: 0.92rem; }
 .booking-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; }

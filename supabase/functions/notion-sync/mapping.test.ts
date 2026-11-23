@@ -1,6 +1,6 @@
 // 以 liff 的 vitest 執行：cd liff && npm test
 import { describe, it, expect } from "vitest";
-import { imageExt, pageToItem, simplifyBlock, simplifyRichText } from "./mapping";
+import { imageExt, pageToItem, simplifyBlock, simplifyRichText, videoExt } from "./mapping";
 
 const rt = (plain_text: string, annotations = {}, href: string | null = null) => ({ plain_text, annotations, href });
 
@@ -92,10 +92,16 @@ describe("simplifyBlock", () => {
     });
   });
 
-  it("video only for external links", () => {
+  it("video: external links as-is, Notion-uploaded files marked for persisting", () => {
     expect(simplifyBlock(blk("video", { type: "external", external: { url: "https://youtu.be/x" } })))
       .toEqual({ type: "video", url: "https://youtu.be/x" });
-    expect(simplifyBlock(blk("video", { type: "file", file: { url: "https://s3/v.mp4" } }))).toBeNull();
+    expect(simplifyBlock(blk("video", { type: "file", file: { url: "https://s3/v.mp4" } })))
+      .toMatchObject({ type: "video", url: "https://s3/v.mp4", notionHosted: true });
+  });
+  it("videoExt", () => {
+    expect(videoExt("video/quicktime", "https://s3/a")).toBe("mov");
+    expect(videoExt(null, "https://s3/a.MP4?x=1")).toBe("mp4");
+    expect(videoExt("binary/octet-stream", "https://s3/a.webm")).toBe("webm");
   });
 
   it("unsupported types return null", () => {

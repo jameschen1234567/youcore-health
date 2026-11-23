@@ -8,7 +8,7 @@
 //   SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY（平台自動提供）
 
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
-import { Block, CHILD_TYPES, imageExt, pageToItem, simplifyBlock } from "./mapping.ts";
+import { Block, CHILD_TYPES, imageExt, pageToItem, simplifyBlock, videoExt } from "./mapping.ts";
 
 const NOTION = "https://api.notion.com/v1";
 const NOTION_VERSION = "2022-06-28";
@@ -96,11 +96,31 @@ async function persistImage(db: SupabaseClient, url: string, key: string): Promi
   return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
+/** Notion 上傳的影片檔轉存（短影音自己存，不經 YouTube）；Supabase 單檔上限預設 50 MB */
+async function persistVideo(db: SupabaseClient, url: string, key: string): Promise<string> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`下載影片失敗 ${res.status}`);
+  const type = res.headers.get("content-type");
+  const ext = videoExt(type, url);
+  const path = `${key}.${ext}`;
+  const { error } = await db.storage.from(BUCKET).upload(path, await res.arrayBuffer(), {
+    contentType: type?.startsWith("video/") ? type : `video/${ext === "mov" ? "quicktime" : ext}`,
+    upsert: true,
+  });
+  if (error) throw new Error(`影片上傳失敗（檔案可能超過 50 MB）：${error.message}`);
+  return db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
 async function persistBlockImages(db: SupabaseClient, pageId: string, blocks: Block[]): Promise<void> {
   for (const b of blocks) {
     if (b.type === "image" && b.notionHosted) {
       b.src = await persistImage(db, b.src, `${pageId}/${b.blockId}`);
       b.notionHosted = false;
+    }
+    if (b.type === "video" && b.notionHosted) {
+      b.url = await persistVideo(db, b.url, `${pageId}/${b.blockId}`);
+      delete b.notionHosted;
+      delete b.blockId;
     }
     if ("children" in b && b.children) await persistBlockImages(db, pageId, b.children);
   }

@@ -5,7 +5,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import {
   CHANGE_HOURS, LEAD_HOURS, MAX_DAYS, NO_SHOW_LIMIT, bookingDates, bookingErrorText, buildSlots, canClientChange,
-  createBooking, fmtSlot, getBusy, getNoShowCount, lineMessageUrl, listMyBookings, listServices, rescheduleBooking,
+  createBooking, fmtSlot, getBookingAccess, getBusy, getNoShowCount, lineMessageUrl, listMyBookings, listServices, rescheduleBooking,
+  usedTrials,
 } from '../lib/booking'
 
 export default function Booking() {
@@ -13,7 +14,7 @@ export default function Booking() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const rescheduleId = params.get('reschedule')
-  const [data, setData] = useState(null) // { services, mine, noShows }
+  const [data, setData] = useState(null) // { services, mine, noShows, access }
   const [busy, setBusy] = useState([])
   const [err, setErr] = useState('')
   const [serviceId, setServiceId] = useState('')
@@ -27,11 +28,11 @@ export default function Booking() {
   }, [])
 
   useEffect(() => {
-    Promise.all([listServices(), listMyBookings(profile.id), getNoShowCount(profile.id), loadBusy()])
-      .then(([services, mine, noShows]) => {
-        setData({ services, mine, noShows })
+    Promise.all([listServices(), listMyBookings(profile.id), getNoShowCount(profile.id), getBookingAccess(profile.id), loadBusy()])
+      .then(([services, mine, noShows, access]) => {
+        setData({ services, mine, noShows, access })
         const target = rescheduleId && mine.find((b) => b.id === rescheduleId)
-        setServiceId(target ? target.service_id : services[0]?.id ?? '')
+        setServiceId(target ? target.service_id : availableServices(services, mine, access)[0]?.id ?? '')
         setDate(dates.find((d) => !d.closed)?.date ?? '')
       })
       .catch(() => setErr('載入失敗，請稍後再試'))
@@ -63,7 +64,23 @@ export default function Booking() {
     )
   }
 
-  const service = data.services.find((s) => s.id === serviceId)
+  const choices = availableServices(data.services, data.mine, data.access)
+  if (!target && choices.length === 0) {
+    return (
+      <main className="page">
+        <button className="back" onClick={() => navigate('/me')}>‹ 我的</button>
+        <h1>預約</h1>
+        <section className="card">
+          <h2>體驗課程都已預約過了</h2>
+          <p>正式課程需要購課後由我們開通線上預約。想了解課程方案，歡迎直接傳訊息給我們。</p>
+          <MessageButton text="我想了解課程方案" />
+        </section>
+        <Link className="btn ghost block" to="/booking/mine">查看我的預約</Link>
+      </main>
+    )
+  }
+
+  const service = target ? data.services.find((s) => s.id === serviceId) : choices.find((s) => s.id === serviceId)
   const ignore = target ? { starts_at: target.starts_at, ends_at: target.block_until } : null
   const slots = buildSlots(date, service, busy, new Date(), ignore)
 
@@ -80,13 +97,21 @@ export default function Booking() {
       {!target && (
         <section className="card">
           <h2>1. 選擇服務</h2>
-          <div className="chips">
-            {data.services.map((s) => (
-              <button key={s.id} className={`chip ${serviceId === s.id ? 'on' : ''}`} onClick={() => { setServiceId(s.id); setSlot(null) }}>
-                {s.name}<span className="muted small">｜{s.duration_min} 分</span>
-              </button>
+          {[['正式課程', choices.filter((s) => !s.is_trial)], ['體驗課程（每項限 1 次）', choices.filter((s) => s.is_trial)]]
+            .filter(([, list]) => list.length > 0).map(([label, list]) => (
+              <div key={label} className="svc-group">
+                <p className="small svc-group-title">{label}</p>
+                <div className="chips">
+                  {list.map((s) => (
+                    <button key={s.id} className={`chip ${serviceId === s.id ? 'on' : ''}`} onClick={() => { setServiceId(s.id); setSlot(null) }}>
+                      {s.name}<span className="muted small">｜{s.duration_min} 分</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
-          </div>
+          {service?.description && <p className="small">{service.description}</p>}
+          {!data.access && <p className="muted small">正式課程需購課後由我們開通線上預約；第一次來可以先約體驗課程。</p>}
           <p className="muted small">專業健康檢測、頌缽療育請傳訊息預約。</p>
         </section>
       )}
@@ -114,10 +139,11 @@ export default function Booking() {
               className={`slot ${s.state} ${slot?.time === s.time ? 'on' : ''}`} onClick={() => setSlot(s)}>
               <b>{s.time}</b>
               {s.state === 'taken' && <span className="small">已預約</span>}
+              {s.state === 'short' && <span className="small">時間不足</span>}
             </button>
           ))}
         </div>
-        <p className="muted small">灰色為已被預約或不開放的時段；最晚需在開始前 {LEAD_HOURS} 小時預約。</p>
+        <p className="muted small">灰色為已預約或不開放的時段；「時間不足」表示接下來的空檔不夠完成這項服務；最晚需在開始前 {LEAD_HOURS} 小時預約。</p>
       </section>
 
       {slot && service && (
@@ -182,4 +208,10 @@ export function MessageButton({ text, label = '傳 LINE 訊息給我們' }) {
   return href
     ? <a className="btn primary block" href={href}>{label}</a>
     : <button className="btn primary block" disabled>{label}</button>
+}
+
+/** 客戶可選的服務：已開通 → 正式課程；體驗課 → 還沒用過的 */
+function availableServices(services, mine, access) {
+  const used = usedTrials(mine)
+  return services.filter((s) => (s.is_trial ? !used.has(s.id) : access))
 }

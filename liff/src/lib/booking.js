@@ -58,7 +58,8 @@ const overlaps = (a0, a1, b0, b1) => a0 < b1 && b0 < a1
 /**
  * 某天某服務的時段狀態。
  * busy: [{ starts_at, ends_at }]（ISO）；ignore: 改期時自己原本那筆 { starts_at, ends_at }
- * 回傳 [{ time, start: Date, state: 'free' | 'taken' | 'past' }]
+ * 回傳 [{ time, start: Date, state: 'free' | 'taken' | 'short' | 'past' }]
+ *   taken：這個開始時間本身已有人預約／關閉；short：開始時間沒人用，但接下去的時間不夠完成這項服務
  */
 export function buildSlots(date, service, busy, now = new Date(), ignore = null) {
   if (!service || isClosedDay(date)) return []
@@ -71,7 +72,8 @@ export function buildSlots(date, service, busy, now = new Date(), ignore = null)
     const s = start.getTime()
     let state = 'free'
     if (s < now.getTime() + LEAD_HOURS * H || s > now.getTime() + MAX_DAYS * 24 * H) state = 'past'
-    else if (ranges.some(([b0, b1]) => overlaps(s, s + block, b0, b1))) state = 'taken'
+    else if (ranges.some(([b0, b1]) => s >= b0 && s < b1)) state = 'taken'
+    else if (ranges.some(([b0, b1]) => overlaps(s, s + block, b0, b1))) state = 'short'
     return { time, start, state }
   })
 }
@@ -96,6 +98,8 @@ const ERRORS = {
   TOO_MANY: `同時最多保留 ${MAX_ACTIVE} 筆預約`,
   NOT_BOOKABLE: '這項服務目前請傳訊息預約',
   NOT_ACTIVE: '這筆預約已經不是有效狀態',
+  NEED_ACCESS: '正式課程需購課後由我們開通，目前可以先預約體驗課程',
+  TRIAL_USED: '這項體驗課程已經預約過了，每人限 1 次',
 }
 export function bookingErrorText(err) {
   const msg = String(err?.message ?? err ?? '')
@@ -109,22 +113,27 @@ export const lineMessageUrl = (text) =>
 
 // ── 資料存取 ────────────────────────────────────────────────────────────────
 
+const TRIAL_NOTE = (n) => `${n} 分鐘體驗＋30 分鐘免費身體檢測`
 const DEMO_SERVICES = [
-  { id: 'svc-1', name: '科技結合運動按摩', duration_min: 60, buffer_min: 10, bookable: true, sort_order: 1 },
-  { id: 'svc-2', name: '一對一肌力與體能課程', duration_min: 60, buffer_min: 10, bookable: true, sort_order: 2 },
-  { id: 'svc-3', name: '運動傷害防護與康復訓練', duration_min: 90, buffer_min: 10, bookable: true, sort_order: 3 },
-  { id: 'svc-4', name: '專業健康檢測', duration_min: 75, buffer_min: 10, bookable: false, sort_order: 4 },
-  { id: 'svc-5', name: '頌缽療育', duration_min: 60, buffer_min: 10, bookable: false, sort_order: 5 },
+  { id: 'svc-1', name: '科技結合運動按摩', duration_min: 60, buffer_min: 0, bookable: true, sort_order: 1, is_trial: false },
+  { id: 'svc-2', name: '一對一肌力與體能課程', duration_min: 60, buffer_min: 0, bookable: true, sort_order: 2, is_trial: false },
+  { id: 'svc-3', name: '運動傷害防護與康復訓練', duration_min: 90, buffer_min: 0, bookable: true, sort_order: 3, is_trial: false },
+  { id: 'svc-4', name: '專業健康檢測', duration_min: 75, buffer_min: 0, bookable: false, sort_order: 4, is_trial: false },
+  { id: 'svc-5', name: '頌缽療育', duration_min: 60, buffer_min: 0, bookable: false, sort_order: 5, is_trial: false },
+  { id: 'svc-11', name: '肌力體驗課程', duration_min: 90, buffer_min: 0, bookable: true, sort_order: 11, is_trial: true, description: TRIAL_NOTE(60) },
+  { id: 'svc-12', name: '按摩體驗課程', duration_min: 90, buffer_min: 0, bookable: true, sort_order: 12, is_trial: true, description: TRIAL_NOTE(60) },
+  { id: 'svc-13', name: '科技修復體驗課程', duration_min: 90, buffer_min: 0, bookable: true, sort_order: 13, is_trial: true, description: TRIAL_NOTE(60) },
+  { id: 'svc-14', name: '康復訓練體驗課程', duration_min: 120, buffer_min: 0, bookable: true, sort_order: 14, is_trial: true, description: TRIAL_NOTE(90) },
 ]
 const demoServices = () => demoGet('services') ?? DEMO_SERVICES
-const SVC = 'service:services(id, name, duration_min, buffer_min)'
+const SVC = 'service:services(id, name, duration_min, buffer_min, is_trial)'
 const BOOKING_FIELDS = `id, profile_id, service_id, starts_at, ends_at, block_until, status, cancelled_by, note, created_at, ${SVC}`
 
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 
 export async function listServices({ all = false } = {}) {
   if (DEMO) return demoServices().filter((s) => all || s.bookable)
-  let q = supabase.from('services').select('id, name, duration_min, buffer_min, bookable, sort_order').order('sort_order')
+  let q = supabase.from('services').select('id, name, duration_min, buffer_min, bookable, sort_order, is_trial, description').order('sort_order')
   if (!all) q = q.eq('bookable', true)
   return unwrap(await q)
 }
@@ -151,6 +160,18 @@ export async function getNoShowCount(profileId) {
     return demoList('bookings').filter((b) => b.profile_id === profileId && b.status === 'no_show' && b.starts_at > reset).length
   }
   return unwrap(await supabase.rpc('no_show_count', { p_profile: profileId }))
+}
+
+/** 是否已開通正式課程預約權限 */
+export async function getBookingAccess(profileId) {
+  if (DEMO) return !!demoGet(`booking-access:${profileId}`)
+  const rows = unwrap(await supabase.from('booking_access').select('profile_id').eq('profile_id', profileId))
+  return rows.length > 0
+}
+
+/** 已用過的體驗課（取消的不算）→ Set(service_id) */
+export function usedTrials(bookings) {
+  return new Set((bookings ?? []).filter((b) => b.service?.is_trial && b.status !== 'cancelled').map((b) => b.service_id))
 }
 
 /** 新增預約；profileId 只有管理員代客預約時才傳 */
@@ -195,6 +216,16 @@ export async function adminSetBookingStatus(id, status) {
 export async function adminResetNoShow(profileId) {
   if (DEMO) return demoSet(`booking-reset:${profileId}`, new Date().toISOString())
   return unwrap(await supabase.rpc('admin_reset_no_show', { p_profile: profileId }))
+}
+
+export async function adminSetBookingAccess(profileId, granted) {
+  if (DEMO) return demoSet(`booking-access:${profileId}`, granted ? new Date().toISOString() : null)
+  if (granted) {
+    const { data: { user } } = await supabase.auth.getUser()
+    unwrap(await supabase.from('booking_access').upsert({ profile_id: profileId, granted_by: user?.id ?? null }))
+  } else {
+    unwrap(await supabase.from('booking_access').delete().eq('profile_id', profileId))
+  }
 }
 
 export async function listBlocked(fromIso, toIso) {
@@ -258,6 +289,9 @@ async function demoCreate(serviceId, startsIso, note, profileId, asAdmin) {
   const t = demoTimes(serviceId, startsIso)
   if (!asAdmin) {
     if (!t.svc.bookable) throw new Error('NOT_BOOKABLE')
+    if (t.svc.is_trial) {
+      if (demoList('bookings').some((b) => b.profile_id === profileId && b.service_id === t.svc.id && b.status !== 'cancelled')) throw new Error('TRIAL_USED')
+    } else if (!(await getBookingAccess(profileId))) throw new Error('NEED_ACCESS')
     if ((await getNoShowCount(profileId)) >= NO_SHOW_LIMIT) throw new Error('BOOKING_SUSPENDED')
     if (demoList('bookings').filter((b) => b.profile_id === profileId && isUpcoming(b)).length >= MAX_ACTIVE) throw new Error('TOO_MANY')
   }

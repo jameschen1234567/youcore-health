@@ -1,5 +1,5 @@
 // 渲染 notion-sync 存下來的簡化 blocks（格式見 supabase/functions/notion-sync/mapping.ts）
-import { toEmbedUrl, isVertical } from '../lib/video'
+import { toEmbedUrl, isVertical, isVideoFile } from '../lib/video'
 
 export function RichText({ parts = [] }) {
   return parts.map((p, i) => {
@@ -15,6 +15,9 @@ export function RichText({ parts = [] }) {
 }
 
 export function VideoEmbed({ url, title = '影片' }) {
+  if (isVideoFile(url)) {
+    return <video className="video-file" src={url} title={title} controls playsInline preload="metadata" />
+  }
   const src = toEmbedUrl(url)
   if (!src) return <a className="link-card" href={url} target="_blank" rel="noopener noreferrer">{url}</a>
   return (

@@ -17,7 +17,8 @@ export type Block =
   | { type: "callout"; text: RichText[]; icon?: string | null; children?: Block[] }
   | { type: "divider" }
   | { type: "image"; src: string; caption: RichText[]; notionHosted: boolean; blockId: string }
-  | { type: "video" | "embed" | "bookmark"; url: string };
+  | { type: "video"; url: string; notionHosted?: boolean; blockId?: string }
+  | { type: "embed" | "bookmark"; url: string };
 
 export type ContentItem = {
   notion_page_id: string;
@@ -113,7 +114,9 @@ export function simplifyBlock(b: Any, children?: Block[]): Block | null {
     }
     case "video": {
       const f = fileUrl(v);
-      return f && !f.notionHosted ? { type: "video", url: f.url } : null; // 不支援上傳到 Notion 的影片檔
+      if (!f) return null;
+      // 上傳到 Notion 的影片檔：同步時轉存到 Supabase Storage，App 用原生播放器播放（沒有 YouTube 介面）
+      return f.notionHosted ? { type: "video", url: f.url, notionHosted: true, blockId: b.id } : { type: "video", url: f.url };
     }
     case "embed":
     case "bookmark":
@@ -131,4 +134,13 @@ export function imageExt(contentType: string | null, url: string): string {
   if (contentType && fromType[contentType.split(";")[0].trim()]) return fromType[contentType.split(";")[0].trim()];
   const m = new URL(url).pathname.match(/\.(jpe?g|png|webp|gif|svg)$/i);
   return m ? m[1].toLowerCase().replace("jpeg", "jpg") : "jpg";
+}
+
+/** 影片副檔名（Content-Type 優先，其次網址） */
+export function videoExt(contentType: string | null, url: string): string {
+  const fromType: Record<string, string> = { "video/mp4": "mp4", "video/quicktime": "mov", "video/webm": "webm" };
+  const t = contentType?.split(";")[0].trim();
+  if (t && fromType[t]) return fromType[t];
+  const m = new URL(url).pathname.match(/\.(mp4|mov|webm|m4v)$/i);
+  return m ? m[1].toLowerCase() : "mp4";
 }

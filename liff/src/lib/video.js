@@ -33,3 +33,14 @@ const youtube = (id) => `https://www.youtube-nocookie.com/embed/${id}`
 export function isVertical(raw) {
   return /youtube\.com\/shorts\/|instagram\.com\//.test(raw ?? '')
 }
+
+// 自己存的影片檔（Notion 上傳 → Supabase Storage），用原生 <video> 播放，不出現 YouTube 介面
+export function isVideoFile(raw) {
+  if (!raw) return false
+  try {
+    const u = new URL(raw)
+    return /\.(mp4|mov|webm|m4v)$/i.test(u.pathname)
+  } catch {
+    return false
+  }
+}
