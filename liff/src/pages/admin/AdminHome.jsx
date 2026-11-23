@@ -37,6 +37,8 @@ export default function AdminHome() {
         </button>
       )}
 
+      <Link className="btn primary block" to="/admin/bookings">預約管理</Link>
+
       <Tools />
 
       <h2 className="section-title">客戶（{clients?.length ?? '…'}）</h2>

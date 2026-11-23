@@ -18,6 +18,7 @@ import OrderCard from '../../components/OrderCard'
 import AdminInfo from './AdminInfo'
 import AdminBody from './AdminBody'
 import AdminTraining from './AdminTraining'
+import AdminClientBookings from './AdminClientBookings'
 
 export default function AdminClient() {
   const { id } = useParams()
@@ -43,6 +44,7 @@ export default function AdminClient() {
 
       <DeletionPanel data={data} onDone={() => navigate('/admin')} onChange={reload} />
       <AdminInfo profileId={profile.id} />
+      <AdminClientBookings profileId={profile.id} />
       <AdminBody profileId={profile.id} />
       <AdminTraining profileId={profile.id} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />

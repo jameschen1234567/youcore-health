@@ -291,3 +291,30 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .ex-block { min-width: 0; overflow-x: auto; }
 .sets-table.edit th, .sets-table.edit td { padding: 4px 2px; }
 .sets-table.edit input { min-width: 3.2em; }
+
+/* ── 預約 ───────────────────────────────────────────── */
+.date-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+.date-strip::-webkit-scrollbar { display: none; }
+.date-cell { flex: none; width: 58px; min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  font: inherit; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; cursor: pointer; }
+.date-cell.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.date-cell:disabled { opacity: 0.4; cursor: not-allowed; }
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; margin: 8px 0; }
+.slot { font: inherit; min-height: 48px; border: 1px solid var(--brand); background: var(--surface); color: var(--brand); border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+.slot.on { background: var(--brand); color: var(--brand-ink); }
+.slot:disabled { border-color: var(--line); background: #ECE8E0; color: #A39E93; cursor: not-allowed; }
+.slot.past:disabled b { text-decoration: line-through; }
+.confirm-card { border: 2px solid var(--brand); }
+.rules { margin: 8px 0 12px; padding-left: 20px; line-height: 1.6; font-size: 0.92rem; }
+.booking-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 14px; }
+.booking-row > span:first-child { display: flex; flex-direction: column; }
+.pill { flex: none; font-size: 0.78rem; font-weight: 700; border-radius: 999px; padding: 2px 10px; background: #DCE8D6; color: var(--brand); }
+.pill.cancelled { background: #ECE8E0; color: var(--ink-soft); }
+.pill.completed { background: #E8E1D0; color: #7A6334; }
+.pill.no_show { background: #F5D8D2; color: var(--danger); }
+.plain-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.row.wrap { flex-wrap: wrap; }
+.day-nav { align-items: center; }
+.day-nav .search { flex: 1; min-width: 0; }
+.action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }

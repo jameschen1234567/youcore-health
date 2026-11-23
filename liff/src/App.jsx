@@ -19,6 +19,9 @@ import FootHome from './pages/FootHome'
 import FootMeasure from './pages/FootMeasure'
 import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
+import AdminBookings from './pages/admin/AdminBookings'
+import Booking from './pages/Booking'
+import MyBookings from './pages/MyBookings'
 import TabBar from './components/TabBar'
 
 function Gate() {
@@ -58,6 +61,9 @@ function Gate() {
           <Route path="/training" element={<Training />} />
           <Route path="/training/:sessionId" element={<TrainingSession />} />
           <Route path="/me" element={<Me />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/booking/mine" element={<MyBookings />} />
+          <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
           <Route path="/admin" element={<AdminOnly><AdminHome /></AdminOnly>} />
           <Route path="/admin/client/:id" element={<AdminOnly><AdminClient /></AdminOnly>} />
         </Routes>
