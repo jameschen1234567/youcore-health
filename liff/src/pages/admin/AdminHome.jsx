@@ -37,7 +37,10 @@ export default function AdminHome() {
         </button>
       )}
 
-      <Link className="btn primary block" to="/admin/bookings">預約管理</Link>
+      <div className="row admin-actions">
+        <Link className="btn primary" to="/admin/bookings">預約管理</Link>
+        <Link className="btn ghost" to="/admin/calendar">預約總表（行事曆）</Link>
+      </div>
 
       <Tools />
 

@@ -55,6 +55,29 @@ export function startTimes(durationMin) {
 
 const overlaps = (a0, a1, b0, b1) => a0 < b1 && b0 < a1
 
+// ── 後台週曆 ────────────────────────────────────────────────────────────────
+
+/** 日期加減天數（台北日期字串） */
+export const addDays = (date, n) => taipeiDate(new Date(taipei(date, '12:00').getTime() + n * 24 * H))
+
+/** 含 date 的那一週（週一到週日）的 7 個日期 */
+export function weekOf(date) {
+  const monday = addDays(date, -((weekday(date) + 6) % 7))
+  return Array.from({ length: 7 }, (_, i) => addDays(monday, i))
+}
+
+/** 某段時間在該日曆欄的位置（以營業開始起算的分鐘數，超出營業時間的部分截掉）；不在當天或完全在營業時間外回傳 null */
+export function dayPosition(date, startsIso, endsIso) {
+  const open = taipei(date, OPEN).getTime(), close = taipei(date, CLOSE).getTime()
+  const s = Math.max(new Date(startsIso).getTime(), open)
+  const e = Math.min(new Date(endsIso).getTime(), close)
+  if (e <= s) return null
+  return { top: (s - open) / 60000, height: (e - s) / 60000 }
+}
+
+/** 營業時間總分鐘數 */
+export const DAY_MINUTES = toMin(CLOSE) - toMin(OPEN)
+
 /**
  * 某天某服務的時段狀態。
  * busy: [{ starts_at, ends_at }]（ISO）；ignore: 改期時自己原本那筆 { starts_at, ends_at }

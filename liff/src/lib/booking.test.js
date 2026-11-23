@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bookingDates, bookingErrorText, buildSlots, canClientChange, fmtSlot, startTimes, taipei, usedTrials } from './booking'
+import { bookingDates, bookingErrorText, buildSlots, canClientChange, fmtSlot, startTimes, taipei, usedTrials, weekOf, dayPosition, DAY_MINUTES } from './booking'
 
 const svc60 = { id: 's', duration_min: 60, buffer_min: 10 }
 const svc90 = { id: 'r', duration_min: 90, buffer_min: 10 }
@@ -88,5 +88,22 @@ describe('體驗課', () => {
   it('錯誤訊息', () => {
     expect(bookingErrorText(new Error('NEED_ACCESS'))).toContain('體驗課程')
     expect(bookingErrorText(new Error('TRIAL_USED'))).toContain('限 1 次')
+  })
+})
+
+describe('週曆', () => {
+  it('weekOf 從週一開始共 7 天', () => {
+    const w = weekOf('2026-11-26') // 週四
+    expect(w[0]).toBe('2026-11-23')
+    expect(w[6]).toBe('2026-11-29')
+    expect(weekOf('2026-11-23')[0]).toBe('2026-11-23')
+    expect(weekOf('2026-11-29')[0]).toBe('2026-11-23')
+  })
+  it('dayPosition 以 10:00 起算分鐘，截掉營業時間外', () => {
+    const iso = (t) => taipei('2026-11-24', t).toISOString()
+    expect(dayPosition('2026-11-24', iso('12:00'), iso('13:30'))).toEqual({ top: 120, height: 90 })
+    expect(dayPosition('2026-11-24', iso('09:00'), iso('10:30'))).toEqual({ top: 0, height: 30 })
+    expect(dayPosition('2026-11-25', iso('12:00'), iso('13:00'))).toBeNull()
+    expect(DAY_MINUTES).toBe(630)
   })
 })

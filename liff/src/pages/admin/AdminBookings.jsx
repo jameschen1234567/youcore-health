@@ -1,19 +1,19 @@
 // 後台：預約管理（依日檢視、完成／未到／取消／改期、代客預約、關閉時段、服務設定）
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   CLOSE, OPEN, STATUS_LABELS, adminAddBlocked, adminDeleteBlocked, adminListBookings, adminSetBookingStatus,
   adminUpdateService, bookingErrorText, cancelBooking, createBooking, fmtDateLabel, fmtSlot, listBlocked, listServices,
-  rescheduleBooking, startTimes, taipei, taipeiDate, taipeiTime,
+  addDays, rescheduleBooking, startTimes, taipei, taipeiDate, taipeiTime,
 } from '../../lib/booking'
 import { adminListClients } from '../../lib/adminApi'
 
-const addDays = (date, n) => taipeiDate(new Date(taipei(date, '12:00').getTime() + n * 864e5))
 const ALL_TIMES = startTimes(30) // 管理員可選 10:00–20:00 每 30 分的開始時間
 
 export default function AdminBookings() {
   const navigate = useNavigate()
-  const [date, setDate] = useState(() => taipeiDate(new Date()))
+  const [params] = useSearchParams()
+  const [date, setDate] = useState(() => (/^\d{4}-\d{2}-\d{2}$/.test(params.get('date') ?? '') ? params.get('date') : taipeiDate(new Date())))
   const [rows, setRows] = useState(null)
   const [blocked, setBlocked] = useState([])
   const [services, setServices] = useState([])
@@ -35,7 +35,10 @@ export default function AdminBookings() {
   return (
     <main className="page">
       <button className="back" onClick={() => navigate('/admin')}>‹ 管理後台</button>
-      <h1>預約管理</h1>
+      <div className="row spread head-row">
+        <h1>預約管理</h1>
+        <Link className="link-btn" to={`/admin/calendar?week=${date}`}>行事曆總表 ›</Link>
+      </div>
       {err && <p className="error">{err}</p>}
 
       <div className="row day-nav">
