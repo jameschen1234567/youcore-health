@@ -26,10 +26,13 @@ import Booking from './pages/Booking'
 import MyBookings from './pages/MyBookings'
 import TabBar from './components/TabBar'
 
+// 需要身份的頁面：第一次進來才開始 LINE 登入 → 同意書 → 基本資料
 function Gate() {
-  const { status, profile, error } = useAuth()
+  const { status, profile, error, start } = useAuth()
   const [consent, setConsent] = useState('checking') // checking | needed | ok | error
   const [info, setInfo] = useState('checking') // checking | needed | ok | error
+
+  useEffect(() => { start() }, [start])
 
   useEffect(() => {
     if (status !== 'ready') return
@@ -42,17 +45,13 @@ function Gate() {
   }, [status, profile])
 
   if (status === 'error') return <Message title="登入失敗" text={error} />
-  if (status === 'loading' || consent === 'checking' || info === 'checking') return <Message title="載入中…" />
+  if (status === 'idle' || status === 'loading' || consent === 'checking' || info === 'checking') return <Message title="載入中…" />
   if (consent === 'error' || info === 'error') return <Message title="連線失敗" text="請確認網路後重新開啟" />
   if (consent === 'needed') return <Consent profile={profile} onDone={() => setConsent('ok')} />
   if (info === 'needed') return <Onboarding profile={profile} onDone={() => setInfo('ok')} />
 
   return (
-    <HashRouter>
-      <div className="app">
         <Routes>
-          <Route path="/" element={<ContentHome />} />
-          <Route path="/content/:id" element={<ContentDetail />} />
           <Route path="/scales" element={<Scales />} />
           <Route path="/scales/painmap" element={<PainMapForm />} />
           <Route path="/scales/painmap/history" element={<PainMapHistory />} />
@@ -70,10 +69,8 @@ function Gate() {
           <Route path="/admin/packages" element={<AdminOnly><AdminPackagesOverview /></AdminOnly>} />
           <Route path="/admin" element={<AdminOnly><AdminHome /></AdminOnly>} />
           <Route path="/admin/client/:id" element={<AdminOnly><AdminClient /></AdminOnly>} />
+          <Route path="*" element={<Message title="找不到這個頁面" />} />
         </Routes>
-        <TabBar />
-      </div>
-    </HashRouter>
   )
 }
 
@@ -112,7 +109,17 @@ function Message({ title, text }) {
 export default function App() {
   return (
     <AuthProvider>
-      <Gate />
+      <HashRouter>
+        <div className="app">
+          <Routes>
+            {/* 公開頁面：衛教文章、短影音、關於宥芯，免登入即可瀏覽與分享 */}
+            <Route path="/" element={<ContentHome />} />
+            <Route path="/content/:id" element={<ContentDetail />} />
+            <Route path="*" element={<Gate />} />
+          </Routes>
+          <TabBar />
+        </div>
+      </HashRouter>
     </AuthProvider>
   )
 }

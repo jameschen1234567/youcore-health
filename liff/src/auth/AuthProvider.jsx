@@ -1,8 +1,10 @@
 // 登入流程：LIFF 初始化 → 取得 LINE ID token → line-auth 驗證 → Supabase session
+// 衛教文章是公開頁面，不必登入；進入需要身份的頁面時才呼叫 start() 開始登入。
 // Demo 模式直接給一個假身份。
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import liff from '@line/liff'
-import { DEMO, DEMO_ROLE, LIFF_ID } from '../config'
+import { DEMO, DEMO_ROLE } from '../config'
+import { liffReady } from '../lib/liffClient'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
@@ -12,7 +14,7 @@ const RETRY_KEY = 'youcore-line-relogin'
 const DEMO_PROFILE ={ id: 'demo-user', display_name: '體驗用戶', role: DEMO_ROLE }
 
 async function loginWithLine() {
-  await liff.init({ liffId: LIFF_ID })
+  await liffReady()
   if (!liff.isLoggedIn()) {
     liff.login({ redirectUri: window.location.href })
     return null // 會跳轉到 LINE 登入頁
@@ -63,17 +65,20 @@ async function loadProfile() {
 }
 
 export function AuthProvider({ children }) {
-  const [state, setState] = useState({ status: 'loading', profile: null, error: null })
+  const [state, setState] = useState(DEMO
+    ? { status: 'ready', profile: DEMO_PROFILE, error: null }
+    : { status: 'idle', profile: null, error: null })
+  const started = useRef(DEMO)
 
-  useEffect(() => {
-    if (DEMO) {
-      setState({ status: 'ready', profile: DEMO_PROFILE, error: null })
-      return
-    }
+  // 第一次進入需要身份的頁面時呼叫；之後重複呼叫不會再登入一次
+  const start = useCallback(() => {
+    if (started.current) return
+    started.current = true
+    setState((s) => ({ ...s, status: 'loading' }))
     loginWithLine()
       .then((profile) => profile && setState({ status: 'ready', profile, error: null }))
       .catch((e) => setState({ status: 'error', profile: null, error: e.message }))
   }, [])
 
-  return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ ...state, start }}>{children}</AuthContext.Provider>
 }

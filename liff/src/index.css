@@ -378,3 +378,8 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 
 .pkg-mini { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; white-space: nowrap; }
 .pkg-mini b { font-size: 1.2rem; color: var(--brand); }
+
+/* ── 文章分享 ───────────────────────────────────────────── */
+.share-bar .row { margin-top: 8px; }
+.share-bar .btn { flex: 1; text-align: center; }
+.cta .btn + .btn { margin-top: 8px; }

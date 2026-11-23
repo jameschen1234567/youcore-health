@@ -7,6 +7,6 @@ export default defineConfig({
   test: {
     // 也一併跑 Supabase Edge Function 的純函式測試
     dir: '..',
-    include: ['liff/src/**/*.test.{js,jsx}', 'supabase/functions/**/*.test.ts'],
+    include: ['liff/src/**/*.test.{js,jsx}', 'liff/api/**/*.test.js', 'supabase/functions/**/*.test.ts'],
   },
 })
