@@ -395,3 +395,10 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .pill.req-booked { background: #E8E1D0; color: #7A6334; }
 .pill.req-closed { background: #ECE8E0; color: #6B665C; }
 .step-title { margin-top: 16px; }
+
+/* ── 直播 ───────────────────────────────────────────────── */
+.pre-line { white-space: pre-line; }
+.pill.live-upcoming { background: #E6EDE3; color: var(--brand); }
+.pill.live-live { background: #F5D8D2; color: var(--danger); }
+.pill.live-replay { background: #E8E1D0; color: #7A6334; }
+.pill.live-closed, .pill.live-cancelled { background: #ECE8E0; color: #6B665C; }

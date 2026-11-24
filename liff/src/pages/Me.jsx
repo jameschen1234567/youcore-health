@@ -52,6 +52,12 @@ export default function Me() {
         </div>
       </section>
 
+      <section className="card">
+        <h2>線上直播</h2>
+        <p className="muted small">課程會員專屬的直播與回放。</p>
+        <div className="row"><Link className="btn ghost" to="/live">查看直播</Link></div>
+      </section>
+
       <MyInfo profileId={profile.id} />
 
       {profile.role === 'admin' && (

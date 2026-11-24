@@ -25,6 +25,8 @@ import AdminRequests from './pages/admin/AdminRequests'
 import AdminPackagesOverview from './pages/admin/AdminPackagesOverview'
 import Booking from './pages/Booking'
 import MyBookings from './pages/MyBookings'
+import Live, { LiveWatch } from './pages/Live'
+import AdminLive from './pages/admin/AdminLive'
 import TabBar from './components/TabBar'
 
 // 需要身份的頁面：第一次進來才開始 LINE 登入 → 同意書 → 基本資料
@@ -66,6 +68,9 @@ function Gate() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/booking/mine" element={<MyBookings />} />
           <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
+          <Route path="/live" element={<Live />} />
+          <Route path="/live/:id" element={<LiveWatch />} />
+          <Route path="/admin/live" element={<AdminOnly><AdminLive /></AdminOnly>} />
           <Route path="/admin/requests" element={<AdminOnly><AdminRequests /></AdminOnly>} />
           <Route path="/admin/calendar" element={<AdminOnly><AdminCalendar /></AdminOnly>} />
           <Route path="/admin/packages" element={<AdminOnly><AdminPackagesOverview /></AdminOnly>} />
