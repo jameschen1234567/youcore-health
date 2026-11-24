@@ -402,3 +402,26 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .pill.live-live { background: #F5D8D2; color: var(--danger); }
 .pill.live-replay { background: #E8E1D0; color: #7A6334; }
 .pill.live-closed, .pill.live-cancelled { background: #ECE8E0; color: #6B665C; }
+
+/* ── 直播留言 ───────────────────────────────────────────── */
+.chat { gap: 8px; }
+.like-btn { font: inherit; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 14px; min-height: 40px; cursor: pointer; }
+.like-btn:disabled { opacity: 0.6; cursor: default; }
+.chat-list { height: 300px; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 8px; padding: 4px 0; }
+.chat-list.host { height: 60vh; }
+.chat-item { padding: 8px 10px; border-radius: 10px; background: var(--bg); }
+.chat-item.mine { background: #E6EDE3; }
+.chat-item.answered { opacity: 0.75; }
+.chat-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; }
+.chat-body { margin: 2px 0 0; overflow-wrap: anywhere; }
+.chat-pinned { border-left: 3px solid var(--accent); background: #FBF5E8; border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; }
+.chat-pinned p { margin: 2px 0 0; }
+.pill.chat-host { background: var(--brand); color: var(--brand-ink); }
+.pill.chat-private { background: #F5E8CF; color: #7A5A1B; }
+.pill.chat-done { background: #ECE8E0; color: #6B665C; }
+.chat-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chat-tools button { font: inherit; font-size: 0.85rem; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 6px 10px; min-height: 36px; cursor: pointer; }
+.chat-form { display: flex; flex-direction: column; gap: 6px; }
+.chat-input { display: flex; gap: 8px; }
+.chat-input .search { flex: 1; min-width: 0; }
+.chat-form .check-row input { width: 18px; height: 18px; flex: none; margin: 0; }

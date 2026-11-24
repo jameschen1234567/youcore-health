@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fmtSlot } from '../lib/booking'
 import { OPEN_BEFORE_MIN, PHASE_LABELS, getLiveVideo, listLive, liveEmbedUrl, liveErrorText } from '../lib/live'
 import { MessageButton } from '../components/MessageButton'
+import LiveChat from '../components/LiveChat'
 
 /** 載入清單，並每分鐘更新一次狀態 */
 function useLiveList() {
@@ -86,6 +87,7 @@ export function LiveWatch() {
       )}
       {video && !closed && (
         <>
+          <LiveChat streamId={id} />
           <p className="muted small">這是會員專屬內容，請勿轉傳連結或錄影。</p>
           <MessageButton text={`我在看直播「${s?.title ?? ''}」，想請問：`} label="傳 LINE 提問" />
         </>

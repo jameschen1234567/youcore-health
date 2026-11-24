@@ -68,6 +68,7 @@ function LiveItem({ s, onEdit, onChanged }) {
       ) : (
         <div className="action-grid">
           <button className="btn ghost" onClick={onEdit}>修改</button>
+          {phase !== 'cancelled' && <Link className={`btn ${phase === 'live' ? 'primary' : 'ghost'}`} to={`/admin/live/${s.id}`}>{phase === 'live' ? '主持畫面' : '看留言'}</Link>}
           {(phase === 'live' || phase === 'replay') && s.video_id && <Link className="btn ghost" to={`/live/${s.id}`}>預覽</Link>}
           {phase === 'live' && <button className="btn primary" onClick={() => setConfirm('end')}>結束直播</button>}
           {phase === 'cancelled'
