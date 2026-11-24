@@ -5,7 +5,7 @@ import { supabase } from './supabase'
 import { demoGet, demoList, demoSet } from './api'
 
 export const INFO_FIELDS = 'full_name, gender, birthday, phone, email, height_cm, medical_notes, info_completed_at'
-export const GENDERS = { male: '男生', female: '女生' }
+export const GENDERS = { male: '男', female: '女' }
 
 // Demo 模式的內建動作（與 migration 0007 一致）
 const DEFAULT_EXERCISES = [
