@@ -87,14 +87,14 @@ export default function TrialRequest({ profileId, services, mine }) {
           <div className="form-grid">
             <label className="small">姓名 *<input className="search" maxLength={50} autoComplete="name" value={c.full_name} onChange={setContact('full_name')} /></label>
             <fieldset className="small gender">
-              <legend>性別 *</legend>
+              <legend>身體性別 *</legend>
               <div className="chips">
                 {Object.entries(GENDERS).map(([k, label]) => (
                   <button type="button" key={k} aria-pressed={c.gender === k} className={`chip ${c.gender === k ? 'on' : ''}`} onClick={() => setC((x) => ({ ...x, gender: k }))}>{label}</button>
                 ))}
               </div>
             </fieldset>
-            <label className="small">生日 *{c.birthday && !contactError({ ...c, full_name: 'x', gender: 'other', phone: '0900000000' }) ? `（${ageFrom(c.birthday)} 歲）` : ''}
+            <label className="small">生日 *{c.birthday && !contactError({ ...c, full_name: 'x', gender: 'male', phone: '0900000000' }) ? `（${ageFrom(c.birthday)} 歲）` : ''}
               <input className="search" type="date" value={c.birthday} onChange={setContact('birthday')} />
             </label>
             <label className="small">手機號碼 *<input className="search" type="tel" inputMode="tel" autoComplete="tel" maxLength={20} placeholder="0912-345-678" value={c.phone} onChange={setContact('phone')} /></label>

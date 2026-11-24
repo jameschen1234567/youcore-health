@@ -42,7 +42,7 @@ export default function AdminRequests() {
               <span className={`pill req-${r.status}`}>{REQUEST_STATUS[r.status]}</span>
             </div>
             <p className="muted small">送出：{fmtSlot(r.created_at)}{p?.display_name ? `｜LINE：${p.display_name}` : ''}</p>
-            <p className="small">{GENDERS[p?.gender] ?? '性別未填'}｜{p?.birthday ? `${ageFrom(p.birthday)} 歲` : '年齡未填'}</p>
+            <p className="small">{GENDERS[p?.gender] ?? '身體性別未填'}｜{p?.birthday ? `${ageFrom(p.birthday)} 歲` : '年齡未填'}</p>
             {p?.phone && <p className="small">手機：<a href={`tel:${p.phone}`}>{p.phone}</a></p>}
             <p><b>{r.service?.name}</b></p>
             <p className="small">困擾：{r.concern}</p>

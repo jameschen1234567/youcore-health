@@ -10,7 +10,7 @@ export const isOpenRequest = (r) => r.status === 'pending' || r.status === 'cont
 /** 申請人資料檢查；回傳第一個錯誤訊息，沒問題回傳 '' */
 export function contactError(c, today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date())) {
   if (!c.full_name?.trim()) return '請填寫姓名'
-  if (!['male', 'female', 'other'].includes(c.gender)) return '請選擇性別'
+  if (!['male', 'female'].includes(c.gender)) return '請選擇身體性別'
   if (!c.birthday) return '請填寫生日'
   if (c.birthday > today || c.birthday < '1900-01-01') return '生日不正確'
   if (!/^(09|8869)\d{8}$/.test((c.phone ?? '').replace(/\D/g, ''))) return '請填寫正確的手機號碼（09 開頭共 10 碼）'

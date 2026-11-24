@@ -7,7 +7,7 @@ export default function InfoSummary({ info }) {
   const age = ageFrom(info.birthday)
   const rows = [
     ['姓名', info.full_name],
-    ['性別', GENDERS[info.gender]],
+    ['身體性別', GENDERS[info.gender]],
     ['生日', info.birthday ? `${info.birthday.replaceAll('-', '/')}${age != null ? `（${age} 歲）` : ''}` : null],
     ['電話', info.phone],
     ['信箱', info.email],
