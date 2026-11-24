@@ -127,7 +127,8 @@ const ERRORS = {
   TRIAL_BY_REQUEST: '體驗課程請先送出申請，由我們確認後協助預約',
   REQUEST_PENDING: '你已經有一筆申請在處理中，我們會盡快聯繫你',
   TOO_MANY_REQUESTS: '近期申請次數過多，請直接傳訊息給我們',
-  NEED_INFO: '請先到「我的」填完基本資料',
+  NEED_INFO: '請填完姓名、性別、生日與手機號碼',
+  BAD_PHONE: '請填寫正確的手機號碼（09 開頭共 10 碼）',
   BAD_INPUT: '請填寫必填欄位',
   TRIAL_USED: '這項體驗課程已經預約過了，每人限 1 次',
 }

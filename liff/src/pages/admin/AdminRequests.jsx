@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { fmtSlot, taipeiDate } from '../../lib/booking'
+import { ageFrom } from '../../lib/strength'
+import { GENDERS } from '../../lib/training'
 import { REQUEST_STATUS, adminListRequests, adminSetRequestStatus, isOpenRequest } from '../../lib/requests'
 
 const FILTERS = [['open', '處理中'], ['all', '全部']]
@@ -40,7 +42,8 @@ export default function AdminRequests() {
               <span className={`pill req-${r.status}`}>{REQUEST_STATUS[r.status]}</span>
             </div>
             <p className="muted small">送出：{fmtSlot(r.created_at)}{p?.display_name ? `｜LINE：${p.display_name}` : ''}</p>
-            {p?.phone && <p className="small">電話：<a href={`tel:${p.phone}`}>{p.phone}</a></p>}
+            <p className="small">{GENDERS[p?.gender] ?? '性別未填'}｜{p?.birthday ? `${ageFrom(p.birthday)} 歲` : '年齡未填'}</p>
+            {p?.phone && <p className="small">手機：<a href={`tel:${p.phone}`}>{p.phone}</a></p>}
             <p><b>{r.service?.name}</b></p>
             <p className="small">困擾：{r.concern}</p>
             <p className="small">方便時段：{r.preferred}</p>

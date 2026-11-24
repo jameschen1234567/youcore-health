@@ -32,7 +32,7 @@ describe("booking-notify 訊息", () => {
 });
 
 it("體驗申請通知含電話、困擾與方便時段", () => {
-  const t = adminRequestMessage({ client: "小明", phone: "0900", service: "肌力體驗課程", concern: "肩痛", preferred: "週三晚上" });
-  for (const x of ["小明", "0900", "肌力體驗課程", "肩痛", "週三晚上"]) expect(t).toContain(x);
+  const t = adminRequestMessage({ client: "小明", phone: "0900", gender: "female", birthday: "1990-11-26", service: "肌力體驗課程", concern: "肩痛", preferred: "週三晚上" }, new Date("2026-11-25T04:00:00Z"));
+  for (const x of ["女｜35 歲", "小明", "0900", "肌力體驗課程", "肩痛", "週三晚上"]) expect(t).toContain(x);
   expect(t).not.toContain("得知管道");
 });

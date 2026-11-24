@@ -62,10 +62,21 @@ export function adminSeriesMessage(ev: SeriesEvent, service: string, starts: str
   return `${label}｜${client}\n${service}｜共 ${starts.length} 堂\n${range}`;
 }
 
+/** 台北時間的足歲；沒填回傳 null */
+export function ageOn(birthday: string | null | undefined, now = new Date()): number | null {
+  if (!birthday) return null;
+  const [y, m, d] = new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(now).split("-").map(Number);
+  const [by, bm, bd] = birthday.split("-").map(Number);
+  return y - by - (m < bm || (m === bm && d < bd) ? 1 : 0);
+}
+
 /** 體驗課程申請（只通知管理員） */
 export function adminRequestMessage(r: {
-  client: string; phone?: string | null; service: string; concern: string; preferred: string; source?: string | null;
-}): string {
-  return [`📝 體驗申請｜${r.client}`, r.service, `電話：${r.phone || "未填"}`, `困擾：${r.concern}`, `方便時段：${r.preferred}`,
+  client: string; phone?: string | null; gender?: string | null; birthday?: string | null;
+  service: string; concern: string; preferred: string; source?: string | null;
+}, now = new Date()): string {
+  const g = { male: "男", female: "女", other: "其他" }[r.gender ?? ""] ?? "性別未填";
+  const age = ageOn(r.birthday, now);
+  return [`📝 體驗申請｜${r.client}`, r.service, `${g}｜${age === null ? "年齡未填" : `${age} 歲`}`, `手機：${r.phone || "未填"}`, `困擾：${r.concern}`, `方便時段：${r.preferred}`,
     ...(r.source ? [`得知管道：${r.source}`] : []), "", "請到後台「體驗申請」確認後協助預約。"].join("\n");
 }

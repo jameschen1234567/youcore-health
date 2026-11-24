@@ -39,7 +39,7 @@ export async function saveProfileInfo(profileId, fields) {
   const row = { ...fields, info_completed_at: fields.info_completed_at ?? new Date().toISOString() }
   if (DEMO) {
     const cur = demoGet(`info:${profileId}`) ?? {}
-    if (cur.height_cm != null && row.height_cm !== cur.height_cm && !fields._admin) throw new Error('HEIGHT_LOCKED')
+    if ('height_cm' in row && cur.height_cm != null && row.height_cm !== cur.height_cm && !fields._admin) throw new Error('HEIGHT_LOCKED')
     delete row._admin
     demoSet(`info:${profileId}`, { ...cur, ...row })
     return

@@ -121,12 +121,13 @@ async function seriesNotify(db: any, body: { event?: string; series_id?: string;
 async function requestNotify(db: any, id?: string): Promise<Response> {
   if (!id) return json({ error: "BAD_REQUEST" }, 400);
   const { data: r, error } = await db.from("booking_requests")
-    .select("concern, preferred, source, service:services(name), profile:profiles(display_name, full_name, phone)")
+    .select("concern, preferred, source, service:services(name), profile:profiles(display_name, full_name, phone, gender, birthday)")
     .eq("id", id).maybeSingle();
   if (error) return json({ error: error.message }, 500);
   if (!r) return json({ skipped: true });
   const text = adminRequestMessage({
     client: r.profile?.full_name || r.profile?.display_name || "客戶", phone: r.profile?.phone,
+    gender: r.profile?.gender, birthday: r.profile?.birthday,
     service: r.service?.name ?? "體驗課程", concern: r.concern, preferred: r.preferred, source: r.source,
   });
   const { data: admins } = await db.from("profiles").select("line_user_id").eq("role", "admin");

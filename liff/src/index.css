@@ -394,3 +394,4 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .pill.req-contacted { background: #E6EDE3; color: var(--brand); }
 .pill.req-booked { background: #E8E1D0; color: #7A6334; }
 .pill.req-closed { background: #ECE8E0; color: #6B665C; }
+.step-title { margin-top: 16px; }
