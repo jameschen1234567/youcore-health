@@ -3,7 +3,7 @@
 // 環境變數：LINE_MESSAGING_TOKEN、CRON_SECRET、SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
-import { adminMessage, adminSeriesMessage, clientMessage, clientSeriesMessage, type Event, type SeriesEvent } from "./message.ts";
+import { adminMessage, adminRequestMessage, adminSeriesMessage, clientMessage, clientSeriesMessage, type Event, type SeriesEvent } from "./message.ts";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
   if (!cron || req.headers.get("x-cron-secret") !== cron) return json({ error: "UNAUTHORIZED" }, 401);
 
   let body: {
-    booking_id?: string; event?: Event | SeriesEvent; old_starts_at?: string | null;
+    booking_id?: string; event?: Event | SeriesEvent | "request"; request_id?: string; old_starts_at?: string | null;
     series_id?: string; booking_ids?: string[];
   };
   try {
@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, {
     auth: { persistSession: false },
   });
+  if (body.event === "request") return await requestNotify(db, body.request_id);
   if (body.event === "series" || body.event === "series_cancelled") return await seriesNotify(db, body);
   if (!body.booking_id || !["created", "rescheduled", "cancelled"].includes(body.event ?? "")) {
     return json({ error: "BAD_REQUEST" }, 400);
@@ -110,6 +111,29 @@ async function seriesNotify(db: any, body: { event?: string; series_id?: string;
   for (const a of admins ?? []) {
     if (!a.line_user_id || a.line_user_id === p?.line_user_id) continue;
     const e = await push(a.line_user_id, adminSeriesMessage(ev, service, starts, name));
+    if (e) errors.push(e);
+  }
+  return errors.length ? json({ error: errors.join("; ") }, 502) : json({ ok: true });
+}
+
+// 體驗課程申請：只通知管理員（客戶在畫面上已看到送出成功，不另外耗用訊息額度）
+// deno-lint-ignore no-explicit-any
+async function requestNotify(db: any, id?: string): Promise<Response> {
+  if (!id) return json({ error: "BAD_REQUEST" }, 400);
+  const { data: r, error } = await db.from("booking_requests")
+    .select("concern, preferred, source, service:services(name), profile:profiles(display_name, full_name, phone)")
+    .eq("id", id).maybeSingle();
+  if (error) return json({ error: error.message }, 500);
+  if (!r) return json({ skipped: true });
+  const text = adminRequestMessage({
+    client: r.profile?.full_name || r.profile?.display_name || "客戶", phone: r.profile?.phone,
+    service: r.service?.name ?? "體驗課程", concern: r.concern, preferred: r.preferred, source: r.source,
+  });
+  const { data: admins } = await db.from("profiles").select("line_user_id").eq("role", "admin");
+  const errors: string[] = [];
+  for (const a of admins ?? []) {
+    if (!a.line_user_id) continue;
+    const e = await push(a.line_user_id, text);
     if (e) errors.push(e);
   }
   return errors.length ? json({ error: errors.join("; ") }, 502) : json({ ok: true });

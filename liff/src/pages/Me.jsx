@@ -45,10 +45,10 @@ export default function Me() {
 
       <section className="card">
         <h2>預約</h2>
-        <p className="muted small">線上預約按摩、肌力課程與康復訓練，也可以查看或改期自己的預約。</p>
+        <p className="muted small">第一次來可以申請體驗課程，由我們協助安排時間；已開通的會員可以直接線上預約。</p>
         <div className="row">
           <Link className="btn ghost" to="/booking/mine">我的預約</Link>
-          <Link className="btn primary" to="/booking">立即預約</Link>
+          <Link className="btn primary" to="/booking">預約／申請體驗</Link>
         </div>
       </section>
 

@@ -66,7 +66,7 @@ export default function AdminBookings() {
         <p className="muted small">已取消：{cancelled.map((b) => `${taipeiTime(new Date(b.starts_at))} ${name(b)}`).join('、')}</p>
       )}
 
-      <AddForClient date={date} services={services} onDone={reload} />
+      <AddForClient date={date} services={services} preset={{ profile: params.get('client') ?? '', service: params.get('service') ?? '' }} onDone={reload} />
       <BlockTimes date={date} onDone={reload} />
       <ServiceSettings services={services} onDone={reload} />
     </main>
@@ -157,10 +157,11 @@ function TimeSelect({ value, onChange }) {
   )
 }
 
-function AddForClient({ date, services, onDone }) {
-  const [open, setOpen] = useState(false)
+// preset：從「體驗申請」按「協助預約」過來時，先帶入客戶與服務
+function AddForClient({ date, services, preset, onDone }) {
+  const [open, setOpen] = useState(!!preset.profile)
   const [clients, setClients] = useState(null)
-  const [form, setForm] = useState({ profile: '', service: '', time: OPEN, note: '', repeat: false, weeks: 8 })
+  const [form, setForm] = useState({ ...preset, time: OPEN, note: '', repeat: false, weeks: 8 })
   const [result, setResult] = useState(null) // 每週重複的建立結果
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')

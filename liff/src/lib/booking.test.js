@@ -86,7 +86,7 @@ describe('體驗課', () => {
     expect([...usedTrials(rows)]).toEqual(['t1'])
   })
   it('錯誤訊息', () => {
-    expect(bookingErrorText(new Error('NEED_ACCESS'))).toContain('體驗課程')
+    expect(bookingErrorText(new Error('TRIAL_BY_REQUEST'))).toContain('體驗課程')
     expect(bookingErrorText(new Error('TRIAL_USED'))).toContain('限 1 次')
   })
 })

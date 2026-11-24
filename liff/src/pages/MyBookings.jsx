@@ -4,9 +4,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import {
   CHANGE_HOURS, NO_SHOW_LIMIT, STATUS_LABELS, bookingErrorText, canClientChange, cancelBooking, fmtSlot,
-  getNoShowCount, isUpcoming, listMyBookings,
+  getBookingAccess, getNoShowCount, isUpcoming, listMyBookings,
 } from '../lib/booking'
-import { MessageButton } from './Booking'
+import { MessageButton } from '../components/MessageButton'
 
 export default function MyBookings() {
   const { profile } = useAuth()
@@ -14,12 +14,13 @@ export default function MyBookings() {
   const { state } = useLocation()
   const [rows, setRows] = useState(null)
   const [noShows, setNoShows] = useState(0)
+  const [access, setAccess] = useState(false)
   const [err, setErr] = useState('')
   const [showPast, setShowPast] = useState(false)
 
-  const reload = useCallback(() => Promise.all([listMyBookings(profile.id), getNoShowCount(profile.id)])
-    .then(([r, n]) => { setRows(r); setNoShows(n) })
-    .catch(() => setErr('載入失敗，請稍後再試')), [profile.id])
+  const reload = useCallback(() => Promise.all([listMyBookings(profile.id), getNoShowCount(profile.id), getBookingAccess(profile.id)])
+    .then(([r, n, a]) => { setRows(r); setNoShows(n); setAccess(a || profile.role === 'admin') })
+    .catch(() => setErr('載入失敗，請稍後再試')), [profile.id, profile.role])
   useEffect(() => { reload() }, [reload])
 
   const upcoming = (rows ?? []).filter((b) => isUpcoming(b))
@@ -42,8 +43,8 @@ export default function MyBookings() {
           <p className="muted">目前沒有即將到來的預約</p>
         </section>
       )}
-      {upcoming.map((b) => <UpcomingItem key={b.id} b={b} onChanged={reload} />)}
-      <Link className="btn primary block" to="/booking">＋ 新增預約</Link>
+      {upcoming.map((b) => <UpcomingItem key={b.id} b={b} access={access} onChanged={reload} />)}
+      {rows && <Link className="btn primary block" to="/booking">{access ? '＋ 新增預約' : '申請體驗課程'}</Link>}
 
       {past.length > 0 && (
         <>
@@ -66,7 +67,7 @@ export default function MyBookings() {
   )
 }
 
-function UpcomingItem({ b, onChanged }) {
+function UpcomingItem({ b, access, onChanged }) {
   const [confirm, setConfirm] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -94,10 +95,12 @@ function UpcomingItem({ b, onChanged }) {
         ) : (
           <div className="row">
             <button className="btn ghost" onClick={() => setConfirm(true)}>取消預約</button>
-            <Link className="btn primary" to={`/booking?reschedule=${b.id}`}>改期</Link>
+            {access && <Link className="btn primary" to={`/booking?reschedule=${b.id}`}>改期</Link>}
           </div>
         )
-      ) : (
+      ) : null}
+      {changeable && !access && <MessageButton text={`我想修改 ${fmtSlot(b.starts_at)} 的預約`} label="傳訊息改時間" />}
+      {!changeable && (
         <>
           <p className="muted small">開始前 {CHANGE_HOURS} 小時內無法線上修改，需要調整請傳訊息給我們。</p>
           <MessageButton text={`我想修改 ${fmtSlot(b.starts_at)} 的預約`} label="傳訊息修改" />

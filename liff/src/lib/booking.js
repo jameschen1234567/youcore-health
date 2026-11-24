@@ -123,7 +123,12 @@ const ERRORS = {
   NOT_BOOKABLE: '這項服務目前請傳訊息預約',
   NOT_ACTIVE: '這筆預約已經不是有效狀態',
   BAD_WEEKS: '重複週數需介於 2–26 週',
-  NEED_ACCESS: '正式課程需購課後由我們開通，目前可以先預約體驗課程',
+  NEED_ACCESS: '線上預約需由我們開通，請先傳訊息給我們',
+  TRIAL_BY_REQUEST: '體驗課程請先送出申請，由我們確認後協助預約',
+  REQUEST_PENDING: '你已經有一筆申請在處理中，我們會盡快聯繫你',
+  TOO_MANY_REQUESTS: '近期申請次數過多，請直接傳訊息給我們',
+  NEED_INFO: '請先到「我的」填完基本資料',
+  BAD_INPUT: '請填寫必填欄位',
   TRIAL_USED: '這項體驗課程已經預約過了，每人限 1 次',
 }
 export function bookingErrorText(err) {
@@ -340,9 +345,8 @@ async function demoCreate(serviceId, startsIso, note, profileId, asAdmin) {
   const t = demoTimes(serviceId, startsIso)
   if (!asAdmin) {
     if (!t.svc.bookable) throw new Error('NOT_BOOKABLE')
-    if (t.svc.is_trial) {
-      if (demoList('bookings').some((b) => b.profile_id === profileId && b.service_id === t.svc.id && b.status !== 'cancelled')) throw new Error('TRIAL_USED')
-    } else if (!(await getBookingAccess(profileId))) throw new Error('NEED_ACCESS')
+    if (t.svc.is_trial) throw new Error('TRIAL_BY_REQUEST')
+    if (!(await getBookingAccess(profileId))) throw new Error('NEED_ACCESS')
     if ((await getNoShowCount(profileId)) >= NO_SHOW_LIMIT) throw new Error('BOOKING_SUSPENDED')
     if (demoList('bookings').filter((b) => b.profile_id === profileId && isUpcoming(b)).length >= MAX_ACTIVE) throw new Error('TOO_MANY')
   }
@@ -350,6 +354,7 @@ async function demoCreate(serviceId, startsIso, note, profileId, asAdmin) {
   const id = crypto.randomUUID()
   const times = { starts_at: t.starts_at, ends_at: t.ends_at, block_until: t.block_until }
   demoSet('bookings', [...demoList('bookings'), { id, profile_id: profileId, service_id: t.svc.id, ...times, status: 'booked', cancelled_by: null, note: note?.trim() || null, created_at: new Date().toISOString() }])
+  demoSet('requests', demoList('requests').map((r) => (r.profile_id === profileId && r.service_id === t.svc.id && ['pending', 'contacted'].includes(r.status) ? { ...r, status: 'booked' } : r)))
   return id
 }
 async function demoCreateWeekly(profileId, serviceId, firstIso, weeks, note) {

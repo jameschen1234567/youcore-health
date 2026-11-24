@@ -20,7 +20,7 @@ export type Event = "created" | "rescheduled" | "cancelled";
 const FOOTER = [
   "",
   "📍 宥芯健筋療育所｜台北市南港區成福路 51 之 3 號 1 樓（後山埤站）",
-  "⏰ 開始前 24 小時之前可在 App 自行改期或取消；24 小時內請直接傳訊息給我們。",
+  "⏰ 開始前 24 小時之前可在 App 取消（已開通預約的會員可自行改期）；24 小時內請直接傳訊息給我們。",
 ];
 
 export function clientMessage(ev: Event, service: string, startsAt: string, name?: string | null, oldStartsAt?: string | null): string {
@@ -60,4 +60,12 @@ export function adminSeriesMessage(ev: SeriesEvent, service: string, starts: str
   const label = ev === "series" ? "🔁 固定預約" : "❌ 取消固定預約";
   const range = starts.length ? `${fmtWhen(starts[0])} 起` : "";
   return `${label}｜${client}\n${service}｜共 ${starts.length} 堂\n${range}`;
+}
+
+/** 體驗課程申請（只通知管理員） */
+export function adminRequestMessage(r: {
+  client: string; phone?: string | null; service: string; concern: string; preferred: string; source?: string | null;
+}): string {
+  return [`📝 體驗申請｜${r.client}`, r.service, `電話：${r.phone || "未填"}`, `困擾：${r.concern}`, `方便時段：${r.preferred}`,
+    ...(r.source ? [`得知管道：${r.source}`] : []), "", "請到後台「體驗申請」確認後協助預約。"].join("\n");
 }

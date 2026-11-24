@@ -31,7 +31,7 @@ export default function AdminClientBookings({ profileId }) {
       {err && <p className="error small">{err}</p>}
       {access !== null && (
         <div className="row spread">
-          <span className="small">{access ? '✅ 已開通正式課程線上預約' : '尚未開通：只能預約體驗課程'}</span>
+          <span className="small">{access ? '✅ 已開通正式課程線上預約' : '尚未開通：只能送出體驗申請，由我們代為預約'}</span>
           <button className={`btn ${access ? 'ghost' : 'primary'}`} onClick={toggleAccess}>{access ? '取消開通' : '開通預約'}</button>
         </div>
       )}

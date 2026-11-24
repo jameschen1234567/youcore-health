@@ -94,7 +94,7 @@ function ServiceCta({ service }) {
       <p className="eyebrow">想進一步了解？</p>
       <h2>預約{service}</h2>
       <p className="muted">由臺師大運動科學背景的防護員親自評估，找出問題根源。</p>
-      <a className="btn primary block" href={LIFF_URL('/booking')}>線上預約</a>
+      <a className="btn primary block" href={LIFF_URL('/booking')}>預約／申請體驗</a>
       {ADD_FRIEND_URL && <a className="btn ghost block" href={ADD_FRIEND_URL}>加入宥芯 LINE 好友</a>}
     </section>
   )
@@ -106,7 +106,7 @@ function JoinCta() {
     <section className="card cta">
       <p className="eyebrow">宥芯健筋療育所｜南港後山埤</p>
       <h2>想收到更多健康新知？</h2>
-      <p className="muted">加入 LINE 好友，第一手看到新文章，也能直接線上預約體驗課程。</p>
+      <p className="muted">加入 LINE 好友，第一手看到新文章，也能申請體驗課程。</p>
       <a className="btn primary block" href={ADD_FRIEND_URL}>加入宥芯 LINE 好友</a>
     </section>
   )

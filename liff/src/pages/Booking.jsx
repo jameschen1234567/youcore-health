@@ -1,13 +1,14 @@
-// 客戶預約：選服務 → 選日期 → 選時段（別人已預約的顯示灰色）→ 確認規則後送出
+// 客戶預約：未開通 → 體驗課程申請表；已開通 → 選服務 → 選日期 → 選時段（別人已預約的顯示灰色）→ 確認規則後送出
 // 網址帶 ?reschedule=<預約 id> 時為改期模式
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
 import {
   CHANGE_HOURS, LEAD_HOURS, MAX_DAYS, NO_SHOW_LIMIT, bookingDates, bookingErrorText, buildSlots, canClientChange,
-  createBooking, fmtSlot, getBookingAccess, getBusy, getNoShowCount, lineMessageUrl, listMyBookings, listServices, rescheduleBooking,
-  usedTrials,
+  createBooking, fmtSlot, getBookingAccess, getBusy, getNoShowCount, listMyBookings, listServices, rescheduleBooking,
 } from '../lib/booking'
+import { MessageButton } from '../components/MessageButton'
+import TrialRequest from './TrialRequest'
 
 export default function Booking() {
   const { profile } = useAuth()
@@ -29,24 +30,25 @@ export default function Booking() {
 
   useEffect(() => {
     Promise.all([listServices(), listMyBookings(profile.id), getNoShowCount(profile.id), getBookingAccess(profile.id), loadBusy()])
-      .then(([services, mine, noShows, access]) => {
+      .then(([services, mine, noShows, granted]) => {
+        const access = granted || profile.role === 'admin'
         setData({ services, mine, noShows, access })
         const target = rescheduleId && mine.find((b) => b.id === rescheduleId)
-        setServiceId(target ? target.service_id : availableServices(services, mine, access)[0]?.id ?? '')
+        setServiceId(target ? target.service_id : regularServices(services)[0]?.id ?? '')
         setDate(dates.find((d) => !d.closed)?.date ?? '')
       })
       .catch(() => setErr('載入失敗，請稍後再試'))
-  }, [profile.id, rescheduleId, loadBusy, dates])
+  }, [profile.id, profile.role, rescheduleId, loadBusy, dates])
 
   if (!data) return <main className="page"><h1>預約</h1>{err ? <p className="error">{err}</p> : <p className="muted">載入中…</p>}</main>
 
   const target = rescheduleId ? data.mine.find((b) => b.id === rescheduleId) : null
-  if (rescheduleId && (!target || !canClientChange(target))) {
+  if (rescheduleId && (!target || !data.access || !canClientChange(target))) {
     return (
       <main className="page">
         <button className="back" onClick={() => navigate('/booking/mine')}>‹ 我的預約</button>
         <h1>無法線上改期</h1>
-        <p className="muted">開始前 {CHANGE_HOURS} 小時內的預約，請直接傳訊息給我們修改。</p>
+        <p className="muted">{data.access ? `開始前 ${CHANGE_HOURS} 小時內的預約，` : '需要調整時間，'}請直接傳訊息給我們修改。</p>
         {target && <MessageButton text={`我想修改 ${fmtSlot(target.starts_at)} 的預約`} />}
       </main>
     )
@@ -64,22 +66,9 @@ export default function Booking() {
     )
   }
 
-  const choices = availableServices(data.services, data.mine, data.access)
-  if (!target && choices.length === 0) {
-    return (
-      <main className="page">
-        <button className="back" onClick={() => navigate('/me')}>‹ 我的</button>
-        <h1>預約</h1>
-        <section className="card">
-          <h2>體驗課程都已預約過了</h2>
-          <p>正式課程需要購課後由我們開通線上預約。想了解課程方案，歡迎直接傳訊息給我們。</p>
-          <MessageButton text="我想了解課程方案" />
-        </section>
-        <Link className="btn ghost block" to="/booking/mine">查看我的預約</Link>
-      </main>
-    )
-  }
+  if (!target && !data.access) return <TrialRequest profileId={profile.id} services={data.services} mine={data.mine} />
 
+  const choices = regularServices(data.services)
   const service = target ? data.services.find((s) => s.id === serviceId) : choices.find((s) => s.id === serviceId)
   const ignore = target ? { starts_at: target.starts_at, ends_at: target.block_until } : null
   const slots = buildSlots(date, service, busy, new Date(), ignore)
@@ -97,21 +86,14 @@ export default function Booking() {
       {!target && (
         <section className="card">
           <h2>1. 選擇服務</h2>
-          {[['正式課程', choices.filter((s) => !s.is_trial)], ['體驗課程（每項限 1 次）', choices.filter((s) => s.is_trial)]]
-            .filter(([, list]) => list.length > 0).map(([label, list]) => (
-              <div key={label} className="svc-group">
-                <p className="small svc-group-title">{label}</p>
-                <div className="chips">
-                  {list.map((s) => (
-                    <button key={s.id} className={`chip ${serviceId === s.id ? 'on' : ''}`} onClick={() => { setServiceId(s.id); setSlot(null) }}>
-                      {s.name}<span className="muted small">｜{s.duration_min} 分</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="chips">
+            {choices.map((s) => (
+              <button key={s.id} className={`chip ${serviceId === s.id ? 'on' : ''}`} onClick={() => { setServiceId(s.id); setSlot(null) }}>
+                {s.name}<span className="muted small">｜{s.duration_min} 分</span>
+              </button>
             ))}
+          </div>
           {service?.description && <p className="small">{service.description}</p>}
-          {!data.access && <p className="muted small">正式課程需購課後由我們開通線上預約；第一次來可以先約體驗課程。</p>}
           <p className="muted small">專業健康檢測、頌缽療育請傳訊息預約。</p>
         </section>
       )}
@@ -203,15 +185,5 @@ function Confirm({ service, slot, target, onDone, onTaken }) {
   )
 }
 
-export function MessageButton({ text, label = '傳 LINE 訊息給我們' }) {
-  const href = lineMessageUrl(text)
-  return href
-    ? <a className="btn primary block" href={href}>{label}</a>
-    : <button className="btn primary block" disabled>{label}</button>
-}
-
-/** 客戶可選的服務：已開通 → 正式課程；體驗課 → 還沒用過的 */
-function availableServices(services, mine, access) {
-  const used = usedTrials(mine)
-  return services.filter((s) => (s.is_trial ? !used.has(s.id) : access))
-}
+/** 會員可自己預約的正式課程（體驗課一律由我們協助預約） */
+const regularServices = (services) => services.filter((s) => !s.is_trial)

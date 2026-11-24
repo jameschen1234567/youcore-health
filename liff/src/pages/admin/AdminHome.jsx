@@ -5,6 +5,7 @@ import { adminAllFoot, adminLastSync, adminListClients, adminRunSync } from '../
 import { allFootCsvFilename, downloadText, footCsv } from '../../lib/csv'
 import { fmtDate } from '../../lib/format'
 import { adminListAllPackages, packageAlerts } from '../../lib/packages'
+import { adminListRequests, isOpenRequest } from '../../lib/requests'
 
 const FILTERS = [
   ['all', '全部'],
@@ -42,6 +43,7 @@ export default function AdminHome() {
         <Link className="btn primary" to="/admin/bookings">預約管理</Link>
         <Link className="btn ghost" to="/admin/calendar">預約總表（行事曆）</Link>
       </div>
+      <RequestAlert />
       <PackageAlerts />
 
       <Tools />
@@ -167,5 +169,18 @@ function PackageAlerts() {
       )}
       {alerts?.length > 5 && <Link className="link-btn" to="/admin/packages">還有 {alerts.length - 5} 筆，查看全部 ›</Link>}
     </section>
+  )
+}
+
+// 體驗申請：有待處理的就顯示提醒
+function RequestAlert() {
+  const [open, setOpen] = useState(null)
+  const [failed, setFailed] = useState(false)
+  useEffect(() => { adminListRequests().then((r) => setOpen(r.filter(isOpenRequest))).catch(() => setFailed(true)) }, [])
+  const pending = (open ?? []).filter((r) => r.status === 'pending').length
+  return (
+    <Link className={`banner left ${pending || failed ? 'warn' : ''}`} to="/admin/requests">
+      {failed ? '體驗申請載入失敗，點這裡重試 ›' : pending ? `有 ${pending} 筆體驗申請待確認 ›` : `體驗申請${open?.length ? `（${open.length} 筆處理中）` : ''} ›`}
+    </Link>
   )
 }

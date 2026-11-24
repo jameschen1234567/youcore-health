@@ -21,6 +21,7 @@ import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
 import AdminBookings from './pages/admin/AdminBookings'
 import AdminCalendar from './pages/admin/AdminCalendar'
+import AdminRequests from './pages/admin/AdminRequests'
 import AdminPackagesOverview from './pages/admin/AdminPackagesOverview'
 import Booking from './pages/Booking'
 import MyBookings from './pages/MyBookings'
@@ -65,6 +66,7 @@ function Gate() {
           <Route path="/booking" element={<Booking />} />
           <Route path="/booking/mine" element={<MyBookings />} />
           <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
+          <Route path="/admin/requests" element={<AdminOnly><AdminRequests /></AdminOnly>} />
           <Route path="/admin/calendar" element={<AdminOnly><AdminCalendar /></AdminOnly>} />
           <Route path="/admin/packages" element={<AdminOnly><AdminPackagesOverview /></AdminOnly>} />
           <Route path="/admin" element={<AdminOnly><AdminHome /></AdminOnly>} />
