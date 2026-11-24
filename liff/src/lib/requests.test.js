@@ -9,8 +9,8 @@ describe('contactError', () => {
   })
   it('缺欄位或格式不對', () => {
     expect(contactError({ ...ok, full_name: ' ' })).toContain('姓名')
-    expect(contactError({ ...ok, gender: '' })).toContain('身體性別')
-    expect(contactError({ ...ok, gender: 'other' })).toContain('身體性別')
+    expect(contactError({ ...ok, gender: '' })).toContain('生理性別')
+    expect(contactError({ ...ok, gender: 'other' })).toContain('生理性別')
     expect(contactError({ ...ok, birthday: '' })).toContain('生日')
     expect(contactError({ ...ok, birthday: '2099-01-01' })).toContain('生日')
     for (const phone of ['', '02-26539433', '091234567', '09123456789']) expect(contactError({ ...ok, phone })).toContain('手機')

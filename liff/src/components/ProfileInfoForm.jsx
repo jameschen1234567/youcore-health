@@ -6,7 +6,7 @@ import { GENDERS } from '../lib/training'
 export function validateInfo(v) {
   const e = {}
   if (!v.full_name?.trim()) e.full_name = '請填寫姓名'
-  if (!GENDERS[v.gender]) e.gender = '請選擇身體性別'
+  if (!GENDERS[v.gender]) e.gender = '請選擇生理性別'
   if (!v.birthday) e.birthday = '請填寫生日'
   else if (v.birthday > new Date().toISOString().slice(0, 10) || v.birthday < '1900-01-01') e.birthday = '生日不正確'
   if (!/^[0-9+\-\s()]{8,20}$/.test(v.phone?.trim() ?? '')) e.phone = '請填寫正確的聯絡電話'
@@ -62,7 +62,7 @@ export default function ProfileInfoForm({ initial = {}, heightLocked = false, su
         {err('full_name')}
       </label>
       <fieldset className="small gender">
-        <legend>身體性別 *</legend>
+        <legend>生理性別 *</legend>
         <div className="chips">
           {Object.entries(GENDERS).map(([k, label]) => (
             <button type="button" key={k} className={`chip ${v.gender === k ? 'on' : ''}`} onClick={() => setV((s) => ({ ...s, gender: k }))}>{label}</button>

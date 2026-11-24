@@ -75,7 +75,7 @@ export function adminRequestMessage(r: {
   client: string; phone?: string | null; gender?: string | null; birthday?: string | null;
   service: string; concern: string; preferred: string; source?: string | null;
 }, now = new Date()): string {
-  const g = ({ male: "男生", female: "女生" } as Record<string, string>)[r.gender ?? ""] ?? "身體性別未填";
+  const g = ({ male: "男生", female: "女生" } as Record<string, string>)[r.gender ?? ""] ?? "生理性別未填";
   const age = ageOn(r.birthday, now);
   return [`📝 體驗申請｜${r.client}`, r.service, `${g}｜${age === null ? "年齡未填" : `${age} 歲`}`, `手機：${r.phone || "未填"}`, `困擾：${r.concern}`, `方便時段：${r.preferred}`,
     ...(r.source ? [`得知管道：${r.source}`] : []), "", "請到後台「體驗申請」確認後協助預約。"].join("\n");

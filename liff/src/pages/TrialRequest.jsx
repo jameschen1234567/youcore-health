@@ -87,7 +87,7 @@ export default function TrialRequest({ profileId, services, mine }) {
           <div className="form-grid">
             <label className="small">姓名 *<input className="search" maxLength={50} autoComplete="name" value={c.full_name} onChange={setContact('full_name')} /></label>
             <fieldset className="small gender">
-              <legend>身體性別 *</legend>
+              <legend>生理性別 *</legend>
               <div className="chips">
                 {Object.entries(GENDERS).map(([k, label]) => (
                   <button type="button" key={k} aria-pressed={c.gender === k} className={`chip ${c.gender === k ? 'on' : ''}`} onClick={() => setC((x) => ({ ...x, gender: k }))}>{label}</button>
