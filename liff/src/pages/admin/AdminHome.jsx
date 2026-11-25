@@ -5,6 +5,7 @@ import { adminAllFoot, adminLastSync, adminListClients, adminRunSync } from '../
 import { allFootCsvFilename, downloadText, footCsv } from '../../lib/csv'
 import { fmtDate } from '../../lib/format'
 import { adminListAllPackages, packageAlerts } from '../../lib/packages'
+import { adminCountUnread } from '../../lib/feedback'
 import { adminListRequests, isOpenRequest } from '../../lib/requests'
 
 const FILTERS = [
@@ -46,6 +47,7 @@ export default function AdminHome() {
       <Link className="btn ghost block" to="/admin/live">直播管理</Link>
       <Link className="btn ghost block" to="/admin/learning">模擬教材</Link>
       <RequestAlert />
+      <FeedbackAlert />
       <PackageAlerts />
 
       <Tools />
@@ -185,4 +187,11 @@ function RequestAlert() {
       {failed ? '體驗申請載入失敗，點這裡重試 ›' : pending ? `有 ${pending} 筆體驗申請待確認 ›` : `體驗申請${open?.length ? `（${open.length} 筆處理中）` : ''} ›`}
     </Link>
   )
+}
+
+// 意見回饋：有未讀就顯示提醒
+function FeedbackAlert() {
+  const [n, setN] = useState(null)
+  useEffect(() => { adminCountUnread().then(setN).catch(() => setN(-1)) }, [])
+  return <Link className={`banner left ${n ? 'warn' : ''}`} to="/admin/feedback">{n === -1 ? '意見回饋載入失敗，點這裡重試 ›' : n ? `有 ${n} 筆意見回饋未讀 ›` : '意見回饋 ›'}</Link>
 }

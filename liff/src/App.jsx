@@ -19,6 +19,8 @@ import FootHome from './pages/FootHome'
 import FootMeasure from './pages/FootMeasure'
 import Learn, { LearnView } from './pages/Learn'
 import AdminModules from './pages/admin/AdminModules'
+import Feedback from './pages/Feedback'
+import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
 import AdminBookings from './pages/admin/AdminBookings'
@@ -66,6 +68,8 @@ function Gate() {
           <Route path="/foot" element={<FootHome />} />
           <Route path="/foot/measure" element={<FootMeasure />} />
           <Route path="/foot/insole" element={<Navigate to="/foot" replace />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/admin/feedback" element={<AdminOnly><AdminFeedback /></AdminOnly>} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/learn/:id" element={<LearnView />} />
           <Route path="/admin/learning" element={<AdminOnly><AdminModules /></AdminOnly>} />

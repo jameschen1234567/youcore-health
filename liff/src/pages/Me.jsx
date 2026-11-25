@@ -10,6 +10,7 @@ import { DEMO } from '../config'
 import ProfileInfoForm from '../components/ProfileInfoForm'
 import InfoSummary from '../components/InfoSummary'
 import { getProfileInfo, saveProfileInfo } from '../lib/training'
+import { countMyUnread } from '../lib/feedback'
 
 export default function Me() {
   const { profile } = useAuth()
@@ -63,6 +64,8 @@ export default function Me() {
         <p className="muted small">會員專屬的 3D 動作與肌肉骨骼模擬，動手玩、邊學邊懂。</p>
         <div className="row"><Link className="btn ghost" to="/learn">進入教室</Link></div>
       </section>
+
+      <FeedbackCard profileId={profile.id} />
 
       <MyInfo profileId={profile.id} />
 
@@ -149,6 +152,18 @@ function MyInfo({ profileId }) {
             setEditing(false)
           }} />
       ) : <InfoSummary info={info} />)}
+    </section>
+  )
+}
+
+function FeedbackCard({ profileId }) {
+  const [unread, setUnread] = useState(0)
+  useEffect(() => { countMyUnread(profileId).then(setUnread).catch(() => {}) }, [profileId])
+  return (
+    <section className="card">
+      <h2>意見回饋{unread > 0 && <span className="dot">{unread} 則新回覆</span>}</h2>
+      <p className="muted small">使用上的問題或建議，都可以告訴我們。</p>
+      <div className="row"><Link className={`btn ${unread ? 'primary' : 'ghost'}`} to="/feedback">{unread ? '看回覆' : '我要回饋'}</Link></div>
     </section>
   )
 }

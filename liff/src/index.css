@@ -451,3 +451,13 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 .unlocks { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 12px; display: grid; gap: 10px; }
 .unlocks h3 { margin: 0; font-size: 1rem; }
 .unlocks .check-row { padding: 6px 0; }
+
+/* 意見回饋 */
+.fb-input { font: inherit; width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-top: 4px; }
+.fb-thread { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 8px; }
+.fb-thread li { background: var(--bg); border-radius: 12px; padding: 8px 12px; margin-right: 12%; overflow-wrap: anywhere; }
+.fb-thread li.admin { margin: 0 0 0 12%; background: #E2EEDF; }
+.fb-thread p { margin: 0 0 2px; }
+.fb-head { font: inherit; color: inherit; width: 100%; display: flex; justify-content: space-between; align-items: center; background: none; border: 0; padding: 4px 0; min-height: 40px; cursor: pointer; }
+.fb-peek { margin: 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dot { display: inline-block; margin-left: 8px; background: #B3322F; color: #fff; border-radius: 999px; padding: 1px 8px; font-size: 0.75rem; font-weight: 700; }
