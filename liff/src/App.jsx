@@ -17,6 +17,7 @@ import PainMapForm from './pages/PainMapForm'
 import PainMapHistory from './pages/PainMapHistory'
 import FootHome from './pages/FootHome'
 import FootMeasure from './pages/FootMeasure'
+import InsoleMeasure from './pages/InsoleMeasure'
 import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
 import AdminBookings from './pages/admin/AdminBookings'
@@ -63,6 +64,7 @@ function Gate() {
           <Route path="/scales/:key/history" element={<ScaleHistory />} />
           <Route path="/foot" element={<FootHome />} />
           <Route path="/foot/measure" element={<FootMeasure />} />
+          <Route path="/foot/insole" element={<InsoleMeasure />} />
           <Route path="/training" element={<Training />} />
           <Route path="/training/:sessionId" element={<TrainingSession />} />
           <Route path="/me" element={<Me />} />

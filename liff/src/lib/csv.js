@@ -1,10 +1,11 @@
 // 足部數據匯出（給模板鞋墊 App）
-// 規格：每列一隻腳，欄位「客戶名, 腳別, 足長_mm, 足寬_mm, 量測日期, algo_version」
+// 規格：每列一隻腳，欄位「客戶名, 腳別, 足長_mm, 足寬_mm, 量測日期, algo_version, 腳跟寬_mm, 來源」
 //       單筆檔名「客戶名_腳別_量測日期.csv」
 // 加 UTF-8 BOM，Excel 直接開中文才不會亂碼。
 
 const TZ = 'Asia/Taipei'
-const HEADER = ['客戶名', '腳別', '足長_mm', '足寬_mm', '量測日期', 'algo_version']
+const HEADER = ['客戶名', '腳別', '足長_mm', '足寬_mm', '量測日期', 'algo_version', '腳跟寬_mm', '來源']
+const SOURCE = { self: '自己量', onsite: '到店量', photo: '拍照' }
 const SIDE = { left: '左', right: '右' }
 
 /** ISO 時間 → 台北日期 YYYY-MM-DD */
@@ -26,6 +27,8 @@ export function footCsv(rows) {
     Number(r.width_mm).toFixed(1),
     taipeiDate(r.created_at),
     r.algo_version,
+    r.heel_width_mm == null ? '' : Number(r.heel_width_mm).toFixed(1),
+    SOURCE[r.source] ?? '',
   ])]
   return '﻿' + lines.map((l) => l.map(cell).join(',')).join('\r\n') + '\r\n'
 }

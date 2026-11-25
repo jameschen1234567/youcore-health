@@ -79,7 +79,7 @@ export default function Me() {
           </>
         ) : (
           <>
-            <p className="muted">還沒做過足部初篩，用一張 A4 紙就能量。</p>
+            <p className="muted">還沒量過腳或鞋墊，用尺就能量。</p>
             <div className="row"><Link className="btn ghost" to="/foot">開始量測</Link></div>
           </>
         )}

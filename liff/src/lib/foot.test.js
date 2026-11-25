@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildReport, canClientDelete, footErrorMessage, toCm } from './foot'
+import { RANGES, buildReport, canClientDelete, checkWidths, footWarnings, insolePoints, insoleWarnings, parseCm, parseWidths, toCm, widthsToText } from './foot'
 
 const row = (side, length_mm, created_at, quality_flags = []) => ({ side, length_mm, width_mm: 95, created_at, quality_flags })
 
@@ -45,11 +45,6 @@ describe('buildReport', () => {
 })
 
 describe('其他', () => {
-  it('錯誤碼有對應提示，未知碼有通用提示', () => {
-    expect(footErrorMessage('TOO_OBLIQUE')).toContain('正上方')
-    expect(footErrorMessage('HTTP_500')).toContain('量測失敗')
-  })
-
   it('mm 轉 cm', () => {
     expect(toCm(248.5)).toBe('24.9')
     expect(toCm('251.0')).toBe('25.1')
@@ -66,5 +61,44 @@ describe('客戶自行刪除時限', () => {
     expect(canClientDelete({ created_at: '2026-11-21T12:00:00Z' }, now)).toBe(false)
     expect(canClientDelete({ created_at: '2026-11-01T00:00:00Z' }, now)).toBe(false)
     expect(canClientDelete({}, now)).toBe(false)
+  })
+})
+
+describe('手動量測', () => {
+  it('公分轉 mm，接受全形與單位', () => {
+    expect(parseCm('24.5', RANGES.length, '足長')).toEqual({ mm: 245 })
+    expect(parseCm('２４．５ 公分', RANGES.length, '足長')).toEqual({ mm: 245 })
+  })
+  it('擋下空白、文字、公釐、超出範圍', () => {
+    expect(parseCm('', RANGES.length, '足長').error).toContain('請填')
+    expect(parseCm('abc', RANGES.length, '足長').error).toContain('數字')
+    expect(parseCm('245', RANGES.length, '足長').error).toContain('24.5')
+    expect(parseCm('90', RANGES.width, '前掌寬').error).toContain('9.0')
+    expect(parseCm('3', RANGES.length, '足長').error).toContain('15–35')
+  })
+  it('量測位置依長度按比例、遞增且在長度內', () => {
+    expect(insolePoints(275)).toEqual([25, 80, 130, 180, 225, 255, 265])
+    for (let l = 150; l <= 350; l++) {
+      const p = insolePoints(l)
+      expect(checkWidths(p.map((x) => [x, 70]), l).error, `長度 ${l}`).toBeUndefined()
+    }
+  })
+  it('寬度文字可來回轉換', () => {
+    const w = [[25, 61], [80, 76], [133, 87], [181, 98]]
+    expect(parseWidths(widthsToText(w), 275)).toEqual({ widths: w })
+    expect(parseWidths('25:61\n80,76\n133 87\n181　98', 275).widths).toEqual(w)
+  })
+  it('寬度檢查', () => {
+    expect(checkWidths([[25, 60]], 275).error).toContain('4 到 12')
+    expect(checkWidths([[25, 60], [20, 70], [130, 80], [180, 90]], 275).error).toContain('依序')
+    expect(checkWidths([[25, 60], [80, 70], [130, 80], [280, 90]], 275).error).toContain('超過')
+    expect(checkWidths([[25, 6], [80, 70], [130, 80], [180, 90]], 275).error).toContain('不合理')
+    expect(parseWidths('25 abc', 275).error).toContain('看不懂')
+  })
+  it('提醒但不擋', () => {
+    expect(footWarnings({ length: 250, width: 98, heel: 62 })).toEqual([])
+    expect(footWarnings({ length: 250, width: 62, heel: 98 })[0]).toContain('填反')
+    expect(insoleWarnings([[25, 61], [80, 76], [130, 87], [180, 98], [225, 94], [255, 78], [265, 55]])).toEqual([])
+    expect(insoleWarnings([[25, 61], [80, 110]])[0]).toContain('8 公分')
   })
 })

@@ -6,7 +6,7 @@ import {
   adminResendNotify, adminSetOrderStatus, adminUpdateOrderNote,
 } from '../../lib/adminApi'
 import { QUESTIONNAIRES } from '../../questionnaires'
-import { FLAG_NOTES, SIDE_LABELS, WIDTH_LABELS, buildReport, toCm } from '../../lib/foot'
+import { FLAG_NOTES, SIDE_LABELS, SOURCE_LABELS, WIDTH_LABELS, buildReport, toCm } from '../../lib/foot'
 import { PRODUCTS, STATUSES, nextStatus, sortOrders, statusLabel } from '../../lib/orders'
 import { downloadText, footCsv, footCsvFilename } from '../../lib/csv'
 import { REGION_LABELS } from '../../lib/bodyRegions'
@@ -20,6 +20,7 @@ import AdminBody from './AdminBody'
 import AdminTraining from './AdminTraining'
 import AdminClientBookings from './AdminClientBookings'
 import AdminPackages from './AdminPackages'
+import { FeetEntry, InsolePanel } from './AdminFootEntry'
 
 export default function AdminClient() {
   const { id } = useParams()
@@ -50,7 +51,8 @@ export default function AdminClient() {
       <AdminBody profileId={profile.id} />
       <AdminTraining profileId={profile.id} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />
-      <Foot profileName={profile.display_name} rows={data.foot} onChange={reload} />
+      <Foot profileId={profile.id} profileName={profile.display_name} rows={data.foot} onChange={reload} />
+      <InsolePanel profileId={profile.id} rows={data.insoles} onChange={reload} />
       <Scales responses={data.responses} />
       <PainMap maps={data.painMaps} />
     </main>
@@ -185,18 +187,19 @@ function NoteEditor({ order, onSave }) {
 }
 
 // ── 足部量測 ──────────────────────────────────────────────────────────────
-function Foot({ profileName, rows, onChange }) {
+function Foot({ profileId, profileName, rows, onChange }) {
   const report = buildReport(rows)
   return (
     <section className="card">
       <h2>足部量測（{rows.length} 筆）</h2>
-      {rows.length === 0 && <p className="muted">還沒有線上量測</p>}
+      {rows.length === 0 && <p className="muted">還沒有量測</p>}
       {report.diffWarning && <p className="banner warn">最新一次左右足長差 {toCm(report.lengthDiff)} cm，建議到店確認。</p>}
       <ul className="foot-rows">
         {[...rows].reverse().map((r) => (
           <FootRow key={r.id} row={r} profileName={profileName} onDeleted={onChange} />
         ))}
       </ul>
+      <FeetEntry profileId={profileId} onSaved={onChange} />
     </section>
   )
 }
@@ -216,7 +219,7 @@ function FootRow({ row, profileName, onDeleted }) {
   return (
     <li>
       <div className="foot-row-head">
-        <span><b>{SIDE_LABELS[row.side]}</b> {toCm(row.length_mm)} × {toCm(row.width_mm)} cm
+        <span><b>{SIDE_LABELS[row.side]}</b> 長 {toCm(row.length_mm)}｜前掌 {toCm(row.width_mm)}{row.heel_width_mm ? `｜腳跟 ${toCm(row.heel_width_mm)}` : ''} cm｜{SOURCE_LABELS[row.source] ?? ''}
           {row.width_class && `｜${WIDTH_LABELS[row.width_class] ?? row.width_class}`}</span>
         <span className="muted small">{fmtDate(row.created_at)}</span>
       </div>
@@ -228,7 +231,7 @@ function FootRow({ row, profileName, onDeleted }) {
       </div>
       {del !== 'idle' && (
         <div className="row confirm-row">
-          <span className="small">確定刪除這筆{SIDE_LABELS[row.side]}量測？照片會一起刪除，無法復原。</span>
+          <span className="small">確定刪除這筆{SIDE_LABELS[row.side]}量測？{row.photo_path ? '照片會一起刪除，' : ''}無法復原。</span>
           <button className="btn ghost" disabled={del === 'working'} onClick={() => setDel('idle')}>取消</button>
           <button className="btn danger" disabled={del === 'working'} onClick={doDelete}>{del === 'working' ? '刪除中…' : '確定刪除'}</button>
         </div>

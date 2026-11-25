@@ -425,3 +425,5 @@ fieldset.gender legend { padding: 0; margin-bottom: 4px; }
 .chat-input { display: flex; gap: 8px; }
 .chat-input .search { flex: 1; min-width: 0; }
 .chat-form .check-row input { width: 18px; height: 18px; flex: none; margin: 0; }
+
+fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }

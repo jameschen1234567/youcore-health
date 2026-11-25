@@ -1,6 +1,6 @@
 // 資料存取層：正式模式走 Supabase，Demo 模式存在瀏覽器 localStorage。
 // 頁面只呼叫這裡的函式，不直接碰 Supabase，方便兩種模式切換與日後測試。
-import { DEMO, CONSENT_VERSION, FOOT_API_URL } from '../config'
+import { DEMO, CONSENT_VERSION } from '../config'
 import { supabase } from './supabase'
 import { DEMO_CONTENT } from '../demo/content'
 
@@ -119,69 +119,47 @@ export async function listPainMaps(profileId) {
   return data
 }
 
-// ── 足部初篩 ────────────────────────────────────────────────────
+// ── 足部與鞋墊量測 ────────────────────────────────────────────────────
 
-export class FootApiError extends Error {
-  constructor(code, message) {
-    super(message || code)
-    this.code = code
+/** 儲存左右腳（一次寫入）。feet: [{ side, length_mm, width_mm, heel_width_mm }]；onsite 只有管理員可寫 */
+export async function saveFeet(profileId, feet, source = 'self') {
+  const rows = feet.map((f) => ({ ...f, profile_id: profileId, source, algo_version: 'manual-1', quality_flags: [] }))
+  if (DEMO) {
+    for (const r of rows) demoPush('foot', { ...r, id: crypto.randomUUID(), photo_path: null, width_class: null, created_at: new Date().toISOString() })
+    return
   }
+  const { error } = await supabase.from('foot_measurements').insert(rows)
+  if (error) throw error
 }
 
-/** 上傳一張照片到 Python 後端量測。成功回傳 {side, length_mm, width_mm, width_class, quality_flags, algo_version} */
-export async function measureFoot(blob, side) {
-  if (!FOOT_API_URL) {
-    if (!DEMO) throw new FootApiError('NOT_CONFIGURED', '尚未設定量測服務')
-    // Demo 模式沒有後端：回傳固定的示範數值，並以 DEMO 旗標標示
-    await new Promise((r) => setTimeout(r, 600))
-    return { side, length_mm: side === 'left' ? 248.5 : 251.0, width_mm: side === 'left' ? 95.5 : 96.0, width_class: null, quality_flags: ['DEMO'], algo_version: 'demo' }
-  }
-  const form = new FormData()
-  form.append('file', blob, `${side}.jpg`)
-  form.append('side', side)
-  const headers = {}
-  if (!DEMO) {
-    const { data } = await supabase.auth.getSession()
-    if (data.session) headers.Authorization = `Bearer ${data.session.access_token}`
-  }
-  let res
-  try {
-    res = await fetch(`${FOOT_API_URL}/foot/measure`, { method: 'POST', body: form, headers })
-  } catch {
-    throw new FootApiError('NETWORK')
-  }
-  const body = await res.json().catch(() => ({}))
-  if (!res.ok) throw new FootApiError(body?.detail?.code ?? `HTTP_${res.status}`, body?.detail?.message)
-  return body
+const INSOLE_FIELDS = 'id, side, length_mm, widths, note, source, created_at'
+
+export async function saveInsole(profileId, row, source = 'self') {
+  if (DEMO) return demoPush('insole', { ...row, profile_id: profileId, source, id: crypto.randomUUID(), created_at: new Date().toISOString() })
+  const { error } = await supabase.from('insole_measurements').insert({ ...row, profile_id: profileId, source })
+  if (error) throw error
 }
 
-/** 儲存一隻腳的量測結果；照片存到 foot-photos/{profile_id}/{id}/{side}.jpg */
-export async function saveFootMeasurement(profileId, result, photo) {
-  const id = crypto.randomUUID()
-  const row = {
-    id,
-    profile_id: profileId,
-    side: result.side,
-    length_mm: result.length_mm,
-    width_mm: result.width_mm,
-    width_class: result.width_class,
-    algo_version: result.algo_version,
-    quality_flags: result.quality_flags,
-  }
-  if (DEMO) return demoPush('foot', { ...row, photo_path: null, created_at: new Date().toISOString() })
-  const path = `${profileId}/${id}/${result.side}.jpg`
-  const up = await supabase.storage.from('foot-photos').upload(path, photo, { contentType: 'image/jpeg' })
-  if (up.error) throw up.error
-  const { data, error } = await supabase.from('foot_measurements').insert({ ...row, photo_path: path }).select().single()
+export async function listInsoles(profileId) {
+  if (DEMO) return demoList('insole')
+  const { data, error } = await supabase.from('insole_measurements').select(INSOLE_FIELDS)
+    .eq('profile_id', profileId).order('created_at', { ascending: true })
   if (error) throw error
   return data
+}
+
+export async function deleteInsole(id) {
+  if (DEMO) return demoSet('insole', demoList('insole').filter((r) => r.id !== id))
+  const { data, error } = await supabase.from('insole_measurements').delete().eq('id', id).select('id')
+  if (error) throw error
+  if (!data?.length) throw new Error('DELETE_NOT_ALLOWED')
 }
 
 export async function listFootMeasurements(profileId) {
   if (DEMO) return demoList('foot')
   const { data, error } = await supabase
     .from('foot_measurements')
-    .select('id, side, length_mm, width_mm, width_class, quality_flags, algo_version, photo_path, created_at')
+    .select('id, side, length_mm, width_mm, heel_width_mm, source, width_class, quality_flags, algo_version, photo_path, created_at')
     .eq('profile_id', profileId)
     .order('created_at', { ascending: true })
   if (error) throw error

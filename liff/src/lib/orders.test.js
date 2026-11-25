@@ -45,8 +45,8 @@ describe('足部 CSV 匯出', () => {
     const csv = footCsv([row])
     expect(csv.startsWith('﻿')).toBe(true)
     const lines = csv.slice(1).trim().split('\r\n')
-    expect(lines[0]).toBe('客戶名,腳別,足長_mm,足寬_mm,量測日期,algo_version')
-    expect(lines[1]).toBe('王小明,左,248.5,95.0,2026-11-21,a1-0.1.0')
+    expect(lines[0]).toBe('客戶名,腳別,足長_mm,足寬_mm,量測日期,algo_version,腳跟寬_mm,來源')
+    expect(lines[1]).toBe('王小明,左,248.5,95.0,2026-11-21,a1-0.1.0,,')
   })
 
   it('名字有逗號或引號要跳脫', () => {

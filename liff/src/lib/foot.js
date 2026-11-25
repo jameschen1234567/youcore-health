@@ -1,20 +1,4 @@
-// 足部初篩：錯誤碼提示、報告整理（純函式，方便測試）
-
-export const FOOT_ERRORS = {
-  PAPER_NOT_FOUND: '找不到 A4 紙，請讓紙的四個角都完整入鏡。',
-  TOO_OBLIQUE: '拍攝角度太斜了，請從腳的正上方往下拍。',
-  FOOT_OUT_OF_PAPER: '腳超出紙張範圍。足長超過約 28 cm 的話，請改用 A3 紙。',
-  FOOT_NOT_FOUND: '紙上找不到腳，請確認整隻腳都踩在紙上，而且地板是深色的。',
-  UNREADABLE_IMAGE: '這張照片無法讀取，請重新拍一張。',
-  UNSUPPORTED_FORMAT: '請上傳 JPG 或 PNG 照片。',
-  FILE_TOO_LARGE: '照片太大了（超過 10 MB），請重新拍一張。',
-  RATE_LIMITED: '量測太頻繁了，請等 1 分鐘再試。',
-  UNAUTHORIZED: '登入已過期，請關閉後重新開啟。',
-  NETWORK: '連線失敗，請確認網路後再試。',
-  NOT_CONFIGURED: '量測服務還沒開放，請稍後再試。',
-}
-
-export const footErrorMessage = (code) => FOOT_ERRORS[code] ?? '量測失敗，請重新拍一張再試。'
+// 足部與鞋墊量測：輸入檢查、報告整理（純函式，方便測試）
 
 export const FLAG_NOTES = {
   LOW_RESOLUTION: '照片解析度偏低，數值可能比較不準，建議靠近一點重拍。',
@@ -59,3 +43,66 @@ export function canClientDelete(row, now = Date.now()) {
 
 /** mm → 顯示用 cm，一位小數 */
 export const toCm = (mm) => (Math.round(Number(mm)) / 10).toFixed(1)
+
+export const SOURCE_LABELS = { self: '自己量', onsite: '到店量', photo: '拍照' }
+export const INSOLE_SIDE_LABELS = { left: '左腳', right: '右腳', both: '左右相同' }
+
+/** 各欄位合理範圍（mm），與資料庫 0018 一致 */
+export const RANGES = { length: [150, 350], width: [50, 160], heel: [30, 120], insoleWidth: [20, 160] }
+
+/** 使用者填的公分 → mm。回傳 { mm } 或 { error } */
+export function parseCm(text, [min, max], label) {
+  const t = String(text ?? '').normalize('NFKC').replace(/cm|公分/gi, '').trim()
+  if (!t) return { error: `請填${label}` }
+  if (!/^\d+(\.\d+)?$/.test(t)) return { error: `${label}請填數字，例如 24.5` }
+  const mm = Math.round(Number(t) * 10)
+  if (mm > max && Number(t) >= min && Number(t) <= max) return { error: `${label}看起來是公釐，請改填公分（例如 ${(Number(t) / 10).toFixed(1)}）` }
+  if (mm < min || mm > max) return { error: `${label}應在 ${min / 10}–${max / 10} 公分之間，請再量一次` }
+  return { mm }
+}
+
+/** 鞋墊寬度量測位置（距腳跟 mm）：依鞋墊長度按比例，取到最接近的 0.5 公分 */
+const POINT_RATIOS = [0.09, 0.29, 0.48, 0.66, 0.82, 0.92, 0.96]
+export function insolePoints(lengthMm) {
+  return POINT_RATIOS.map((r) => Math.round((lengthMm * r) / 5) * 5)
+}
+
+/** 每行「距腳跟 寬度」(mm) ↔ 陣列；可直接貼進「YouCore 鞋墊製作」App */
+export const widthsToText = (widths) => (widths ?? []).map(([p, w]) => `${p}  ${w}`).join('\n')
+
+/** 回傳 { widths } 或 { error } */
+export function parseWidths(text, lengthMm) {
+  const widths = []
+  for (const line of String(text ?? '').normalize('NFKC').split('\n').map((l) => l.trim()).filter(Boolean)) {
+    const m = line.match(/^(\d+(?:\.\d+)?)[\s,:]+(\d+(?:\.\d+)?)$/)
+    if (!m) return { error: `看不懂這一行：「${line}」` }
+    widths.push([Number(m[1]), Number(m[2])])
+  }
+  return checkWidths(widths, lengthMm)
+}
+
+export function checkWidths(widths, lengthMm) {
+  if (widths.length < 4 || widths.length > 12) return { error: '寬度需要 4 到 12 個位置' }
+  let prev = 0
+  for (const [p, w] of widths) {
+    if (p <= prev) return { error: '位置要由腳跟往腳尖，依序變大' }
+    if (p >= lengthMm) return { error: `位置 ${p} mm 超過鞋墊長度` }
+    if (w < RANGES.insoleWidth[0] || w > RANGES.insoleWidth[1]) return { error: `位置 ${p} mm 的寬度 ${w} mm 不合理` }
+    prev = p
+  }
+  return { widths }
+}
+
+/** 不擋儲存、只提醒再確認的地方 */
+export function footWarnings({ length, width, heel }) {
+  const out = []
+  if (heel >= width) out.push('腳跟寬通常比前掌窄，請確認有沒有填反。')
+  if (width / length < 0.3 || width / length > 0.5) out.push('前掌寬和足長的比例比較少見，建議再量一次。')
+  return out
+}
+
+/** 相鄰寬度差太多（> 35 mm）多半是量錯或填錯 */
+export function insoleWarnings(widths) {
+  const bad = widths.slice(1).find(([, w], i) => Math.abs(w - widths[i][1]) > 35)
+  return bad ? [`距腳跟 ${bad[0] / 10} 公分的寬度和前一個位置差很多，建議再量一次。`] : []
+}
