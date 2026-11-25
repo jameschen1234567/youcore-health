@@ -58,6 +58,12 @@ export default function Me() {
         <div className="row"><Link className="btn ghost" to="/live">查看直播</Link></div>
       </section>
 
+      <section className="card">
+        <h2>互動模擬教室</h2>
+        <p className="muted small">會員專屬的 3D 動作與肌肉骨骼模擬，動手玩、邊學邊懂。</p>
+        <div className="row"><Link className="btn ghost" to="/learn">進入教室</Link></div>
+      </section>
+
       <MyInfo profileId={profile.id} />
 
       {profile.role === 'admin' && (

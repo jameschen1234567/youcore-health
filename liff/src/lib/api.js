@@ -121,8 +121,8 @@ export async function listPainMaps(profileId) {
 
 // ── 足部與鞋墊量測 ────────────────────────────────────────────────────
 
-/** 儲存左右腳（一次寫入）。feet: [{ side, length_mm, width_mm, heel_width_mm }]；onsite 只有管理員可寫 */
-export async function saveFeet(profileId, feet, source = 'self') {
+/** 後台到店量：儲存左右腳（一次寫入） */
+export async function saveFeet(profileId, feet, source = 'onsite') {
   const rows = feet.map((f) => ({ ...f, profile_id: profileId, source, algo_version: 'manual-1', quality_flags: [] }))
   if (DEMO) {
     for (const r of rows) demoPush('foot', { ...r, id: crypto.randomUUID(), photo_path: null, width_class: null, created_at: new Date().toISOString() })
@@ -132,9 +132,63 @@ export async function saveFeet(profileId, feet, source = 'self') {
   if (error) throw error
 }
 
+// ── 足型自評 ──
+export const ASSESS_FIELDS = 'id, data, result, photo_left, photo_right, algo_version, created_at'
+
+/** 送出自評。照片上傳失敗不影響送出（回傳 photoFailed） */
+export async function submitAssessment(profileId, { data, result, algo, photos }) {
+  const id = crypto.randomUUID()
+  if (DEMO) {
+    const created_at = new Date().toISOString()
+    demoPush('assess', { id, data, result, algo_version: algo, photo_left: null, photo_right: null, created_at })
+    for (const s of ['left', 'right']) demoPush('foot', { ...data.feet[s], id: crypto.randomUUID(), source: 'self', assessment_id: id, quality_flags: [], algo_version: algo, created_at })
+    demoPush('insole', { ...data.insole, id: crypto.randomUUID(), source: 'self', assessment_id: id, created_at })
+    return { photoFailed: false }
+  }
+  const paths = {}
+  let photoFailed = false
+  for (const s of ['left', 'right']) {
+    if (!photos[s]) continue
+    const path = `${profileId}/${id}/${s}.jpg`
+    const { error } = await supabase.storage.from('foot-photos').upload(path, photos[s], { contentType: 'image/jpeg' }).catch((e) => ({ error: e }))
+    if (error) photoFailed = true
+    else paths[s] = path
+  }
+  const { error } = await supabase.rpc('submit_foot_assessment', {
+    p_id: id, p_feet: [data.feet.left, data.feet.right], p_insole: data.insole, p_data: data, p_result: result, p_algo: algo,
+    p_photo_left: paths.left ?? null, p_photo_right: paths.right ?? null,
+  })
+  if (error) {
+    if (Object.keys(paths).length) await supabase.storage.from('foot-photos').remove(Object.values(paths)).catch(() => {})
+    throw error
+  }
+  return { photoFailed }
+}
+
+export async function listAssessments(profileId) {
+  if (DEMO) return demoList('assess')
+  const { data, error } = await supabase.from('foot_assessments').select(ASSESS_FIELDS).eq('profile_id', profileId).order('created_at', { ascending: true })
+  if (error) throw error
+  return data
+}
+
+/** 刪除一次自評（連同該次尺寸與照片） */
+export async function deleteAssessment(row) {
+  if (DEMO) {
+    demoSet('assess', demoList('assess').filter((r) => r.id !== row.id))
+    for (const k of ['foot', 'insole']) demoSet(k, demoList(k).filter((r) => r.assessment_id !== row.id))
+    return
+  }
+  const { data, error } = await supabase.from('foot_assessments').delete().eq('id', row.id).select('id')
+  if (error) throw error
+  if (!data?.length) throw new Error('DELETE_NOT_ALLOWED')
+  const paths = [row.photo_left, row.photo_right].filter(Boolean)
+  if (paths.length) await supabase.storage.from('foot-photos').remove(paths).catch(() => {})
+}
+
 const INSOLE_FIELDS = 'id, side, length_mm, widths, note, source, created_at'
 
-export async function saveInsole(profileId, row, source = 'self') {
+export async function saveInsole(profileId, row, source = 'onsite') {
   if (DEMO) return demoPush('insole', { ...row, profile_id: profileId, source, id: crypto.randomUUID(), created_at: new Date().toISOString() })
   const { error } = await supabase.from('insole_measurements').insert({ ...row, profile_id: profileId, source })
   if (error) throw error

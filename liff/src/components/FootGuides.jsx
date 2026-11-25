@@ -5,7 +5,7 @@ const FOOT = 'M0 0 C-19 0 -22 -24 -20 -46 C-18 -68 -30 -84 -30 -106 C-30 -132 -2
 export function FootGuide() {
   return (
     <section className="card foot-guide">
-      <svg viewBox="0 0 260 230" role="img" aria-label="A4 紙靠牆，腳跟貼牆站上去，標出最長腳趾、前掌兩側最寬處、腳跟兩側最寬處">
+      <svg viewBox="0 0 260 230" role="img" aria-label="A4 紙靠牆，腳跟貼牆站上去，描出整個腳型，再量長度與不同位置的寬度">
         <rect x="20" y="206" width="220" height="10" fill={K} />
         <text x="130" y="227" textAnchor="middle" fontSize="11" fill={K}>牆</text>
         <rect x="70" y="26" width="120" height="180" fill="#fff" stroke="#bbb" />
@@ -24,10 +24,38 @@ export function FootGuide() {
       <ol className="steps">
         <li><b>A4 紙的短邊貼著牆</b>，放在硬地板上，用膠帶固定</li>
         <li><b>赤腳站上去，腳跟輕碰牆</b>，兩腳平均站、看前方</li>
-        <li><b>筆拿直</b>，標出：最長的腳趾尖、前掌兩側最寬處、腳跟兩側最寬處。請家人幫忙標會更準</li>
-        <li><b>腳離開紙，用尺量</b>三個距離。足長是從紙貼牆的那一邊，直直量到腳趾記號</li>
+        <li><b>筆拿直（和地面垂直）</b>，沿著腳描一整圈。請家人描會更準；筆歪了會量得太大或太小</li>
+        <li>腳還踩著時，在大拇趾根部<b>內側最突出的骨頭</b>旁做記號</li>
+        <li><b>腳離開紙，用尺量</b>輪廓。所有「距腳跟」都從紙貼牆的那一邊，直直往前量</li>
       </ol>
-      <p className="muted small">左右腳各量一次。腳長超過 A4 紙（29.7 公分），前面再接一張紙。</p>
+      <p className="muted small">左右腳各描一張。腳長超過 A4 紙（29.7 公分），前面再接一張紙。</p>
+    </section>
+  )
+}
+
+export function ArchGuide() {
+  return (
+    <section className="card foot-guide">
+      <svg viewBox="0 0 320 190" role="img" aria-label="腳的內側：內踝、舟狀骨、大拇趾根部，以及內踝到大拇趾根部的連線">
+        <path d="M40 160 C28 150 30 128 44 112 C52 98 54 60 56 20 L118 20 C118 56 122 78 140 92 C176 108 214 116 244 126 C274 132 292 142 290 154 C288 162 262 162 236 160 C214 158 204 146 180 142 C150 136 132 140 112 152 C96 162 62 164 40 160 Z" fill="#E9D3C3" stroke={K} strokeWidth="1.3" />
+        <path d="M20 162 H304" stroke={A} strokeWidth="2" strokeDasharray="6 4" />
+        <path d="M86 76 L222 138" stroke="#4A90D9" strokeWidth="2" />
+        <g fill="none" strokeWidth="2.5">
+          <circle cx="86" cy="76" r="6" stroke="#4A90D9" /><circle cx="222" cy="138" r="6" stroke="#4A90D9" /><circle cx="128" cy="118" r="6" stroke="#E04F4F" />
+          <circle cx="36" cy="162" r="5" stroke={A} /><circle cx="290" cy="162" r="5" stroke={A} />
+        </g>
+        <g fontSize="12" fontWeight="700" fill={K}>
+          <text x="100" y="72">③ 內踝</text><text x="88" y="134" textAnchor="end">④ 舟狀骨</text><text x="222" y="126" textAnchor="middle">⑤ 大拇趾根部</text>
+          <text x="30" y="181">① 腳跟</text><text x="296" y="181" textAnchor="end">② 大拇趾尖</text>
+        </g>
+      </svg>
+      <ol className="steps">
+        <li><b>先摸到 3 個骨頭，用筆在皮膚上點一下：</b>內踝最突出的中心；往前下方摸到的突起是<b>舟狀骨</b>；大拇趾根部內側的骨頭中心</li>
+        <li><b>兩腳自然站著</b>，體重平均，要拍的腳往前站一點，才不會被另一隻腳擋住</li>
+        <li><b>手機放在地上</b>（鏡頭離地約 4 公分），正對腳的內側，距離約 55 公分，不要斜拍</li>
+        <li>整隻腳從腳跟到腳尖都要入鏡；可以用倒數計時，或請人幫忙拍</li>
+      </ol>
+      <p className="muted small">藍線是內踝到大拇趾根部的連線。一般人站著時，舟狀骨本來就會在線的下方，平均約 1.9 公分（標準差 0.7），<b>不是碰到線或在線下面就是扁平足</b>。</p>
     </section>
   )
 }

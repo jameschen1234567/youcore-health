@@ -21,6 +21,8 @@ import AdminTraining from './AdminTraining'
 import AdminClientBookings from './AdminClientBookings'
 import AdminPackages from './AdminPackages'
 import { FeetEntry, InsolePanel } from './AdminFootEntry'
+import AdminAssessment from './AdminAssessment'
+import AdminLearning from './AdminLearning'
 
 export default function AdminClient() {
   const { id } = useParams()
@@ -48,9 +50,11 @@ export default function AdminClient() {
       <AdminInfo profileId={profile.id} />
       <AdminClientBookings profileId={profile.id} />
       <AdminPackages profileId={profile.id} />
+      <AdminLearning profileId={profile.id} />
       <AdminBody profileId={profile.id} />
       <AdminTraining profileId={profile.id} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />
+      <AdminAssessment rows={data.assessments} onChange={reload} />
       <Foot profileId={profile.id} profileName={profile.display_name} rows={data.foot} onChange={reload} />
       <InsolePanel profileId={profile.id} rows={data.insoles} onChange={reload} />
       <Scales responses={data.responses} />

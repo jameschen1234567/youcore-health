@@ -1,7 +1,7 @@
 // 管理後台資料存取。正式模式靠 RLS 的 is_admin() 放行；Demo 模式只有「體驗用戶」一位客戶。
 import { DEMO } from '../config'
 import { supabase } from './supabase'
-import { ORDER_FIELDS, demoGet, demoKey, demoList, demoSet } from './api'
+import { ASSESS_FIELDS, ORDER_FIELDS, demoGet, demoKey, demoList, demoSet } from './api'
 import { QUESTIONNAIRES } from '../questionnaires'
 
 const DEMO_CLIENT = { id: 'demo-user', display_name: '體驗用戶', role: 'client', created_at: '2026-11-01T02:00:00Z' }
@@ -52,6 +52,7 @@ export async function adminGetClient(id) {
       profile: DEMO_CLIENT,
       foot: demoList('foot'),
       insoles: demoList('insole'),
+      assessments: demoList('assess'),
       responses,
       painMaps: demoList('painmaps'),
       orders: demoList('orders'),
@@ -60,21 +61,23 @@ export async function adminGetClient(id) {
   }
   const q = (t, sel, order = 'created_at') =>
     supabase.from(t).select(sel).eq('profile_id', id).order(order, { ascending: true })
-  const [profile, foot, insoles, responses, painMaps, orders, deletion] = await Promise.all([
+  const [profile, foot, insoles, assessments, responses, painMaps, orders, deletion] = await Promise.all([
     supabase.from('profiles').select('id, display_name, role, created_at').eq('id', id).maybeSingle(),
     q('foot_measurements', 'id, side, length_mm, width_mm, heel_width_mm, source, width_class, photo_path, quality_flags, algo_version, created_at'),
     q('insole_measurements', 'id, side, length_mm, widths, note, source, created_at'),
+    q('foot_assessments', ASSESS_FIELDS),
     q('questionnaire_responses', 'id, questionnaire_key, questionnaire_version, scores, computable, submitted_at', 'submitted_at'),
     q('pain_maps', 'id, regions, submitted_at', 'submitted_at'),
     supabase.from('orders').select(ORDER_FIELDS).eq('profile_id', id).order('created_at', { ascending: false }),
     supabase.from('deletion_requests').select('id, requested_at, status').eq('profile_id', id).eq('status', 'pending'),
   ])
-  for (const r of [profile, foot, insoles, responses, painMaps, orders, deletion]) if (r.error) throw r.error
+  for (const r of [profile, foot, insoles, assessments, responses, painMaps, orders, deletion]) if (r.error) throw r.error
   if (!profile.data) return null
   return {
     profile: profile.data,
     foot: foot.data,
     insoles: insoles.data,
+    assessments: assessments.data,
     responses: responses.data,
     painMaps: painMaps.data,
     orders: orders.data,
@@ -142,7 +145,7 @@ export async function adminResendNotify(orderId) {
 export async function adminDeleteClient(profileId) {
   if (DEMO) {
     // 清掉這位示範客戶的所有資料（保留同意書，方便繼續預覽）
-    for (const k of ['foot', 'insole', 'orders', 'painmaps', 'deletion', ...Object.keys(QUESTIONNAIRES).map((q) => `responses:${q}`)]) {
+    for (const k of ['foot', 'insole', 'assess', 'orders', 'painmaps', 'deletion', ...Object.keys(QUESTIONNAIRES).map((q) => `responses:${q}`)]) {
       try { localStorage.removeItem(demoKey(k)) } catch { /* 忽略 */ }
     }
     return { photos_removed: 0 }

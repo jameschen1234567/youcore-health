@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './auth/AuthProvider'
 import { hasCurrentConsent } from './lib/api'
 import { getProfileInfo, saveProfileInfo } from './lib/training'
@@ -17,7 +17,8 @@ import PainMapForm from './pages/PainMapForm'
 import PainMapHistory from './pages/PainMapHistory'
 import FootHome from './pages/FootHome'
 import FootMeasure from './pages/FootMeasure'
-import InsoleMeasure from './pages/InsoleMeasure'
+import Learn, { LearnView } from './pages/Learn'
+import AdminModules from './pages/admin/AdminModules'
 import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
 import AdminBookings from './pages/admin/AdminBookings'
@@ -64,7 +65,10 @@ function Gate() {
           <Route path="/scales/:key/history" element={<ScaleHistory />} />
           <Route path="/foot" element={<FootHome />} />
           <Route path="/foot/measure" element={<FootMeasure />} />
-          <Route path="/foot/insole" element={<InsoleMeasure />} />
+          <Route path="/foot/insole" element={<Navigate to="/foot" replace />} />
+          <Route path="/learn" element={<Learn />} />
+          <Route path="/learn/:id" element={<LearnView />} />
+          <Route path="/admin/learning" element={<AdminOnly><AdminModules /></AdminOnly>} />
           <Route path="/training" element={<Training />} />
           <Route path="/training/:sessionId" element={<TrainingSession />} />
           <Route path="/me" element={<Me />} />
