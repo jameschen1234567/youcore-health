@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { endDate, learningStatus, nextStart } from './learning'
+import { byCategory, canOpen, endDate, learningStatus, nextStart } from './learning'
 
 const g = (starts_on, expires_on, revoked_at = null) => ({ starts_on, expires_on, revoked_at })
 describe('以月計算效期', () => {
@@ -23,5 +23,17 @@ describe('以月計算效期', () => {
     expect(nextStart([g('2026-11-01', '2026-11-30')], '2026-11-10')).toBe('2026-12-01')
     expect(nextStart([g('2026-01-01', '2026-01-31')], '2026-11-10')).toBe('2026-11-10')
     expect(nextStart([], '2026-11-10')).toBe('2026-11-10')
+  })
+})
+
+describe('逐單元開放', () => {
+  it('要在期限內而且單元已開放', () => {
+    expect(canOpen({ active: true, unlocked: ['a'] }, 'a')).toBe(true)
+    expect(canOpen({ active: true, unlocked: ['a'] }, 'b')).toBe(false)
+    expect(canOpen({ active: false, unlocked: ['a'] }, 'a')).toBe(false)
+    expect(canOpen({ active: true, all: true, unlocked: [] }, 'b')).toBe(true)
+  })
+  it('依分類分組，沒有單元的分類不顯示', () => {
+    expect(byCategory([{ id: 1, category: 'posture' }]).map((g) => g.label)).toEqual(['日常姿勢'])
   })
 })

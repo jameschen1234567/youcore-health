@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
-import { canLearn, listModules, loadModuleHtml } from '../lib/learning'
+import { byCategory, canLearn, canOpen, listModules, loadModuleHtml } from '../lib/learning'
 import { fmtDay } from '../lib/training'
 import { MessageButton } from '../components/MessageButton'
 
@@ -28,12 +28,20 @@ export default function Learn() {
           <MessageButton text="我想開通互動模擬教室" />
         </section>
       )}
-      {(d?.mods ?? []).map((m) => (
-        <section key={m.id} className="card">
-          <b>{m.title}</b>
-          {!m.published && <span className="pill">未公開</span>}
-          {m.summary && <p className="muted small">{m.summary}</p>}
-          {d.access.active && <Link className="btn primary block" to={`/learn/${m.id}`}>開始操作</Link>}
+      {d?.access.active && !d.access.all && !d.mods.some((m) => canOpen(d.access, m.id)) && <p className="banner warn">你的單元會由我們依照進度陸續開放。</p>}
+      {byCategory(d?.mods ?? []).map((g) => (
+        <section key={g.key}>
+          <h2 className="section-title">{g.label}</h2>
+          {g.mods.map((m) => {
+            const open = canOpen(d.access, m.id)
+            return (
+              <div key={m.id} className={`card ${open ? '' : 'locked'}`}>
+                <div className="row spread"><b>{m.title}</b>{!open && <span className="pill">🔒 尚未開放</span>}{!m.published && <span className="pill">未公開</span>}</div>
+                {m.summary && <p className="muted small">{m.summary}</p>}
+                {open && <Link className="btn primary block" to={`/learn/${m.id}`}>開始操作</Link>}
+              </div>
+            )
+          })}
         </section>
       ))}
     </main>
@@ -53,7 +61,7 @@ export function LearnView() {
       if (!mod) throw new Error('NOT_FOUND')
       const h = await loadModuleHtml(mod.path)
       if (alive) { setM(mod); setHtml(h) }
-    }).catch(() => alive && setErr('目前無法開啟。可能是使用期限已到，或網路不穩。'))
+    }).catch(() => alive && setErr('目前無法開啟。可能是這個單元還沒開放、使用期限已到，或網路不穩。'))
     return () => { alive = false }
   }, [id])
   return (
@@ -62,7 +70,7 @@ export function LearnView() {
       {err && <section className="card"><p>{err}</p><MessageButton text="我想詢問互動模擬教室的使用期限" /></section>}
       {!html && !err && <p className="muted">載入中…</p>}
       {/* 沙盒：教材程式碼碰不到 App 的登入資料 */}
-      {html && <iframe title={m.title} sandbox="allow-scripts" srcDoc={html} />}
+      {html && <iframe title={m.title} sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" srcDoc={html} />}
     </main>
   )
 }

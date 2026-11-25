@@ -1,7 +1,7 @@
 // 後台：模擬教材（上傳、換檔、公開）
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { MAX_HTML_MB, adminSaveModule, listModules } from '../../lib/learning'
+import { CATEGORIES, MAX_HTML_MB, adminSaveModule, listModules } from '../../lib/learning'
 
 export default function AdminModules() {
   const navigate = useNavigate()
@@ -15,7 +15,7 @@ export default function AdminModules() {
     <main className="page">
       <button className="back" onClick={() => navigate('/admin')}>‹ 管理後台</button>
       <h1>模擬教材</h1>
-      <p className="muted small">每位客戶的使用期限，在「客戶頁 → 模擬教室權限」設定。教材是單一 HTML 檔，上限 {MAX_HTML_MB} MB。</p>
+      <p className="muted small">每位客戶的使用期限與開放單元，在「客戶頁 → 模擬教室權限」設定。教材是單一 HTML 檔，上限 {MAX_HTML_MB} MB。</p>
       {err && <p className="error">{err}</p>}
       {editing === 'new' ? <Form onDone={done} onCancel={() => setEditing(null)} /> : <button className="btn primary block" onClick={() => setEditing('new')}>＋ 新增教材</button>}
       {(rows ?? []).map((m) => editing === m.id ? <Form key={m.id} m={m} onDone={done} onCancel={() => setEditing(null)} /> : (
@@ -30,7 +30,7 @@ export default function AdminModules() {
 }
 
 function Form({ m, onDone, onCancel }) {
-  const [f, setF] = useState({ title: m?.title ?? '', summary: m?.summary ?? '', sort: m?.sort ?? 10, published: m?.published ?? false })
+  const [f, setF] = useState({ title: m?.title ?? '', summary: m?.summary ?? '', sort: m?.sort ?? 10, published: m?.published ?? false, category: m?.category ?? 'posture' })
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -46,9 +46,10 @@ function Form({ m, onDone, onCancel }) {
       <div className="form-grid">
         <label className="small">名稱<input className="search" maxLength={60} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} /></label>
         <label className="small">說明<textarea rows={3} maxLength={300} value={f.summary} onChange={(e) => setF({ ...f, summary: e.target.value })} /></label>
+        <label className="small">分類<select value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })}>{CATEGORIES.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</select></label>
         <label className="small">排序（小的在前）<input className="search" type="number" value={f.sort} onChange={(e) => setF({ ...f, sort: e.target.value })} /></label>
         <label className="small">{m ? '換檔（不選就不變）' : 'HTML 檔'}<input type="file" accept=".html,text/html" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></label>
-        <label className="small check-row"><input type="checkbox" checked={f.published} onChange={(e) => setF({ ...f, published: e.target.checked })} />公開給有權限的客戶</label>
+        <label className="small check-row"><input type="checkbox" checked={f.published} onChange={(e) => setF({ ...f, published: e.target.checked })} />公開（客戶仍需逐一開放）</label>
       </div>
       {err && <p className="error small">{err}</p>}
       <div className="row"><button className="btn ghost" disabled={busy} onClick={onCancel}>返回</button><button className="btn primary" disabled={busy} onClick={save}>{busy ? '儲存中…' : '儲存'}</button></div>

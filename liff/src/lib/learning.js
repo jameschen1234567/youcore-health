@@ -6,6 +6,8 @@ import { todayTaipei } from './training'
 
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 const BUCKET = 'learning'
+export const CATEGORIES = [['posture', '日常姿勢'], ['kinesiology', '肌動學動作']]
+export const byCategory = (mods) => CATEGORIES.map(([key, label]) => ({ key, label, mods: mods.filter((m) => m.category === key) })).filter((g) => g.mods.length)
 export const MONTH_PRESETS = [1, 3, 6, 12]
 export const MAX_HTML_MB = 5
 
@@ -24,17 +26,25 @@ export function learningStatus(grants, today = todayTaipei()) {
 export const nextStart = (grants, today = todayTaipei()) => { const { until } = learningStatus(grants, today); return until ? addDays(until, 1) : today }
 
 export async function listModules() {
-  if (DEMO) return [{ id: 'm1', title: '深蹲代償鏈 3D 模擬', summary: '示範教材', path: 'demo.html', sort: 1, published: true }]
-  return unwrap(await supabase.from('learning_modules').select('id, title, summary, path, sort, published').order('sort').order('created_at'))
+  if (DEMO) return [['m1', '深蹲代償鏈 3D 模擬', 'kinesiology'], ['m2', '翹腳坐', 'posture'], ['m3', '側睡', 'posture']].map(([id, title, category]) => ({ id, title, category, summary: '示範教材', path: `${id}.html`, sort: 1, published: true }))
+  return unwrap(await supabase.from('learning_modules').select('id, title, summary, path, sort, published, category').order('sort').order('created_at'))
 }
 export async function listGrants(profileId) {
   if (DEMO) return demoList('learning')
   return unwrap(await supabase.from('learning_grants').select('id, months, starts_on, expires_on, revoked_at, created_at').eq('profile_id', profileId).order('created_at', { ascending: false }))
 }
-export async function canLearn(profileId, role) {
-  if (role === 'admin') return { active: true, until: null }
-  return learningStatus(await listGrants(profileId))
+/** 這位客戶已開放的單元 id */
+export async function listUnlocks(profileId) {
+  if (DEMO) return demoList('unlocks')
+  return unwrap(await supabase.from('learning_unlocks').select('module_id').eq('profile_id', profileId)).map((r) => r.module_id)
 }
+/** { active, until, startsLater, unlocked } ；管理員全部可看 */
+export async function canLearn(profileId, role) {
+  if (role === 'admin') return { active: true, until: null, all: true, unlocked: [] }
+  const [g, unlocked] = await Promise.all([listGrants(profileId), listUnlocks(profileId)])
+  return { ...learningStatus(g), unlocked }
+}
+export const canOpen = (access, moduleId) => access.active && (access.all || access.unlocked.includes(moduleId))
 /** 下載教材 HTML（沒有權限時 storage 會拒絕） */
 export async function loadModuleHtml(path) {
   if (DEMO) {
@@ -52,6 +62,10 @@ export async function adminGrantLearning(profileId, months) {
   }
   return unwrap(await supabase.rpc('grant_learning', { p_profile: profileId, p_months: months }))
 }
+export async function adminSetUnlocks(profileId, ids) {
+  if (DEMO) return demoSet('unlocks', ids)
+  return unwrap(await supabase.rpc('set_learning_unlocks', { p_profile: profileId, p_modules: ids }))
+}
 export async function adminRevokeLearning(profileId) {
   if (DEMO) return demoSet('learning', demoList('learning').map((g) => ({ ...g, revoked_at: g.revoked_at ?? new Date().toISOString() })))
   return unwrap(await supabase.rpc('revoke_learning', { p_profile: profileId }))
@@ -65,7 +79,7 @@ export async function adminSaveModule(id, row, file) {
     path ??= `${crypto.randomUUID()}.html`
     unwrap(await supabase.storage.from(BUCKET).upload(path, new Blob([file], { type: 'text/html' }), { contentType: 'text/html', upsert: true, cacheControl: '60' }))
   }
-  const v = { title: row.title, summary: row.summary || null, sort: row.sort, published: row.published }
+  const v = { title: row.title, summary: row.summary || null, sort: row.sort, published: row.published, category: row.category }
   return unwrap(id
     ? await supabase.from('learning_modules').update(v).eq('id', id).select().single()
     : await supabase.from('learning_modules').insert({ ...v, path }).select().single())
