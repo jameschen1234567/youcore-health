@@ -33,6 +33,8 @@ import Live, { LiveWatch } from './pages/Live'
 import AdminLive from './pages/admin/AdminLive'
 import AdminLiveHost from './pages/admin/AdminLiveHost'
 import TabBar from './components/TabBar'
+import { BOOKING_OPEN } from './config'
+import { MessageButton } from './components/MessageButton'
 
 // 需要身份的頁面：第一次進來才開始 LINE 登入 → 同意書 → 基本資料
 function Gate() {
@@ -76,8 +78,8 @@ function Gate() {
           <Route path="/training" element={<Training />} />
           <Route path="/training/:sessionId" element={<TrainingSession />} />
           <Route path="/me" element={<Me />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/booking/mine" element={<MyBookings />} />
+          <Route path="/booking" element={<BookingGate><Booking /></BookingGate>} />
+          <Route path="/booking/mine" element={<BookingGate><MyBookings /></BookingGate>} />
           <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
           <Route path="/live" element={<Live />} />
           <Route path="/live/:id" element={<LiveWatch />} />
@@ -90,6 +92,21 @@ function Gate() {
           <Route path="/admin/client/:id" element={<AdminOnly><AdminClient /></AdminOnly>} />
           <Route path="*" element={<Message title="找不到這個頁面" />} />
         </Routes>
+  )
+}
+
+// 線上預約還沒對客人開放時，客人改傳 LINE 預約
+function BookingGate({ children }) {
+  const { profile } = useAuth()
+  if (BOOKING_OPEN || profile?.role === 'admin') return children
+  return (
+    <main className="page">
+      <h1>預約</h1>
+      <section className="card">
+        <p>線上預約準備中。想預約或申請體驗，直接傳 LINE 給我們，我們幫你安排時間。</p>
+        <MessageButton text="我想預約" label="傳 LINE 預約" />
+      </section>
+    </main>
   )
 }
 

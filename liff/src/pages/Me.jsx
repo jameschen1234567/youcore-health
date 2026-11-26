@@ -6,7 +6,8 @@ import { buildReport, toCm } from '../lib/foot'
 import { sortOrders } from '../lib/orders'
 import { fmtDate } from '../lib/format'
 import OrderCard from '../components/OrderCard'
-import { DEMO } from '../config'
+import { BOOKING_OPEN, DEMO } from '../config'
+import { MessageButton } from '../components/MessageButton'
 import ProfileInfoForm from '../components/ProfileInfoForm'
 import InfoSummary from '../components/InfoSummary'
 import { getProfileInfo, saveProfileInfo } from '../lib/training'
@@ -46,11 +47,20 @@ export default function Me() {
 
       <section className="card">
         <h2>預約</h2>
-        <p className="muted small">第一次來可以申請體驗課程，由我們協助安排時間；已開通的會員可以直接線上預約。</p>
-        <div className="row">
-          <Link className="btn ghost" to="/booking/mine">我的預約</Link>
-          <Link className="btn primary" to="/booking">預約／申請體驗</Link>
-        </div>
+        {BOOKING_OPEN || profile.role === 'admin' ? (
+          <>
+            <p className="muted small">第一次來可以申請體驗課程，由我們協助安排時間；已開通的會員可以直接線上預約。{!BOOKING_OPEN && '（線上預約尚未對客人開放，目前只有管理員看得到）'}</p>
+            <div className="row">
+              <Link className="btn ghost" to="/booking/mine">我的預約</Link>
+              <Link className="btn primary" to="/booking">預約／申請體驗</Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="muted small">線上預約準備中。想預約或申請體驗，直接傳 LINE 給我們，我們幫你安排時間。</p>
+            <MessageButton text="我想預約" label="傳 LINE 預約" />
+          </>
+        )}
       </section>
 
       <section className="card">

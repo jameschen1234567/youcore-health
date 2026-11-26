@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getContent } from '../lib/api'
-import { LIFF_ID, LINE_OA_ID } from '../config'
+import { BOOKING_OPEN, LIFF_ID, LINE_OA_ID } from '../config'
+import { MessageButton } from '../components/MessageButton'
 import { copyLink, shareContent } from '../lib/share'
 import Blocks, { VideoEmbed } from '../components/Blocks'
 import { Cover } from './ContentHome'
@@ -94,7 +95,7 @@ function ServiceCta({ service }) {
       <p className="eyebrow">想進一步了解？</p>
       <h2>預約{service}</h2>
       <p className="muted">由臺師大運動科學背景的防護員親自評估，找出問題根源。</p>
-      <a className="btn primary block" href={LIFF_URL('/booking')}>預約／申請體驗</a>
+      {BOOKING_OPEN ? <a className="btn primary block" href={LIFF_URL('/booking')}>預約／申請體驗</a> : <MessageButton text={`我想預約${service}`} label="傳 LINE 預約" />}
       {ADD_FRIEND_URL && <a className="btn ghost block" href={ADD_FRIEND_URL}>加入宥芯 LINE 好友</a>}
     </section>
   )

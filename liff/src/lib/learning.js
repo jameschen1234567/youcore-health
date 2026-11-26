@@ -7,7 +7,7 @@ import { todayTaipei } from './training'
 
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
 const BUCKET = 'learning'
-export const CATEGORIES = [['posture', '日常姿勢'], ['kinesiology', '肌動學動作'], ['injury', '運動傷害']]
+export const CATEGORIES = [['posture', '日常姿勢'], ['force', '發力模式'], ['kinesiology', '肌動學動作'], ['injury', '運動傷害']]
 export const byCategory = (mods) => CATEGORIES.map(([key, label]) => ({ key, label, mods: mods.filter((m) => m.category === key) })).filter((g) => g.mods.length)
 export const MONTH_PRESETS = [1, 3, 6, 12]
 export const MAX_HTML_MB = 5
