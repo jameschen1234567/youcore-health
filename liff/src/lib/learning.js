@@ -1,4 +1,5 @@
-// 互動模擬教室：教材放在私有 bucket，權限以月計（規則見 supabase/migrations/0020_learning.sql）
+// 互動模擬教室：教材放在私有 bucket，權限以月計（規則見 supabase/migrations/0020_learning.sql、0024_open_content.sql）
+//   免費試玩單元登入就能開；其他單元在使用期限內全部可開（買課自動開通 3 個月）
 import { DEMO, DEMO_ROLE } from '../config'
 import { supabase } from './supabase'
 import { demoList, demoSet } from './api'
@@ -26,29 +27,24 @@ export function learningStatus(grants, today = todayTaipei()) {
 export const nextStart = (grants, today = todayTaipei()) => { const { until } = learningStatus(grants, today); return until ? addDays(until, 1) : today }
 
 export async function listModules() {
-  if (DEMO) return [['m1', '深蹲代償鏈 3D 模擬', 'kinesiology'], ['m2', '翹腳坐', 'posture'], ['m3', '側睡', 'posture']].map(([id, title, category]) => ({ id, title, category, summary: '示範教材', path: `${id}.html`, sort: 1, published: true }))
-  return unwrap(await supabase.from('learning_modules').select('id, title, summary, path, sort, published, category').order('sort').order('created_at'))
+  if (DEMO) return [['m1', '深蹲代償鏈 3D 模擬', 'kinesiology'], ['m2', '翹腳坐', 'posture'], ['m3', '久坐與窩沙發', 'posture', true]].map(([id, title, category, free = false]) => ({ id, title, category, free, summary: '示範教材', path: `${id}.html`, sort: 1, published: true }))
+  return unwrap(await supabase.from('learning_modules').select('id, title, summary, path, sort, published, category, free').order('sort').order('created_at'))
 }
 export async function listGrants(profileId) {
   if (DEMO) return demoList('learning')
-  return unwrap(await supabase.from('learning_grants').select('id, months, starts_on, expires_on, revoked_at, created_at').eq('profile_id', profileId).order('created_at', { ascending: false }))
+  return unwrap(await supabase.from('learning_grants').select('id, months, starts_on, expires_on, revoked_at, created_at, package_id').eq('profile_id', profileId).order('created_at', { ascending: false }))
 }
-/** 這位客戶已開放的單元 id */
-export async function listUnlocks(profileId) {
-  if (DEMO) return demoList('unlocks')
-  return unwrap(await supabase.from('learning_unlocks').select('module_id').eq('profile_id', profileId)).map((r) => r.module_id)
-}
-/** { active, until, startsLater, unlocked } ；管理員全部可看 */
+/** { active, until, startsLater } ；管理員全部可看 */
 export async function canLearn(profileId, role) {
-  if (role === 'admin') return { active: true, until: null, all: true, unlocked: [] }
-  const [g, unlocked] = await Promise.all([listGrants(profileId), listUnlocks(profileId)])
-  return { ...learningStatus(g), unlocked }
+  if (role === 'admin') return { active: true, until: null, all: true }
+  return learningStatus(await listGrants(profileId))
 }
-export const canOpen = (access, moduleId) => access.active && (access.all || access.unlocked.includes(moduleId))
+/** 免費試玩登入就能開；其他要在期限內 */
+export const canOpen = (access, m) => !!(m.free || access.active)
 /** 下載教材 HTML（沒有權限時 storage 會拒絕） */
 export async function loadModuleHtml(path) {
   if (DEMO) {
-    if (DEMO_ROLE !== 'admin' && !learningStatus(demoList('learning')).active) throw new Error('NO_ACCESS')
+    if (DEMO_ROLE !== 'admin' && path !== 'm3.html' && !learningStatus(demoList('learning')).active) throw new Error('NO_ACCESS')
     return '<!doctype html><meta charset="utf-8"><p style="font:18px sans-serif;padding:24px">示範教材<script>document.body.dataset.ok=1</' + 'script></p>'
   }
   return (await unwrap(await supabase.storage.from(BUCKET).download(path))).text()
@@ -61,10 +57,6 @@ export async function adminGrantLearning(profileId, months) {
     return demoSet('learning', [{ id: crypto.randomUUID(), months, starts_on: s, expires_on: endDate(s, months), revoked_at: null, created_at: new Date().toISOString() }, ...demoList('learning')])
   }
   return unwrap(await supabase.rpc('grant_learning', { p_profile: profileId, p_months: months }))
-}
-export async function adminSetUnlocks(profileId, ids) {
-  if (DEMO) return demoSet('unlocks', ids)
-  return unwrap(await supabase.rpc('set_learning_unlocks', { p_profile: profileId, p_modules: ids }))
 }
 export async function adminRevokeLearning(profileId) {
   if (DEMO) return demoSet('learning', demoList('learning').map((g) => ({ ...g, revoked_at: g.revoked_at ?? new Date().toISOString() })))
@@ -79,7 +71,7 @@ export async function adminSaveModule(id, row, file) {
     path ??= `${crypto.randomUUID()}.html`
     unwrap(await supabase.storage.from(BUCKET).upload(path, new Blob([file], { type: 'text/html' }), { contentType: 'text/html', upsert: true, cacheControl: '60' }))
   }
-  const v = { title: row.title, summary: row.summary || null, sort: row.sort, published: row.published, category: row.category }
+  const v = { title: row.title, summary: row.summary || null, sort: row.sort, published: row.published, category: row.category, free: !!row.free }
   return unwrap(id
     ? await supabase.from('learning_modules').update(v).eq('id', id).select().single()
     : await supabase.from('learning_modules').insert({ ...v, path }).select().single())

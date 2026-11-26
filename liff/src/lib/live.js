@@ -1,7 +1,7 @@
-// 會員線上直播（YouTube 不公開影片）。規則見 supabase/migrations/0016_live_streams.sql
-import { DEMO, DEMO_ROLE } from '../config'
+// 線上直播（YouTube 不公開影片），用 LINE 登入就能看。規則見 supabase/migrations/0016_live_streams.sql、0024_open_content.sql
+import { DEMO } from '../config'
 import { supabase } from './supabase'
-import { demoGet, demoList, demoSet } from './api'
+import { demoList, demoSet } from './api'
 
 const MIN = 60000
 export const OPEN_BEFORE_MIN = 15
@@ -35,7 +35,7 @@ export function livePhase(s, now = new Date()) {
 }
 
 const ERRORS = {
-  NOT_MEMBER: '這場直播僅限課程會員觀看',
+  NOT_MEMBER: '請先用 LINE 登入',
   NOT_OPEN: `直播還沒開放，開始前 ${OPEN_BEFORE_MIN} 分鐘可以進入`,
   NOT_READY: '直播準備中，請稍後再試',
   NOT_FOUND: '找不到這場直播',
@@ -47,7 +47,7 @@ export function liveErrorText(err) {
 }
 
 const unwrap = ({ data, error }) => { if (error) throw error; return data }
-const demoMember = () => DEMO_ROLE === 'admin' || !!demoGet('booking-access:demo-user')
+const demoMember = () => true // 登入就能看（0024）
 
 export async function listLive() {
   if (DEMO) {

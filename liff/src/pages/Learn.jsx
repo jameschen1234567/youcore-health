@@ -1,4 +1,4 @@
-// 互動模擬教室（會員專屬，效期以月計）
+// 互動模擬教室：免費試玩單元登入可開；其他單元在使用期限內可開（買課自動 3 個月）
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
@@ -24,19 +24,18 @@ export default function Learn() {
       {d?.access.active && d.access.until && <p className="banner ok">使用期限：{fmtDay(d.access.until)}</p>}
       {d && !d.access.active && (
         <section className="card">
-          <p>🔒 這是會員專屬內容。{d.access.startsLater ? `你的使用期限從 ${fmtDay(d.access.startsLater)} 開始。` : '想開通或續用，請傳訊息給我們。'}</p>
-          <MessageButton text="我想開通互動模擬教室" />
+          <p>先試試標示「免費試玩」的單元！{d.access.startsLater ? `你的使用期限從 ${fmtDay(d.access.startsLater)} 開始。` : '購買課程的客人會自動開通 3 個月，可以使用全部單元。'}</p>
+          <MessageButton text="我想了解互動模擬教室" />
         </section>
       )}
-      {d?.access.active && !d.access.all && !d.mods.some((m) => canOpen(d.access, m.id)) && <p className="banner warn">你的單元會由我們依照進度陸續開放。</p>}
       {byCategory(d?.mods ?? []).map((g) => (
         <section key={g.key}>
           <h2 className="section-title">{g.label}</h2>
           {g.mods.map((m) => {
-            const open = canOpen(d.access, m.id)
+            const open = canOpen(d.access, m)
             return (
               <div key={m.id} className={`card ${open ? '' : 'locked'}`}>
-                <div className="row spread"><b>{m.title}</b>{!open && <span className="pill">🔒 尚未開放</span>}{!m.published && <span className="pill">未公開</span>}</div>
+                <div className="row spread"><b>{m.title}</b>{m.free && !d.access.active && <span className="pill">免費試玩</span>}{!open && <span className="pill">🔒 購課開通</span>}{!m.published && <span className="pill">未公開</span>}</div>
                 {m.summary && <p className="muted small">{m.summary}</p>}
                 {open && <Link className="btn primary block" to={`/learn/${m.id}`}>開始操作</Link>}
               </div>
@@ -61,7 +60,7 @@ export function LearnView() {
       if (!mod) throw new Error('NOT_FOUND')
       const h = await loadModuleHtml(mod.path)
       if (alive) { setM(mod); setHtml(h) }
-    }).catch(() => alive && setErr('目前無法開啟。可能是這個單元還沒開放、使用期限已到，或網路不穩。'))
+    }).catch(() => alive && setErr('目前無法開啟。可能是使用期限已到，或網路不穩。'))
     return () => { alive = false }
   }, [id])
   return (

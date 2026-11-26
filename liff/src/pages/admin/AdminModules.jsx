@@ -15,12 +15,12 @@ export default function AdminModules() {
     <main className="page">
       <button className="back" onClick={() => navigate('/admin')}>‹ 管理後台</button>
       <h1>模擬教材</h1>
-      <p className="muted small">每位客戶的使用期限與開放單元，在「客戶頁 → 模擬教室權限」設定。教材是單一 HTML 檔，上限 {MAX_HTML_MB} MB。</p>
+      <p className="muted small">新增課程包會自動開通 3 個月；手動延長在「客戶頁 → 模擬教室權限」。勾「免費試玩」的單元，登入就能開。教材是單一 HTML 檔，上限 {MAX_HTML_MB} MB。</p>
       {err && <p className="error">{err}</p>}
       {editing === 'new' ? <Form onDone={done} onCancel={() => setEditing(null)} /> : <button className="btn primary block" onClick={() => setEditing('new')}>＋ 新增教材</button>}
       {(rows ?? []).map((m) => editing === m.id ? <Form key={m.id} m={m} onDone={done} onCancel={() => setEditing(null)} /> : (
         <section key={m.id} className="card">
-          <div className="row spread"><b>{m.title}</b><span className="pill">{m.published ? '公開' : '未公開'}</span></div>
+          <div className="row spread"><b>{m.title}</b><span className="pill">{m.published ? (m.free ? '公開・免費試玩' : '公開') : '未公開'}</span></div>
           <p className="muted small">{m.summary}</p>
           <div className="row"><button className="btn ghost" onClick={() => setEditing(m.id)}>修改</button><Link className="btn ghost" to={`/learn/${m.id}`}>預覽</Link></div>
         </section>
@@ -30,7 +30,7 @@ export default function AdminModules() {
 }
 
 function Form({ m, onDone, onCancel }) {
-  const [f, setF] = useState({ title: m?.title ?? '', summary: m?.summary ?? '', sort: m?.sort ?? 10, published: m?.published ?? false, category: m?.category ?? 'posture' })
+  const [f, setF] = useState({ title: m?.title ?? '', summary: m?.summary ?? '', sort: m?.sort ?? 10, published: m?.published ?? false, category: m?.category ?? 'posture', free: m?.free ?? false })
   const [file, setFile] = useState(null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
@@ -49,7 +49,8 @@ function Form({ m, onDone, onCancel }) {
         <label className="small">分類<select value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })}>{CATEGORIES.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</select></label>
         <label className="small">排序（小的在前）<input className="search" type="number" value={f.sort} onChange={(e) => setF({ ...f, sort: e.target.value })} /></label>
         <label className="small">{m ? '換檔（不選就不變）' : 'HTML 檔'}<input type="file" accept=".html,text/html" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></label>
-        <label className="small check-row"><input type="checkbox" checked={f.published} onChange={(e) => setF({ ...f, published: e.target.checked })} />公開（客戶仍需逐一開放）</label>
+        <label className="small check-row"><input type="checkbox" checked={f.published} onChange={(e) => setF({ ...f, published: e.target.checked })} />公開（期限內的客戶都看得到）</label>
+        <label className="small check-row"><input type="checkbox" checked={f.free} onChange={(e) => setF({ ...f, free: e.target.checked })} />免費試玩（登入就能開）</label>
       </div>
       {err && <p className="error small">{err}</p>}
       <div className="row"><button className="btn ghost" disabled={busy} onClick={onCancel}>返回</button><button className="btn primary" disabled={busy} onClick={save}>{busy ? '儲存中…' : '儲存'}</button></div>

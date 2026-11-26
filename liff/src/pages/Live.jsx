@@ -1,4 +1,4 @@
-// 會員線上直播：清單與觀看。影片連結只有符合資格、在開放時間內才會由資料庫給出
+// 線上直播：用 LINE 登入就能看。影片連結只有在開放時間內才會由資料庫給出
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fmtSlot } from '../lib/booking'
@@ -32,7 +32,7 @@ export default function Live() {
       {rows?.length === 0 && <section className="card"><p className="muted">目前沒有安排直播，有新的場次會公布在這裡。</p></section>}
       {rows?.length > 0 && !member && (
         <section className="card">
-          <p>🔒 直播僅限課程會員觀看。如果你已經購買課程卻看到這個提示，請傳訊息給我們協助開通。</p>
+          <p>🔒 目前無法觀看，請重新整理，或傳訊息給我們協助。</p>
           <MessageButton text="我想觀看線上直播" />
         </section>
       )}
@@ -88,7 +88,7 @@ export function LiveWatch() {
       {video && !closed && (
         <>
           <LiveChat streamId={id} />
-          <p className="muted small">這是會員專屬內容，請勿轉傳連結或錄影。</p>
+          <p className="muted small">歡迎分享給需要的朋友，請勿錄影轉傳。</p>
           <MessageButton text={`我在看直播「${s?.title ?? ''}」，想請問：`} label="傳 LINE 提問" />
         </>
       )}

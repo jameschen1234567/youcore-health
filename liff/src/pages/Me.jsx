@@ -55,13 +55,13 @@ export default function Me() {
 
       <section className="card">
         <h2>線上直播</h2>
-        <p className="muted small">課程會員專屬的直播與回放。</p>
+        <p className="muted small">免費觀看直播與回放。</p>
         <div className="row"><Link className="btn ghost" to="/live">查看直播</Link></div>
       </section>
 
       <section className="card">
         <h2>互動模擬教室</h2>
-        <p className="muted small">會員專屬的 3D 動作與肌肉骨骼模擬，動手玩、邊學邊懂。</p>
+        <p className="muted small">3D 動作與肌肉骨骼模擬，有免費試玩單元；買課自動開通 3 個月。</p>
         <div className="row"><Link className="btn ghost" to="/learn">進入教室</Link></div>
       </section>
 

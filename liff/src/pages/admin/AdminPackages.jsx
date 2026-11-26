@@ -186,7 +186,7 @@ export function AddPackage({ profileId, clients, services, onCancel, onDone }) {
       <label className="small">購買日<input className="search" type="date" value={f.startsOn} onChange={set('startsOn')} /></label>
       <label className="small">到期日<input className="search" type="date" value={f.expiresOn} onChange={set('expiresOn')} /></label>
       <label className="small">備註<input className="search" value={f.note} maxLength={200} placeholder="選填，例如：方案名稱" onChange={set('note')} /></label>
-      <p className="muted small full">購買日留空 = 今天；到期日留空 = 不限期。已經上過幾堂的舊客，填「目前剩餘」，系統會自動記一筆「導入前已使用」。</p>
+      <p className="muted small full">購買日留空 = 今天；到期日留空 = 不限期。新增後會自動開通模擬教室 3 個月（從購買日起，期限內就接在後面）。已經上過幾堂的舊客，填「目前剩餘」，系統會自動記一筆「導入前已使用」。</p>
       {err && <p className="error small full">{err}</p>}
       <div className="row full">
         <button className="btn ghost" onClick={onCancel} disabled={busy}>取消</button>

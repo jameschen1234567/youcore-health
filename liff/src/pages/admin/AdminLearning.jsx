@@ -1,6 +1,6 @@
-// 後台：客戶的模擬教室權限（以月計）
+// 後台：客戶的模擬教室權限（以月計；新增課程包會自動開通 3 個月）
 import { useCallback, useEffect, useState } from 'react'
-import { MONTH_PRESETS, adminGrantLearning, adminRevokeLearning, adminSetUnlocks, byCategory, endDate, learningStatus, listGrants, listModules, listUnlocks, nextStart } from '../../lib/learning'
+import { MONTH_PRESETS, adminGrantLearning, adminRevokeLearning, endDate, learningStatus, listGrants, nextStart } from '../../lib/learning'
 import { fmtDay } from '../../lib/training'
 
 export default function AdminLearning({ profileId }) {
@@ -29,7 +29,7 @@ export default function AdminLearning({ profileId }) {
       <label className="small">月數（1–36）<input className="search" type="number" min="1" max="36" value={months} onChange={(e) => setMonths(e.target.value)} /></label>
       {ok && <p className="muted small">效期：{fmtDay(start)} 到 {fmtDay(endDate(start, n))}（含當天）{st.until ? '，接在目前期限之後' : ''}</p>}
       {err && <p className="error small">{err}</p>}
-      <button className="btn primary block" disabled={busy || !ok} onClick={() => run(() => adminGrantLearning(profileId, n))}>{st.until ? `續約 ${ok ? n : ''} 個月` : `開通 ${ok ? n : ''} 個月`}</button>
+      <button className="btn primary block" disabled={busy || !ok} onClick={() => run(() => adminGrantLearning(profileId, n))}>{st.until ? `延長 ${ok ? n : ''} 個月` : `開通 ${ok ? n : ''} 個月`}</button>
       {st.until && (confirm ? (
         <div className="row confirm-row">
           <span className="small">停用後客戶馬上無法使用，包含已續約的期間。</span>
@@ -37,48 +37,8 @@ export default function AdminLearning({ profileId }) {
           <button className="btn danger" disabled={busy} onClick={() => run(() => adminRevokeLearning(profileId))}>確定停用</button>
         </div>
       ) : <button className="link-btn danger-text" onClick={() => setConfirm(true)}>停用權限</button>)}
-      {grants.length > 0 && <ul className="foot-rows">{grants.map((g) => <li key={g.id} className="small muted">{fmtDay(g.starts_on)}–{fmtDay(g.expires_on)}（{g.months} 個月）{g.revoked_at ? '｜已停用' : ''}</li>)}</ul>}
-      <Unlocks profileId={profileId} active={st.until != null} />
+      {grants.length > 0 && <ul className="foot-rows">{grants.map((g) => <li key={g.id} className="small muted">{fmtDay(g.starts_on)}–{fmtDay(g.expires_on)}（{g.months} 個月）{g.package_id ? '｜買課自動' : ''}{g.revoked_at ? '｜已停用' : ''}</li>)}</ul>}
     </section>
   )
 }
 
-// 逐單元開放（勾選後按儲存；沒勾的就看不到內容）
-function Unlocks({ profileId, active }) {
-  const [mods, setMods] = useState(null)
-  const [saved, setSaved] = useState([])
-  const [on, setOn] = useState([])
-  const [busy, setBusy] = useState(false)
-  const [msg, setMsg] = useState('')
-  useEffect(() => {
-    Promise.all([listModules(), listUnlocks(profileId)]).then(([m, u]) => { setMods(m); setSaved(u); setOn(u) }).catch(() => setMsg('單元載入失敗'))
-  }, [profileId])
-  if (!mods) return <p className="muted small">{msg || '單元載入中…'}</p>
-  const toggle = (ids, want) => { setMsg(''); setOn((x) => (want ? [...new Set([...x, ...ids])] : x.filter((i) => !ids.includes(i)))) }
-  const dirty = on.length !== saved.length || on.some((i) => !saved.includes(i))
-  async function save() {
-    setBusy(true)
-    setMsg('')
-    try { await adminSetUnlocks(profileId, on); setSaved(on); setMsg('已儲存，客戶重新進入教室就會更新') } catch { setMsg('儲存失敗，請稍後再試') } finally { setBusy(false) }
-  }
-  return (
-    <div className="unlocks">
-      <h3>開放單元（{saved.length}／{mods.length}）</h3>
-      {!active && <p className="muted small">這位客戶目前沒有使用期限，勾選後要再開通月數才看得到。</p>}
-      {byCategory(mods).map((g) => {
-        const ids = g.mods.map((m) => m.id)
-        const all = ids.every((i) => on.includes(i))
-        return (
-          <div key={g.key}>
-            <div className="row spread"><b className="small">{g.label}</b><button className="link-btn" onClick={() => toggle(ids, !all)}>{all ? '全部取消' : '全選'}</button></div>
-            {g.mods.map((m) => (
-              <label key={m.id} className="small check-row"><input type="checkbox" checked={on.includes(m.id)} onChange={(e) => toggle([m.id], e.target.checked)} />{m.title}{!m.published && '（未公開）'}</label>
-            ))}
-          </div>
-        )
-      })}
-      <button className="btn primary block" disabled={busy || !dirty} onClick={save}>{busy ? '儲存中…' : '儲存開放單元'}</button>
-      {msg && <p className="muted small">{msg}</p>}
-    </div>
-  )
-}

@@ -32,4 +32,4 @@ describe('livePhase', () => {
   it('取消', () => expect(at('2026-12-01T12:00:00Z', { cancelled: true })).toBe('cancelled'))
 })
 
-it('錯誤訊息', () => expect(liveErrorText(new Error('NOT_MEMBER'))).toContain('課程會員'))
+it('錯誤訊息', () => expect(liveErrorText(new Error('NOT_MEMBER'))).toContain('登入'))

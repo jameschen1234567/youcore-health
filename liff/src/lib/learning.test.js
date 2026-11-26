@@ -26,12 +26,12 @@ describe('以月計算效期', () => {
   })
 })
 
-describe('逐單元開放', () => {
-  it('要在期限內而且單元已開放', () => {
-    expect(canOpen({ active: true, unlocked: ['a'] }, 'a')).toBe(true)
-    expect(canOpen({ active: true, unlocked: ['a'] }, 'b')).toBe(false)
-    expect(canOpen({ active: false, unlocked: ['a'] }, 'a')).toBe(false)
-    expect(canOpen({ active: true, all: true, unlocked: [] }, 'b')).toBe(true)
+describe('開放規則', () => {
+  it('免費試玩登入就能開，其他要在期限內', () => {
+    expect(canOpen({ active: false }, { free: true })).toBe(true)
+    expect(canOpen({ active: false }, { free: false })).toBe(false)
+    expect(canOpen({ active: true }, { free: false })).toBe(true)
+    expect(canOpen({ active: true, all: true }, {})).toBe(true)
   })
   it('依分類分組，沒有單元的分類不顯示', () => {
     expect(byCategory([{ id: 1, category: 'posture' }]).map((g) => g.label)).toEqual(['日常姿勢'])
