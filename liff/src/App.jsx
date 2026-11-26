@@ -32,6 +32,7 @@ import MyBookings from './pages/MyBookings'
 import Live, { LiveWatch } from './pages/Live'
 import AdminLive from './pages/admin/AdminLive'
 import AdminLiveHost from './pages/admin/AdminLiveHost'
+import AdminVbt from './pages/admin/AdminVbt'
 import TabBar from './components/TabBar'
 import { BOOKING_OPEN } from './config'
 import { MessageButton } from './components/MessageButton'
@@ -83,6 +84,7 @@ function Gate() {
           <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />
           <Route path="/live" element={<Live />} />
           <Route path="/live/:id" element={<LiveWatch />} />
+          <Route path="/admin/vbt" element={<AdminOnly><AdminVbt /></AdminOnly>} />
           <Route path="/admin/live" element={<AdminOnly><AdminLive /></AdminOnly>} />
           <Route path="/admin/live/:id" element={<AdminOnly><AdminLiveHost /></AdminOnly>} />
           <Route path="/admin/requests" element={<AdminOnly><AdminRequests /></AdminOnly>} />

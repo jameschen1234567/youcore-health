@@ -44,6 +44,7 @@ export default function AdminHome() {
         <Link className="btn primary" to="/admin/bookings">預約管理</Link>
         <Link className="btn ghost" to="/admin/calendar">預約總表（行事曆）</Link>
       </div>
+      <Link className="btn ghost block" to="/admin/vbt">VBT 速度與體態檢測</Link>
       <Link className="btn ghost block" to="/admin/live">直播管理</Link>
       <Link className="btn ghost block" to="/admin/learning">模擬教材</Link>
       <RequestAlert />
