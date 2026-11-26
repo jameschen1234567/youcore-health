@@ -1,4 +1,4 @@
--- 0026：卸力（放鬆與出力時機）
+-- 0027：卸力（放鬆與出力時機）
 --   發力模式的跑步、網球正拍、深蹲換新版（多一條「反方向肌肉」煞車滑桿）
 --   日常姿勢新增 3 個卸力單元；聳肩打字設為免費試玩
 update public.learning_modules set path = 'force-run.v2.html' where path = 'force-run.v1.html';
