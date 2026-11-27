@@ -19,6 +19,7 @@ import AdminInfo from './AdminInfo'
 import AdminBody from './AdminBody'
 import AdminTraining from './AdminTraining'
 import AdminHomework from './AdminHomework'
+import AdminMedia from './AdminMedia'
 import AdminClientBookings from './AdminClientBookings'
 import AdminPackages from './AdminPackages'
 import { FeetEntry, InsolePanel } from './AdminFootEntry'
@@ -56,6 +57,7 @@ export default function AdminClient() {
       <AdminBody profileId={profile.id} />
       <AdminTraining profileId={profile.id} />
       <AdminHomework profileId={profile.id} memberNo={profile.member_no} />
+      <AdminMedia profileId={profile.id} memberNo={profile.member_no} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />
       <AdminAssessment rows={data.assessments} onChange={reload} />
       <Foot profileId={profile.id} profileName={profile.display_name} rows={data.foot} onChange={reload} />

@@ -31,6 +31,10 @@ export default function Training() {
       {error && <p className="error">資料載入失敗，請稍後再試</p>}
       {!data && !error && <p className="muted">載入中…</p>}
       <HomeworkCard profile={profile} />
+      <section className="card">
+        <div className="row spread"><h2>我的影像紀錄</h2><Link className="link-btn" to="/media">查看 ›</Link></div>
+        <p className="muted small">教練拍的動作影片、Before／After 對照與講解（會員專屬）。</p>
+      </section>
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (
         <section className="card">

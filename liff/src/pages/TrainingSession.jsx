@@ -6,12 +6,21 @@ import { fmtDay, getProfileInfo, groupSets, listExercises, listTrainingSessions 
 import { ageFrom } from '../lib/strength'
 import SessionSets from '../components/SessionSets'
 import SessionHeart from '../components/SessionHeart'
+import MediaCard from '../components/MediaCard'
+import { listMedia, signedUrls } from '../lib/media'
+import { isMember } from '../lib/homework'
 
 export default function TrainingSession() {
   const { sessionId } = useParams()
   const { profile } = useAuth()
   const navigate = useNavigate()
   const [data, setData] = useState(undefined)
+  const [media, setMedia] = useState({ rows: [], urls: {} })
+
+  useEffect(() => {
+    if (!isMember(profile)) return
+    listMedia(profile.id, { sessionId }).then(async (rows) => setMedia({ rows, urls: await signedUrls(rows) })).catch(() => {})
+  }, [profile, sessionId])
 
   useEffect(() => {
     Promise.all([listTrainingSessions(profile.id), listExercises(), getProfileInfo(profile.id).catch(() => ({}))])
@@ -28,6 +37,12 @@ export default function TrainingSession() {
           <h1>{fmtDay(data.session.session_date)} 訓練</h1>
           {data.session.note && <p className="muted">{data.session.note}</p>}
           <SessionHeart s={data.session} age={data.age} />
+          {media.rows.length > 0 && (
+            <section className="card">
+              <h2>這次的影像紀錄</h2>
+              {media.rows.map((m) => <MediaCard key={m.id} m={m} urls={media.urls} />)}
+            </section>
+          )}
           <SessionSets groups={groupSets(data.session.sets)} exercises={data.exercises} age={data.age} restHr={data.session.rest_hr} />
         </>
       )}
