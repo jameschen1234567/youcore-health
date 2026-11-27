@@ -33,11 +33,11 @@ export default function AdminTraining({ profileId }) {
 
   const startNew = () => {
     const d = todayTaipei()
-    setEditing({ session_date: d, note: '', rest_hr: rhrOn(d), avg_hr: '', max_hr: '', blocks: [newBlock()] })
+    setEditing({ session_date: d, note: '', duration_min: 60, rest_hr: rhrOn(d), avg_hr: '', max_hr: '', blocks: [newBlock()] })
   }
   const startEdit = (s) => setEditing({
     id: s.id, session_date: s.session_date, note: s.note ?? '',
-    rest_hr: s.rest_hr ?? '', avg_hr: s.avg_hr ?? '', max_hr: s.max_hr ?? '',
+    duration_min: s.duration_min ?? '', rest_hr: s.rest_hr ?? '', avg_hr: s.avg_hr ?? '', max_hr: s.max_hr ?? '',
     blocks: groupSets(s.sets).map((g) => newBlock(g.exercise_id, g.sets.map((x) => newSet({ ...x, rpe: x.rpe ?? '', hr: x.hr ?? '' }, true)))),
   })
 
@@ -128,6 +128,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
     if (bad) return setErr('有一組的重量或次數沒填完整')
     if (sets.some((s) => !validBpm(s.hr, HR_RANGE))) return setErr(`每組心率請填 ${HR_RANGE[0]}～${HR_RANGE[1]} 的整數`)
     if (!sets.some((s) => s.exercise_id && s.weight_kg !== '' && s.reps !== '')) return setErr('至少記錄一組')
+    if (value.duration_min !== '' && value.duration_min != null && !(Number.isInteger(Number(value.duration_min)) && Number(value.duration_min) >= 10 && Number(value.duration_min) <= 300)) return setErr('上課分鐘請填 10～300 的整數')
     if (!validBpm(value.rest_hr, REST_RANGE)) return setErr(`安靜心跳請填 ${REST_RANGE[0]}～${REST_RANGE[1]} 的整數`)
     if (!validBpm(value.avg_hr, HR_RANGE) || !validBpm(value.max_hr, HR_RANGE)) return setErr(`運動心率請填 ${HR_RANGE[0]}～${HR_RANGE[1]} 的整數`)
     if (value.avg_hr !== '' && value.max_hr !== '' && Number(value.max_hr) < Number(value.avg_hr)) return setErr('最高心率不能低於平均心率')
@@ -135,7 +136,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
     setErr('')
     try {
       await adminSaveSession(profileId, { id: value.id, session_date: value.session_date, note: value.note, sets,
-        rest_hr: value.rest_hr, avg_hr: value.avg_hr, max_hr: value.max_hr })
+        rest_hr: value.rest_hr, avg_hr: value.avg_hr, max_hr: value.max_hr, duration_min: value.duration_min })
       await onSaved()
     } catch {
       setErr('儲存失敗，請稍後再試')
@@ -151,6 +152,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
           // 換日期時，如果安靜心跳還沒填，就帶入客戶當天自己填的
           onChange({ ...value, session_date: d, rest_hr: value.rest_hr === '' ? rhrOn(d) : value.rest_hr })
         }} /></label>
+        <label className="small">上課分鐘<input className="search" type="number" inputMode="numeric" min="10" max="300" value={value.duration_min} onChange={(e) => onChange({ ...value, duration_min: e.target.value })} placeholder="60" /></label>
         <label className="small">備註<input className="search" value={value.note} maxLength={200} onChange={(e) => onChange({ ...value, note: e.target.value })} placeholder="選填" /></label>
       </div>
       <div className="form-grid three-col">

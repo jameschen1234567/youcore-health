@@ -523,3 +523,12 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 .food-hits { list-style: none; margin: 6px 0; padding: 0; max-height: 280px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; }
 .food-hits button { width: 100%; display: flex; justify-content: space-between; gap: 8px; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 10px 12px; font: inherit; color: inherit; text-align: left; cursor: pointer; min-height: 44px; }
 .food-hits li:last-child button { border-bottom: 0; }
+
+/* 熱量收支（0036） */
+.activity-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.activity-form > span { grid-column: 1 / -1; }
+.energy-grid { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 6px; margin: 10px 0 4px; }
+.energy-grid > div { display: flex; flex-direction: column; }
+.energy-grid b { font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+.center { text-align: center; }
+.how-list { margin: 4px 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }

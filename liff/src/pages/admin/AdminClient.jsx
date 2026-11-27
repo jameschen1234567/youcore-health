@@ -22,6 +22,7 @@ import AdminHomework from './AdminHomework'
 import AdminMedia from './AdminMedia'
 import AdminSelfTraining from './AdminSelfTraining'
 import AdminDiet from './AdminDiet'
+import AdminEnergy from './AdminEnergy'
 import AdminClientBookings from './AdminClientBookings'
 import AdminPackages from './AdminPackages'
 import { FeetEntry, InsolePanel } from './AdminFootEntry'
@@ -60,6 +61,7 @@ export default function AdminClient() {
       <AdminTraining profileId={profile.id} />
       <AdminSelfTraining profileId={profile.id} />
       <AdminDiet profileId={profile.id} />
+      <AdminEnergy profileId={profile.id} />
       <AdminHomework profileId={profile.id} memberNo={profile.member_no} />
       <AdminMedia profileId={profile.id} memberNo={profile.member_no} />
       <Orders profileId={profile.id} orders={data.orders} onChange={reload} />

@@ -59,7 +59,7 @@ async function loadProfile() {
   const { data: { user }, error: userErr } = await supabase.auth.getUser()
   if (userErr || !user) return null
   const { data: profile, error } = await supabase
-    .from('profiles').select('id, display_name, member_no, role').eq('id', user.id).maybeSingle()
+    .from('profiles').select('id, display_name, member_no, nutrition_enabled, role').eq('id', user.id).maybeSingle()
   if (error) throw error
   return profile
 }
