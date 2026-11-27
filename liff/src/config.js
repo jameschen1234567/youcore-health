@@ -11,6 +11,8 @@ export const LINE_OA_ID = import.meta.env.VITE_LINE_OA_ID
 
 // 線上預約對客人開放了沒；false 時只有管理員能進預約頁，客人改傳 LINE 預約（James 2026-11-26：先測試、跟客人說明再開）
 export const BOOKING_OPEN = false
+// 飲食紀錄：James 確認食物份量克數後再改成 true 開放給會員；關閉時只有管理員看得到（2026-11-28）
+export const DIET_OPEN = false
 
 // 同意書版本：文字有改就要升版，所有客戶會被要求重新同意
 export const CONSENT_VERSION = '2026-11-draft2' // 加入基本資料、病史、身體組成、訓練紀錄

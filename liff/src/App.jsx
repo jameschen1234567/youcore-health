@@ -25,6 +25,7 @@ import Feedback from './pages/Feedback'
 import AdminFeedback from './pages/admin/AdminFeedback'
 import AdminHome from './pages/admin/AdminHome'
 import AdminClient from './pages/admin/AdminClient'
+import AdminFoods from './pages/admin/AdminFoods'
 import AdminBookings from './pages/admin/AdminBookings'
 import AdminCalendar from './pages/admin/AdminCalendar'
 import AdminRequests from './pages/admin/AdminRequests'
@@ -95,6 +96,7 @@ function Gate() {
           <Route path="/admin/calendar" element={<AdminOnly><AdminCalendar /></AdminOnly>} />
           <Route path="/admin/packages" element={<AdminOnly><AdminPackagesOverview /></AdminOnly>} />
           <Route path="/admin" element={<AdminOnly><AdminHome /></AdminOnly>} />
+          <Route path="/admin/foods" element={<AdminOnly><AdminFoods /></AdminOnly>} />
           <Route path="/admin/client/:id" element={<AdminOnly><AdminClient /></AdminOnly>} />
           <Route path="*" element={<Message title="找不到這個頁面" />} />
         </Routes>

@@ -513,3 +513,13 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 
 /* 自主訓練（0034） */
 .self-list li { align-items: flex-start; gap: 8px; }
+
+/* 飲食紀錄（0035） */
+.day-pick { width: auto; max-width: 160px; }
+.diet-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0; }
+.diet-meter { display: flex; flex-direction: column; gap: 4px; }
+.meal-block { border-top: 1px solid var(--line); padding: 8px 0; }
+.log-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; padding: 4px 0; font-size: 0.95rem; }
+.food-hits { list-style: none; margin: 6px 0; padding: 0; max-height: 280px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; }
+.food-hits button { width: 100%; display: flex; justify-content: space-between; gap: 8px; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 10px 12px; font: inherit; color: inherit; text-align: left; cursor: pointer; min-height: 44px; }
+.food-hits li:last-child button { border-bottom: 0; }

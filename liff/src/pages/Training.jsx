@@ -9,6 +9,8 @@ import LineChart from '../components/LineChart'
 import RestingHrCard from '../components/RestingHrCard'
 import HomeworkCard from '../components/HomeworkCard'
 import SelfTrainingCard from '../components/SelfTrainingCard'
+import DietCard from '../components/DietCard'
+import { DIET_OPEN } from '../config'
 import TargetWeightCard from '../components/TargetWeightCard'
 import { getTarget } from '../lib/selfTraining'
 import { isMember } from '../lib/homework'
@@ -44,6 +46,7 @@ export default function Training() {
         <p className="muted small">教練拍的動作影片、Before／After 對照與講解（會員專屬）。</p>
       </section>
       {member && <SelfTrainingCard profile={profile} />}
+      {member && (DIET_OPEN || profile.role === 'admin') && <DietCard profile={profile} />}
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {member && data && target && <TargetWeightCard profileId={profile.id} target={target} bodyRows={data.body} onSaved={reloadTarget} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (
