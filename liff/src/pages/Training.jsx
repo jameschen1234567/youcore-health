@@ -7,6 +7,7 @@ import { BODY_METRICS, ageFrom, e1rmHistory, latestDelta, metricValue } from '..
 import { heartLine, listRestingHr } from '../lib/heart'
 import LineChart from '../components/LineChart'
 import RestingHrCard from '../components/RestingHrCard'
+import HomeworkCard from '../components/HomeworkCard'
 
 export default function Training() {
   const { profile } = useAuth()
@@ -29,6 +30,7 @@ export default function Training() {
       <h1>訓練</h1>
       {error && <p className="error">資料載入失敗，請稍後再試</p>}
       {!data && !error && <p className="muted">載入中…</p>}
+      <HomeworkCard profile={profile} />
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (
         <section className="card">

@@ -65,6 +65,12 @@ export default function Me() {
       </section>
 
       <section className="card">
+        <h2>點數與排行榜</h2>
+        <p className="muted small">完成回家作業拿點數，看看自己在會員排行榜的名次。</p>
+        <div className="row"><Link className="btn ghost" to="/points">查看點數</Link></div>
+      </section>
+
+      <section className="card">
         <h2>線上直播</h2>
         <p className="muted small">免費觀看直播與回放。</p>
         <div className="row"><Link className="btn ghost" to="/live">查看直播</Link></div>

@@ -6,6 +6,7 @@ import { getProfileInfo, saveProfileInfo } from './lib/training'
 import ProfileInfoForm from './components/ProfileInfoForm'
 import Training from './pages/Training'
 import TrainingSession from './pages/TrainingSession'
+import Points from './pages/Points'
 import Consent from './pages/Consent'
 import Me from './pages/Me'
 import ContentHome from './pages/ContentHome'
@@ -79,6 +80,7 @@ function Gate() {
           <Route path="/training" element={<Training />} />
           <Route path="/training/:sessionId" element={<TrainingSession />} />
           <Route path="/me" element={<Me />} />
+          <Route path="/points" element={<Points />} />
           <Route path="/booking" element={<BookingGate><Booking /></BookingGate>} />
           <Route path="/booking/mine" element={<BookingGate><MyBookings /></BookingGate>} />
           <Route path="/admin/bookings" element={<AdminOnly><AdminBookings /></AdminOnly>} />

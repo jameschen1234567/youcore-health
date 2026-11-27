@@ -475,3 +475,24 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 .rhr-form input[aria-label="會員編號"] { width: 160px; }
 .set-hr { display: inline-flex; align-items: center; gap: 4px; }
 .zone-tag.sm { font-size: 0.7rem; padding: 0 5px; border-radius: 4px; }
+
+/* 回家作業與點數（0032） */
+.hw-item { border-top: 1px solid var(--line); padding: 10px 0 4px; display: flex; flex-direction: column; gap: 4px; }
+.hw-item:first-of-type { border-top: 0; }
+.hw-detail { margin: 0; white-space: pre-wrap; }
+.hw-actions { align-items: center; gap: 12px; }
+.board { list-style: none; margin: 8px 0; padding: 0; }
+.board li { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; padding: 8px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.board li.me { background: #EEF3EA; border-radius: 8px; }
+.board-rank { text-align: center; font-weight: 700; }
+.good-text { color: var(--brand); }
+.danger-text { color: var(--danger); }
+.celebrate-backdrop { position: fixed; inset: 0; background: rgba(28, 43, 26, 0.55); display: grid; place-items: center; z-index: 100; padding: 16px; }
+.celebrate { position: relative; overflow: hidden; background: var(--surface); border-radius: 20px; padding: 24px 20px 20px; text-align: center; width: min(360px, 100%); animation: pop 0.35s ease-out; }
+.celebrate h2 { margin: 4px 0; }
+.celebrate-icon { font-size: 3rem; margin: 0; }
+.celebrate-points { font-size: 1.6rem; font-weight: 800; color: var(--brand); margin: 4px 0 12px; }
+@keyframes pop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.confetti i { position: absolute; top: -10px; left: calc(var(--i) * 5.5%); width: 7px; height: 12px; border-radius: 2px; background: hsl(calc(var(--i) * 40), 70%, 55%); animation: fall 1.6s ease-in calc(var(--i) * 0.05s) forwards; }
+@keyframes fall { to { transform: translateY(420px) rotate(540deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .celebrate, .confetti i { animation: none; } .confetti { display: none; } }
