@@ -28,7 +28,7 @@ export default function TrainingSession() {
           <h1>{fmtDay(data.session.session_date)} 訓練</h1>
           {data.session.note && <p className="muted">{data.session.note}</p>}
           <SessionHeart s={data.session} age={data.age} />
-          <SessionSets groups={groupSets(data.session.sets)} exercises={data.exercises} />
+          <SessionSets groups={groupSets(data.session.sets)} exercises={data.exercises} age={data.age} restHr={data.session.rest_hr} />
         </>
       )}
     </main>

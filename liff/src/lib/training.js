@@ -126,7 +126,7 @@ export async function adminAddExercise(name) {
 
 // ── 訓練紀錄 ────────────────────────────────────────────────────────────────
 
-const SET_FIELDS = 'id, exercise_id, set_no, position, weight_kg, reps, rpe'
+const SET_FIELDS = 'id, exercise_id, set_no, position, weight_kg, reps, rpe, hr'
 
 /** 訓練列表（含每組），舊的在前 */
 export async function listTrainingSessions(profileId) {
@@ -205,6 +205,7 @@ export function numberSets(sets) {
         weight_kg: Number(s.weight_kg),
         reps: Number(s.reps),
         rpe: s.rpe === '' || s.rpe == null ? null : Number(s.rpe),
+        hr: intOrNull(s.hr),
       }
     })
 }

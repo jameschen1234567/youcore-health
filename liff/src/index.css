@@ -473,3 +473,5 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 .rhr-form { display: flex; gap: 8px; align-items: center; }
 .rhr-form input { width: 96px; }
 .rhr-form input[aria-label="會員編號"] { width: 160px; }
+.set-hr { display: inline-flex; align-items: center; gap: 4px; }
+.zone-tag.sm { font-size: 0.7rem; padding: 0 5px; border-radius: 4px; }

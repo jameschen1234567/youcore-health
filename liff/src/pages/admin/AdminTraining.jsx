@@ -10,7 +10,8 @@ import SessionHeart from '../../components/SessionHeart'
 
 const RPE_OPTIONS = ['', 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
 const CATEGORY_LABELS = { lower: '下肢', hinge: '髖主導', push: '推', pull: '拉', other: '自訂' }
-const newSet = (from) => ({ weight_kg: from?.weight_kg ?? '', reps: from?.reps ?? '', rpe: from?.rpe ?? '' })
+// 複製上一組時不複製心率（每組心率都不一樣）
+const newSet = (from, keepHr = false) => ({ weight_kg: from?.weight_kg ?? '', reps: from?.reps ?? '', rpe: from?.rpe ?? '', hr: keepHr ? (from?.hr ?? '') : '' })
 let keySeq = 0
 const newBlock = (exercise_id = '', sets = [newSet()]) => ({ key: ++keySeq, exercise_id, sets })
 
@@ -37,7 +38,7 @@ export default function AdminTraining({ profileId }) {
   const startEdit = (s) => setEditing({
     id: s.id, session_date: s.session_date, note: s.note ?? '',
     rest_hr: s.rest_hr ?? '', avg_hr: s.avg_hr ?? '', max_hr: s.max_hr ?? '',
-    blocks: groupSets(s.sets).map((g) => newBlock(g.exercise_id, g.sets.map((x) => newSet({ ...x, rpe: x.rpe ?? '' })))),
+    blocks: groupSets(s.sets).map((g) => newBlock(g.exercise_id, g.sets.map((x) => newSet({ ...x, rpe: x.rpe ?? '', hr: x.hr ?? '' }, true)))),
   })
 
   return (
@@ -93,7 +94,7 @@ function SessionItem({ s, age, exercises, open, onToggle, onEdit, onDelete }) {
         <div className="session-body">
           {s.note && <p className="muted small">備註：{s.note}</p>}
           <SessionHeart s={s} age={age} />
-          <SessionSets groups={groupSets(s.sets)} exercises={exercises} />
+          <SessionSets groups={groupSets(s.sets)} exercises={exercises} age={age} restHr={s.rest_hr} />
           {confirm ? (
             <div className="row confirm-row">
               <span className="small">確定刪除這次訓練？所有組數會一起刪除，無法復原。</span>
@@ -125,6 +126,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
     const sets = value.blocks.flatMap((b) => b.sets.map((s) => ({ exercise_id: b.exercise_id, ...s })))
     const bad = sets.find((s) => s.exercise_id && (s.weight_kg !== '' || s.reps !== '') && (s.weight_kg === '' || s.reps === '' || Number(s.reps) <= 0 || Number(s.weight_kg) < 0))
     if (bad) return setErr('有一組的重量或次數沒填完整')
+    if (sets.some((s) => !validBpm(s.hr, HR_RANGE))) return setErr(`每組心率請填 ${HR_RANGE[0]}～${HR_RANGE[1]} 的整數`)
     if (!sets.some((s) => s.exercise_id && s.weight_kg !== '' && s.reps !== '')) return setErr('至少記錄一組')
     if (!validBpm(value.rest_hr, REST_RANGE)) return setErr(`安靜心跳請填 ${REST_RANGE[0]}～${REST_RANGE[1]} 的整數`)
     if (!validBpm(value.avg_hr, HR_RANGE) || !validBpm(value.max_hr, HR_RANGE)) return setErr(`運動心率請填 ${HR_RANGE[0]}～${HR_RANGE[1]} 的整數`)
@@ -168,7 +170,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
             )}
           </div>
           <table className="sets-table edit">
-            <thead><tr><th>組</th><th>重量 kg</th><th>次數</th><th>RPE</th><th>推估</th><th></th></tr></thead>
+            <thead><tr><th>組</th><th>重量 kg</th><th>次數</th><th>RPE</th><th>心率</th><th>推估</th><th></th></tr></thead>
             <tbody>
               {b.sets.map((s, si) => {
                 const setField = (k) => (e) => updBlock(b.key, (x) => ({ ...x, sets: x.sets.map((y, j) => (j === si ? { ...y, [k]: e.target.value } : y)) }))
@@ -183,6 +185,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
                         {RPE_OPTIONS.map((r) => <option key={r} value={r}>{r === '' ? '—' : r}</option>)}
                       </select>
                     </td>
+                    <td><input aria-label={`第 ${si + 1} 組心率`} type="number" inputMode="numeric" step="1" min={HR_RANGE[0]} max={HR_RANGE[1]} value={s.hr} onChange={setField('hr')} placeholder="bpm" /></td>
                     <td className="muted small">{e1 ?? '—'}</td>
                     <td>{b.sets.length > 1 && (
                       <button className="link-btn danger-text" aria-label={`刪除第 ${si + 1} 組`}
@@ -200,7 +203,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
       ))}
 
       <button className="btn ghost block" onClick={() => upd((bs) => [...bs, newBlock()])}>＋ 加動作</button>
-      <p className="muted small">RPE 6～10：10 = 做到力竭、9 = 還能再做 1 下、8 = 還能 2 下。推估欄為該組推估 1RM（kg）。</p>
+      <p className="muted small">RPE 6～10：10 = 做到力竭、9 = 還能再做 1 下、8 = 還能 2 下。心率填該組做完當下的心跳（選填）。推估欄為該組推估 1RM（kg）。</p>
       {err && <p className="error small">{err}</p>}
       <div className="row">
         <button className="btn ghost" onClick={onCancel} disabled={busy}>取消</button>

@@ -11,9 +11,9 @@ describe('組數編號', () => {
       { exercise_id: '', weight_kg: 50, reps: 5 }, // 沒選動作 → 略過
     ])
     expect(out).toEqual([
-      { exercise_id: 'sq', set_no: 1, position: 0, weight_kg: 100, reps: 5, rpe: 8 },
-      { exercise_id: 'bp', set_no: 1, position: 1, weight_kg: 60, reps: 8, rpe: null },
-      { exercise_id: 'sq', set_no: 2, position: 2, weight_kg: 100, reps: 5, rpe: 8.5 },
+      { exercise_id: 'sq', set_no: 1, position: 0, weight_kg: 100, reps: 5, rpe: 8, hr: null },
+      { exercise_id: 'bp', set_no: 1, position: 1, weight_kg: 60, reps: 8, rpe: null, hr: null },
+      { exercise_id: 'sq', set_no: 2, position: 2, weight_kg: 100, reps: 5, rpe: 8.5, hr: null },
     ])
   })
 })
