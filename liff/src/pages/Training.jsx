@@ -8,6 +8,10 @@ import { heartLine, listRestingHr } from '../lib/heart'
 import LineChart from '../components/LineChart'
 import RestingHrCard from '../components/RestingHrCard'
 import HomeworkCard from '../components/HomeworkCard'
+import SelfTrainingCard from '../components/SelfTrainingCard'
+import TargetWeightCard from '../components/TargetWeightCard'
+import { getTarget } from '../lib/selfTraining'
+import { isMember } from '../lib/homework'
 
 export default function Training() {
   const { profile } = useAuth()
@@ -15,6 +19,9 @@ export default function Training() {
   const [error, setError] = useState(false)
 
   const [rhr, setRhr] = useState(null)
+  const [target, setTarget] = useState(null)
+  const member = isMember(profile)
+  const reloadTarget = () => getTarget(profile.id).then(setTarget).catch(() => setTarget({}))
   const reloadRhr = () => listRestingHr(profile.id).then(setRhr).catch(() => setRhr([]))
 
   useEffect(() => {
@@ -22,8 +29,9 @@ export default function Training() {
       .then(([body, sessions, exercises, info]) => setData({ body, sessions, exercises, age: ageFrom(info?.birthday) }))
       .catch(() => setError(true))
     reloadRhr()
+    if (member) reloadTarget()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile.id])
+  }, [profile.id, member])
 
   return (
     <main className="page">
@@ -35,20 +43,22 @@ export default function Training() {
         <div className="row spread"><h2>我的影像紀錄</h2><Link className="link-btn" to="/media">查看 ›</Link></div>
         <p className="muted small">教練拍的動作影片、Before／After 對照與講解（會員專屬）。</p>
       </section>
+      {member && <SelfTrainingCard profile={profile} />}
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
+      {member && data && target && <TargetWeightCard profileId={profile.id} target={target} bodyRows={data.body} onSaved={reloadTarget} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (
         <section className="card">
           <p>每次到店訓練後，教練會幫你記錄身體組成與訓練內容，你可以在這裡看到自己的進步。</p>
         </section>
       )}
-      {data && data.body.length > 0 && <BodySection rows={data.body} />}
+      {data && data.body.length > 0 && <BodySection rows={data.body} target={member ? target?.target_weight_kg : null} />}
       {data && data.sessions.length > 0 && <StrengthSection sessions={data.sessions} exercises={data.exercises} />}
       {data && data.sessions.length > 0 && <SessionList sessions={data.sessions} exercises={data.exercises} age={data.age} />}
     </main>
   )
 }
 
-function BodySection({ rows }) {
+function BodySection({ rows, target }) {
   const [metric, setMetric] = useState('weight_kg')
   const m = BODY_METRICS.find((x) => x.key === metric)
   const points = rows.map((r) => ({ x: toDate(r.measured_on), y: metricValue(r, metric) })).filter((p) => p.y != null)
@@ -71,7 +81,12 @@ function BodySection({ rows }) {
         </p>
       ) : <p className="muted">還沒有{m.label}的紀錄</p>}
       {points.length > 0 && (
-        <LineChart auto unit={m.unit} label={`${m.label}趨勢圖`} series={[{ key: metric, label: m.label, color: 'var(--brand)', points }]} />
+        <LineChart auto unit={m.unit} label={`${m.label}趨勢圖`} series={[
+          { key: metric, label: m.label, color: 'var(--brand)', points },
+          ...(metric === 'weight_kg' && target != null && points.length > 0
+            ? [{ key: 'target', label: `目標 ${Number(target)} kg`, color: 'var(--accent)', dashed: true, points: [{ x: points[0].x, y: Number(target) }, { x: points.at(-1).x, y: Number(target) }] }]
+            : []),
+        ]} />
       )}
     </section>
   )

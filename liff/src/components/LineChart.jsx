@@ -1,4 +1,5 @@
 // 輕量趨勢折線圖（不引入圖表套件）。series: [{ key, label, color, points: [{x: Date, y: number|null}] }]
+// series 可加 dashed: true 畫虛線（例如目標線，不畫點）
 // auto=true 時依資料自動決定 Y 軸範圍（體重、1RM 等不從 0 開始的數值用）
 export default function LineChart({ series, yMax: yMaxProp = 100, yMin: yMinProp = 0, auto = false, height = 180, label = '分數趨勢圖', unit = '' }) {
   const all = series.flatMap((s) => s.points)
@@ -33,10 +34,11 @@ export default function LineChart({ series, yMax: yMaxProp = 100, yMin: yMinProp
           return (
             <g key={s.key}>
               {pts.length > 1 && (
-                <polyline fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"
+                <polyline fill="none" stroke={s.color} strokeWidth={s.dashed ? 2 : 2.5} strokeLinejoin="round" strokeLinecap="round"
+                  strokeDasharray={s.dashed ? '6 5' : undefined}
                   points={pts.map((p) => `${sx(p.x)},${sy(p.y)}`).join(' ')} />
               )}
-              {pts.map((p, i) => (
+              {!s.dashed && pts.map((p, i) => (
                 <circle key={i} cx={sx(p.x)} cy={sy(p.y)} r="4" fill={s.color} stroke="var(--surface)" strokeWidth="1.5">
                   <title>{`${fmt(p.x)}：${p.y}${unit}`}</title>
                 </circle>
