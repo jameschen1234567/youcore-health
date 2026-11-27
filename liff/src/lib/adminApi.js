@@ -11,12 +11,25 @@ function demoDeletion() {
   return at ? [{ id: 'demo-del', profile_id: 'demo-user', requested_at: at, status: 'pending' }] : []
 }
 
+export const MEMBER_NO_RE = /^[A-Za-z0-9-]{1,20}$/
+
+/** 管理員設定會員編號（空字串＝清除）。重複時丟 DUPLICATE */
+export async function adminSetMemberNo(profileId, value) {
+  const v = (value ?? '').trim().toUpperCase() || null
+  if (v && !MEMBER_NO_RE.test(v)) throw new Error('FORMAT')
+  if (DEMO) { demoSet(`member_no:${profileId}`, v); return v }
+  const { error } = await supabase.from('profiles').update({ member_no: v }).eq('id', profileId)
+  if (error) throw new Error(error.code === '23505' ? 'DUPLICATE' : 'FAILED')
+  return v
+}
+
 /** 客戶列表：含最近一次足部量測日期、待處理刪除申請、未完成訂單數 */
 export async function adminListClients() {
   if (DEMO) {
     const foot = demoList('foot')
     return [{
       ...DEMO_CLIENT,
+      member_no: demoGet('member_no:demo-user') ?? null,
       last_foot_at: foot.at(-1)?.created_at ?? null,
       deletion_pending: demoDeletion().length > 0,
       open_orders: demoList('orders').filter((o) => o.status !== 'picked_up').length,
@@ -24,7 +37,7 @@ export async function adminListClients() {
   }
   const [profiles, foot, dels, orders] = await Promise.all([
     // 管理員也列出來（可以替自己建測試訂單、看自己的資料）
-    supabase.from('profiles').select('id, display_name, full_name, phone, role, created_at').order('created_at', { ascending: false }),
+    supabase.from('profiles').select('id, display_name, full_name, phone, member_no, role, created_at').order('created_at', { ascending: false }),
     supabase.from('foot_measurements').select('profile_id, created_at').order('created_at', { ascending: false }),
     supabase.from('deletion_requests').select('profile_id').eq('status', 'pending'),
     supabase.from('orders').select('profile_id, status').neq('status', 'picked_up'),
@@ -49,7 +62,7 @@ export async function adminGetClient(id) {
     if (id !== DEMO_CLIENT.id) return null
     const responses = Object.keys(QUESTIONNAIRES).flatMap((k) => demoList(`responses:${k}`).map((r) => ({ ...r, questionnaire_key: k })))
     return {
-      profile: DEMO_CLIENT,
+      profile: { ...DEMO_CLIENT, member_no: demoGet('member_no:demo-user') ?? null },
       foot: demoList('foot'),
       insoles: demoList('insole'),
       assessments: demoList('assess'),
@@ -62,7 +75,7 @@ export async function adminGetClient(id) {
   const q = (t, sel, order = 'created_at') =>
     supabase.from(t).select(sel).eq('profile_id', id).order(order, { ascending: true })
   const [profile, foot, insoles, assessments, responses, painMaps, orders, deletion] = await Promise.all([
-    supabase.from('profiles').select('id, display_name, role, created_at').eq('id', id).maybeSingle(),
+    supabase.from('profiles').select('id, display_name, member_no, role, created_at').eq('id', id).maybeSingle(),
     q('foot_measurements', 'id, side, length_mm, width_mm, heel_width_mm, source, width_class, photo_path, quality_flags, algo_version, created_at'),
     q('insole_measurements', 'id, side, length_mm, widths, note, source, created_at'),
     q('foot_assessments', ASSESS_FIELDS),

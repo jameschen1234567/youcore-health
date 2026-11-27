@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   adminCreateOrder, adminDeleteClient, adminGetClient, adminPhotoUrl, adminRejectDeletion,
-  adminResendNotify, adminSetOrderStatus, adminUpdateOrderNote,
+  adminResendNotify, adminSetMemberNo, adminSetOrderStatus, adminUpdateOrderNote,
 } from '../../lib/adminApi'
 import { QUESTIONNAIRES } from '../../questionnaires'
 import { FLAG_NOTES, SIDE_LABELS, SOURCE_LABELS, WIDTH_LABELS, buildReport, toCm } from '../../lib/foot'
@@ -45,6 +45,7 @@ export default function AdminClient() {
       <button className="back" onClick={() => navigate('/admin')}>‹ 客戶列表</button>
       <h1>{profile.display_name || '未命名'}</h1>
       <p className="muted small">加入 {fmtDate(profile.created_at)}</p>
+      <MemberNo profileId={profile.id} value={profile.member_no} onSaved={reload} />
 
       <DeletionPanel data={data} onDone={() => navigate('/admin')} onChange={reload} />
       <AdminInfo profileId={profile.id} />
@@ -309,5 +310,41 @@ function PainMap({ maps }) {
         </>
       )}
     </section>
+  )
+}
+
+function MemberNo({ profileId, value, onSaved }) {
+  const [editing, setEditing] = useState(false)
+  const [v, setV] = useState(value ?? '')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const MSG = { FORMAT: '只能用英文、數字或「-」，最多 20 字', DUPLICATE: '這個編號已經有人用了', FAILED: '儲存失敗，請稍後再試' }
+
+  async function save() {
+    setBusy(true); setErr('')
+    try { await adminSetMemberNo(profileId, v); setEditing(false); onSaved() }
+    catch (e) { setErr(MSG[e.message] ?? MSG.FAILED) }
+    finally { setBusy(false) }
+  }
+
+  if (!editing) {
+    return (
+      <p>
+        會員編號：<b>{value || '尚未設定'}</b>{' '}
+        <button className="link-btn" onClick={() => { setV(value ?? ''); setEditing(true) }}>{value ? '修改' : '設定'}</button>
+      </p>
+    )
+  }
+  return (
+    <div>
+      <div className="rhr-form">
+        <input className="search" autoFocus value={v} maxLength={20} onChange={(e) => setV(e.target.value)}
+          placeholder="例如 YC0001" aria-label="會員編號" />
+        <button className="btn ghost" disabled={busy} onClick={() => { setEditing(false); setErr('') }}>取消</button>
+        <button className="btn primary" disabled={busy} onClick={save}>{busy ? '儲存中…' : '儲存'}</button>
+      </div>
+      <p className="muted small">英文會自動轉大寫；清空後儲存＝移除編號。</p>
+      {err && <p className="error small">{err}</p>}
+    </div>
   )
 }

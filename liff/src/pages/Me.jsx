@@ -42,6 +42,7 @@ export default function Me() {
       <section className="card">
         <p className="muted small">LINE 名稱</p>
         <p className="big">{profile.display_name || '未命名'}</p>
+        {profile.member_no && <p className="small">會員編號 <b>{profile.member_no}</b></p>}
         {DEMO && <p className="tag">Demo 模式</p>}
       </section>
 
