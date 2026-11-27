@@ -203,7 +203,7 @@ function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onC
       ))}
 
       <button className="btn ghost block" onClick={() => upd((bs) => [...bs, newBlock()])}>＋ 加動作</button>
-      <p className="muted small">RPE 6～10：10 = 做到力竭、9 = 還能再做 1 下、8 = 還能 2 下。心率填該組做完當下的心跳（選填）。推估欄為該組推估 1RM（kg）。</p>
+      <p className="muted small">RPE 6～10：10 = 做到力竭、9 = 還能再做 1 下、8 = 還能 2 下；沒填 RPE 視為熱身組，不推估 1RM。心率填該組做完當下的心跳（選填）。推估欄為該組推估 1RM（kg）。</p>
       {err && <p className="error small">{err}</p>}
       <div className="row">
         <button className="btn ghost" onClick={onCancel} disabled={busy}>取消</button>

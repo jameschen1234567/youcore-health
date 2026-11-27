@@ -96,7 +96,7 @@ function StrengthSection({ sessions, exercises }) {
       )}
       <LineChart auto unit=" kg" label={`${names[ex]}最大肌力趨勢圖`}
         series={[{ key: ex, label: names[ex], color: 'var(--accent)', points: cur.map((p) => ({ x: toDate(p.date), y: p.e1rm })) }]} />
-      <p className="muted small note">依每組的重量、次數與 RPE 推估（NSCA 換算表），不是實際測驗的最大重量；只採用推估誤差較小的組數。</p>
+      <p className="muted small note">依每組的重量、次數與 RPE 推估（NSCA 換算表），不是實際測驗的最大重量。沒記 RPE 的組（熱身）不列入；優先採用換算後 10 下以內的組，沒有才用 11～15 下的組。</p>
     </section>
   )
 }
