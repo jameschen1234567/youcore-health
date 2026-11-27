@@ -132,7 +132,7 @@ const SET_FIELDS = 'id, exercise_id, set_no, position, weight_kg, reps, rpe'
 export async function listTrainingSessions(profileId) {
   if (DEMO) return demoList(`sessions:${profileId}`).sort(byDate('session_date'))
   const { data, error } = await supabase.from('training_sessions')
-    .select(`id, session_date, note, created_at, sets:training_sets(${SET_FIELDS})`)
+    .select(`id, session_date, note, rest_hr, avg_hr, max_hr, created_at, sets:training_sets(${SET_FIELDS})`)
     .eq('profile_id', profileId).order('session_date', { ascending: true })
   if (error) throw error
   return data.map((s) => ({ ...s, sets: [...(s.sets ?? [])].sort(sortSets) }))
@@ -142,25 +142,26 @@ export async function listTrainingSessions(profileId) {
  * 新增或修改一次訓練。sets: [{ exercise_id, weight_kg, reps, rpe }]（依顯示順序）
  * 修改時整批取代該次訓練的組數，避免逐筆比對出錯。
  */
-export async function adminSaveSession(profileId, { id, session_date, note, sets }) {
+export async function adminSaveSession(profileId, { id, session_date, note, sets, rest_hr, avg_hr, max_hr }) {
   const numbered = numberSets(sets)
+  const hr = { rest_hr: intOrNull(rest_hr), avg_hr: intOrNull(avg_hr), max_hr: intOrNull(max_hr) }
   if (DEMO) {
     const rows = demoList(`sessions:${profileId}`)
     const sid = id ?? uid()
-    const row = { id: sid, session_date, note: note?.trim() || null, created_at: new Date().toISOString(),
+    const row = { id: sid, session_date, note: note?.trim() || null, ...hr, created_at: new Date().toISOString(),
       sets: numbered.map((s) => ({ id: uid(), ...s })) }
     demoSet(`sessions:${profileId}`, id ? rows.map((r) => (r.id === id ? { ...row, created_at: r.created_at } : r)) : [...rows, row])
     return sid
   }
   let sid = id
   if (id) {
-    const { error } = await supabase.from('training_sessions').update({ session_date, note: note?.trim() || null }).eq('id', id)
+    const { error } = await supabase.from('training_sessions').update({ session_date, note: note?.trim() || null, ...hr }).eq('id', id)
     if (error) throw error
     const del = await supabase.from('training_sets').delete().eq('session_id', id)
     if (del.error) throw del.error
   } else {
     const { data, error } = await supabase.from('training_sessions')
-      .insert({ profile_id: profileId, session_date, note: note?.trim() || null }).select('id').single()
+      .insert({ profile_id: profileId, session_date, note: note?.trim() || null, ...hr }).select('id').single()
     if (error) throw error
     sid = data.id
   }
@@ -178,6 +179,11 @@ export async function adminDeleteSession(profileId, id) {
 }
 
 // ── 小工具 ──────────────────────────────────────────────────────────────────
+
+function intOrNull(v) {
+  const n = numOrNull(v)
+  return n == null ? null : Math.round(n)
+}
 
 function numOrNull(v) {
   if (v === '' || v == null) return null

@@ -1,10 +1,12 @@
 // 後台：訓練紀錄（一次訓練 → 多個動作 → 每組重量／次數／RPE）
 import { useCallback, useEffect, useState } from 'react'
 import {
-  adminAddExercise, adminDeleteSession, adminSaveSession, groupSets, listExercises, listTrainingSessions, todayTaipei,
+  adminAddExercise, adminDeleteSession, adminSaveSession, getProfileInfo, groupSets, listExercises, listTrainingSessions, todayTaipei,
 } from '../../lib/training'
-import { estimate1RM } from '../../lib/strength'
+import { ageFrom, estimate1RM } from '../../lib/strength'
+import { HR_RANGE, REST_RANGE, heartLine, listRestingHr, validBpm } from '../../lib/heart'
 import SessionSets from '../../components/SessionSets'
+import SessionHeart from '../../components/SessionHeart'
 
 const RPE_OPTIONS = ['', 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
 const CATEGORY_LABELS = { lower: '下肢', hinge: '髖主導', push: '推', pull: '拉', other: '自訂' }
@@ -18,15 +20,23 @@ export default function AdminTraining({ profileId }) {
   const [editing, setEditing] = useState(null) // null | { id?, session_date, note, blocks }
   const [openId, setOpenId] = useState(null)
   const [err, setErr] = useState('')
+  const [age, setAge] = useState(null)
+  const [rhr, setRhr] = useState([]) // 客戶自己填的每日安靜心跳
 
-  const reload = useCallback(() => Promise.all([listTrainingSessions(profileId), listExercises()])
-    .then(([s, e]) => { setSessions(s); setExercises(e) })
+  const reload = useCallback(() => Promise.all([listTrainingSessions(profileId), listExercises(), getProfileInfo(profileId), listRestingHr(profileId)])
+    .then(([s, e, info, r]) => { setSessions(s); setExercises(e); setAge(ageFrom(info?.birthday)); setRhr(r) })
     .catch(() => setErr('載入失敗')), [profileId])
   useEffect(() => { reload() }, [reload])
+  const rhrOn = (d) => rhr.find((r) => r.measured_on === d)?.bpm ?? ''
+  const lastRhr = rhr.at(-1)
 
-  const startNew = () => setEditing({ session_date: todayTaipei(), note: '', blocks: [newBlock()] })
+  const startNew = () => {
+    const d = todayTaipei()
+    setEditing({ session_date: d, note: '', rest_hr: rhrOn(d), avg_hr: '', max_hr: '', blocks: [newBlock()] })
+  }
   const startEdit = (s) => setEditing({
     id: s.id, session_date: s.session_date, note: s.note ?? '',
+    rest_hr: s.rest_hr ?? '', avg_hr: s.avg_hr ?? '', max_hr: s.max_hr ?? '',
     blocks: groupSets(s.sets).map((g) => newBlock(g.exercise_id, g.sets.map((x) => newSet({ ...x, rpe: x.rpe ?? '' })))),
   })
 
@@ -37,9 +47,13 @@ export default function AdminTraining({ profileId }) {
         {!editing && <button className="btn primary" onClick={startNew}>＋ 新增訓練</button>}
       </div>
       {err && <p className="error small">{err}</p>}
+      <p className="muted small">
+        客戶安靜心跳：{lastRhr ? `最近一次 ${lastRhr.bpm} bpm（${lastRhr.measured_on.replaceAll('-', '/')}），共 ${rhr.length} 筆` : '客戶還沒填過'}
+        {age == null && '｜還沒有生日資料，無法推估強度區間'}
+      </p>
 
       {editing && (
-        <SessionEditor value={editing} exercises={exercises} onChange={setEditing}
+        <SessionEditor value={editing} rhrOn={rhrOn} exercises={exercises} onChange={setEditing}
           onExerciseAdded={(ex) => setExercises((list) => [...list, ex])}
           onCancel={() => setEditing(null)}
           onSaved={async () => { setEditing(null); await reload() }}
@@ -50,7 +64,7 @@ export default function AdminTraining({ profileId }) {
       {sessions && !editing && (
         <ul className="session-list">
           {[...sessions].reverse().map((s) => (
-            <SessionItem key={s.id} s={s} exercises={exercises} open={openId === s.id}
+            <SessionItem key={s.id} s={s} age={age} exercises={exercises} open={openId === s.id}
               onToggle={() => setOpenId(openId === s.id ? null : s.id)}
               onEdit={() => startEdit(s)}
               onDelete={async () => { await adminDeleteSession(profileId, s.id); await reload() }} />
@@ -61,7 +75,7 @@ export default function AdminTraining({ profileId }) {
   )
 }
 
-function SessionItem({ s, exercises, open, onToggle, onEdit, onDelete }) {
+function SessionItem({ s, age, exercises, open, onToggle, onEdit, onDelete }) {
   const [confirm, setConfirm] = useState(false)
   const [busy, setBusy] = useState(false)
   const names = Object.fromEntries(exercises.map((e) => [e.id, e.name]))
@@ -71,12 +85,14 @@ function SessionItem({ s, exercises, open, onToggle, onEdit, onDelete }) {
       <button className="session-head" onClick={onToggle} aria-expanded={open}>
         <span><b>{s.session_date.replaceAll('-', '/')}</b>
           <span className="muted small">{exIds.map((id) => names[id] ?? '動作').join('、') || '沒有動作'}｜{s.sets.length} 組</span>
+          {s.avg_hr && <span className="muted small">{heartLine(s, age)}</span>}
         </span>
         <span aria-hidden="true">{open ? '▾' : '▸'}</span>
       </button>
       {open && (
         <div className="session-body">
           {s.note && <p className="muted small">備註：{s.note}</p>}
+          <SessionHeart s={s} age={age} />
           <SessionSets groups={groupSets(s.sets)} exercises={exercises} />
           {confirm ? (
             <div className="row confirm-row">
@@ -98,7 +114,7 @@ function SessionItem({ s, exercises, open, onToggle, onEdit, onDelete }) {
   )
 }
 
-function SessionEditor({ value, exercises, onChange, onExerciseAdded, onCancel, onSaved, profileId }) {
+function SessionEditor({ value, rhrOn, exercises, onChange, onExerciseAdded, onCancel, onSaved, profileId }) {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const upd = (fn) => onChange({ ...value, blocks: fn(value.blocks) })
@@ -110,10 +126,14 @@ function SessionEditor({ value, exercises, onChange, onExerciseAdded, onCancel, 
     const bad = sets.find((s) => s.exercise_id && (s.weight_kg !== '' || s.reps !== '') && (s.weight_kg === '' || s.reps === '' || Number(s.reps) <= 0 || Number(s.weight_kg) < 0))
     if (bad) return setErr('有一組的重量或次數沒填完整')
     if (!sets.some((s) => s.exercise_id && s.weight_kg !== '' && s.reps !== '')) return setErr('至少記錄一組')
+    if (!validBpm(value.rest_hr, REST_RANGE)) return setErr(`安靜心跳請填 ${REST_RANGE[0]}～${REST_RANGE[1]} 的整數`)
+    if (!validBpm(value.avg_hr, HR_RANGE) || !validBpm(value.max_hr, HR_RANGE)) return setErr(`運動心率請填 ${HR_RANGE[0]}～${HR_RANGE[1]} 的整數`)
+    if (value.avg_hr !== '' && value.max_hr !== '' && Number(value.max_hr) < Number(value.avg_hr)) return setErr('最高心率不能低於平均心率')
     setBusy(true)
     setErr('')
     try {
-      await adminSaveSession(profileId, { id: value.id, session_date: value.session_date, note: value.note, sets })
+      await adminSaveSession(profileId, { id: value.id, session_date: value.session_date, note: value.note, sets,
+        rest_hr: value.rest_hr, avg_hr: value.avg_hr, max_hr: value.max_hr })
       await onSaved()
     } catch {
       setErr('儲存失敗，請稍後再試')
@@ -124,9 +144,19 @@ function SessionEditor({ value, exercises, onChange, onExerciseAdded, onCancel, 
   return (
     <div className="session-editor">
       <div className="form-grid two-col">
-        <label className="small">訓練日期<input className="search" type="date" value={value.session_date} onChange={(e) => onChange({ ...value, session_date: e.target.value })} /></label>
+        <label className="small">訓練日期<input className="search" type="date" value={value.session_date} onChange={(e) => {
+          const d = e.target.value
+          // 換日期時，如果安靜心跳還沒填，就帶入客戶當天自己填的
+          onChange({ ...value, session_date: d, rest_hr: value.rest_hr === '' ? rhrOn(d) : value.rest_hr })
+        }} /></label>
         <label className="small">備註<input className="search" value={value.note} maxLength={200} onChange={(e) => onChange({ ...value, note: e.target.value })} placeholder="選填" /></label>
       </div>
+      <div className="form-grid three-col">
+        <label className="small">安靜心跳<input className="search" type="number" inputMode="numeric" min={REST_RANGE[0]} max={REST_RANGE[1]} value={value.rest_hr} onChange={(e) => onChange({ ...value, rest_hr: e.target.value })} placeholder="bpm" /></label>
+        <label className="small">平均心率<input className="search" type="number" inputMode="numeric" min={HR_RANGE[0]} max={HR_RANGE[1]} value={value.avg_hr} onChange={(e) => onChange({ ...value, avg_hr: e.target.value })} placeholder="bpm" /></label>
+        <label className="small">最高心率<input className="search" type="number" inputMode="numeric" min={HR_RANGE[0]} max={HR_RANGE[1]} value={value.max_hr} onChange={(e) => onChange({ ...value, max_hr: e.target.value })} placeholder="bpm" /></label>
+      </div>
+      <p className="muted small">安靜心跳會自動帶入客戶當天在 App 填的數字，可以手動改；心率都是選填。</p>
 
       {value.blocks.map((b) => (
         <div key={b.key} className="ex-block">

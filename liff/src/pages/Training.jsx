@@ -2,19 +2,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
-import { fmtDay, listBodyComps, listExercises, listTrainingSessions, toDate } from '../lib/training'
-import { BODY_METRICS, e1rmHistory, latestDelta, metricValue } from '../lib/strength'
+import { fmtDay, getProfileInfo, listBodyComps, listExercises, listTrainingSessions, toDate } from '../lib/training'
+import { BODY_METRICS, ageFrom, e1rmHistory, latestDelta, metricValue } from '../lib/strength'
+import { heartLine, listRestingHr } from '../lib/heart'
 import LineChart from '../components/LineChart'
+import RestingHrCard from '../components/RestingHrCard'
 
 export default function Training() {
   const { profile } = useAuth()
   const [data, setData] = useState(null)
   const [error, setError] = useState(false)
 
+  const [rhr, setRhr] = useState(null)
+  const reloadRhr = () => listRestingHr(profile.id).then(setRhr).catch(() => setRhr([]))
+
   useEffect(() => {
-    Promise.all([listBodyComps(profile.id), listTrainingSessions(profile.id), listExercises()])
-      .then(([body, sessions, exercises]) => setData({ body, sessions, exercises }))
+    Promise.all([listBodyComps(profile.id), listTrainingSessions(profile.id), listExercises(), getProfileInfo(profile.id).catch(() => ({}))])
+      .then(([body, sessions, exercises, info]) => setData({ body, sessions, exercises, age: ageFrom(info?.birthday) }))
       .catch(() => setError(true))
+    reloadRhr()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile.id])
 
   return (
@@ -22,6 +29,7 @@ export default function Training() {
       <h1>訓練</h1>
       {error && <p className="error">資料載入失敗，請稍後再試</p>}
       {!data && !error && <p className="muted">載入中…</p>}
+      {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (
         <section className="card">
           <p>每次到店訓練後，教練會幫你記錄身體組成與訓練內容，你可以在這裡看到自己的進步。</p>
@@ -29,7 +37,7 @@ export default function Training() {
       )}
       {data && data.body.length > 0 && <BodySection rows={data.body} />}
       {data && data.sessions.length > 0 && <StrengthSection sessions={data.sessions} exercises={data.exercises} />}
-      {data && data.sessions.length > 0 && <SessionList sessions={data.sessions} exercises={data.exercises} />}
+      {data && data.sessions.length > 0 && <SessionList sessions={data.sessions} exercises={data.exercises} age={data.age} />}
     </main>
   )
 }
@@ -93,7 +101,7 @@ function StrengthSection({ sessions, exercises }) {
   )
 }
 
-function SessionList({ sessions, exercises }) {
+function SessionList({ sessions, exercises, age }) {
   const names = Object.fromEntries(exercises.map((e) => [e.id, e.name]))
   return (
     <>
@@ -107,6 +115,7 @@ function SessionList({ sessions, exercises }) {
                 <span>
                   <b>{fmtDay(s.session_date)}</b>
                   <span className="muted small">{exIds.map((id) => names[id] ?? '動作').join('、') || '沒有動作'}｜{s.sets.length} 組</span>
+                  {s.avg_hr && <span className="muted small">{heartLine(s, age)}</span>}
                 </span>
                 <span aria-hidden="true">›</span>
               </Link>
