@@ -1,7 +1,7 @@
 // 客戶端（會員）：設定 iPhone 自動同步 — 產生同步碼、安裝捷徑、看最後同步時間、停用
-import { useEffect, useState } from 'react'
-import { HEALTH_SHORTCUT_URL } from '../config'
-import { fmtSyncTime, getSyncStatus, isStale, issueSyncToken, revokeSync } from '../lib/healthSync'
+import { useEffect, useRef, useState } from 'react'
+import { DEMO, HEALTH_SHORTCUT_URL } from '../config'
+import { fmtSyncTime, getSyncStatus, isIOS, isStale, issueSyncToken, revokeSync, runShortcutUrl } from '../lib/healthSync'
 
 export default function HealthSyncCard({ profile, nutrition, onSynced }) {
   const [st, setSt] = useState(undefined)
@@ -12,6 +12,20 @@ export default function HealthSyncCard({ profile, nutrition, onSynced }) {
 
   const reload = () => getSyncStatus(profile.id).then(setSt).catch(() => setSt(null))
   useEffect(() => { reload() }, [profile.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 按「立即同步」→ 跳去捷徑 → 回到 App 時重新抓資料
+  const pending = useRef(false)
+  useEffect(() => {
+    const onBack = () => {
+      if (document.visibilityState !== 'visible' || !pending.current) return
+      pending.current = false
+      setTimeout(() => { reload(); onSynced?.() }, 1500)
+    }
+    document.addEventListener('visibilitychange', onBack)
+    return () => document.removeEventListener('visibilitychange', onBack)
+  }, [profile.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  const canRun = isIOS() || DEMO
+  function runNow() { pending.current = true; window.location.href = runShortcutUrl() }
 
   async function issue() {
     setBusy(true); setMsg('')
@@ -63,6 +77,12 @@ export default function HealthSyncCard({ profile, nutrition, onSynced }) {
           {last ? <>最後同步：<b>{last}</b></> : '已產生同步碼，還沒收到資料。設定好捷徑後手動執行一次試試看。'}
           {isStale(st.last_sync_at) && <span className="danger-text">（超過 2 天沒同步，檢查一下捷徑自動化有沒有被關掉）</span>}
         </p>
+      )}
+      {st && !token && canRun && (
+        <div className="sync-now">
+          <button className="btn primary" onClick={runNow}>立即同步</button>
+          <span className="muted small">會打開「捷徑」跑一次，跑完自動回來。沒反應的話，請先完成捷徑設定，捷徑名稱要是「宥芯同步」。</span>
+        </div>
       )}
       {st && !nutrition && <p className="muted small">目前只會存安靜心率；步數和活動熱量要等教練開放熱量功能才會存。</p>}
       {st && !token && (

@@ -1,6 +1,6 @@
 // iPhone「捷徑」自動同步（步數、活動能量、安靜心率）。規則見 supabase/migrations/0037_health_sync.sql
 // 同步碼只顯示一次；資料庫只存雜湊。捷徑呼叫 rpc/health_sync，一次一天。
-import { DEMO } from '../config'
+import { DEMO, LIFF_ID } from '../config'
 import { supabase } from './supabase'
 import { demoGet, demoSet } from './api'
 
@@ -41,4 +41,19 @@ export function fmtSyncTime(iso) {
 export function isStale(lastSyncIso, now = new Date()) {
   if (!lastSyncIso) return false
   return now - new Date(lastSyncIso) > 2 * 24 * 3600 * 1000
+}
+
+export const SHORTCUT_NAME = '宥芯同步'
+
+/** 開啟並執行捷徑；有 LIFF_ID 就跑完自動回到 LINE 裡的 App */
+export function runShortcutUrl(liffId = LIFF_ID) {
+  const q = new URLSearchParams({ name: SHORTCUT_NAME })
+  if (liffId) q.set('x-success', `https://liff.line.me/${liffId}`)
+  return `shortcuts://x-callback-url/run-shortcut?${q.toString().replace(/\+/g, '%20')}`
+}
+
+/** iPhone／iPad（iPadOS 會偽裝成 Mac，用觸控點判斷） */
+export function isIOS(nav = globalThis.navigator) {
+  if (!nav) return false
+  return /iPhone|iPad|iPod/.test(nav.userAgent) || (nav.platform === 'MacIntel' && nav.maxTouchPoints > 1)
 }

@@ -23,6 +23,7 @@ export default function Training() {
   const [error, setError] = useState(false)
 
   const [rhr, setRhr] = useState(null)
+  const [syncTick, setSyncTick] = useState(0)
   const [target, setTarget] = useState(null)
   const member = isMember(profile)
   const nutrition = isNutrition(profile)
@@ -50,8 +51,8 @@ export default function Training() {
       </section>
       {member && <SelfTrainingCard profile={profile} />}
       {nutrition && <DietCard profile={profile} />}
-      {nutrition && data && <EnergyCard profile={profile} body={data.body} sessions={data.sessions} info={data.info} age={data.age} />}
-      {member && <HealthSyncCard profile={profile} nutrition={nutrition} onSynced={reloadRhr} />}
+      {nutrition && data && <EnergyCard key={syncTick} profile={profile} body={data.body} sessions={data.sessions} info={data.info} age={data.age} />}
+      {member && <HealthSyncCard profile={profile} nutrition={nutrition} onSynced={() => { reloadRhr(); setSyncTick((t) => t + 1) }} />}
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {member && data && target && <TargetWeightCard profileId={profile.id} target={target} bodyRows={data.body} onSaved={reloadTarget} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (

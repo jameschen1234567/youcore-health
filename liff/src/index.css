@@ -536,3 +536,4 @@ fieldset.plain { border: 0; padding: 0; margin: 14px 0 0; min-width: 0; }
 /* iPhone 自動同步 */
 .sync-token { display: grid; gap: 8px; margin: 8px 0; }
 .token-box { display: block; padding: 10px; border-radius: 8px; background: var(--accent); font-size: 0.8rem; word-break: break-all; user-select: all; }
+.sync-now { display: grid; gap: 6px; margin: 8px 0; }
