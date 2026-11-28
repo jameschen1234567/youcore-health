@@ -7,6 +7,7 @@ import { BODY_METRICS, ageFrom, e1rmHistory, latestDelta, metricValue } from '..
 import { heartLine, listRestingHr } from '../lib/heart'
 import LineChart from '../components/LineChart'
 import RestingHrCard from '../components/RestingHrCard'
+import HealthSyncCard from '../components/HealthSyncCard'
 import HomeworkCard from '../components/HomeworkCard'
 import SelfTrainingCard from '../components/SelfTrainingCard'
 import DietCard from '../components/DietCard'
@@ -50,6 +51,7 @@ export default function Training() {
       {member && <SelfTrainingCard profile={profile} />}
       {nutrition && <DietCard profile={profile} />}
       {nutrition && data && <EnergyCard profile={profile} body={data.body} sessions={data.sessions} info={data.info} age={data.age} />}
+      {member && <HealthSyncCard profile={profile} nutrition={nutrition} onSynced={reloadRhr} />}
       {rhr && <RestingHrCard profileId={profile.id} rows={rhr} onSaved={reloadRhr} />}
       {member && data && target && <TargetWeightCard profileId={profile.id} target={target} bodyRows={data.body} onSaved={reloadTarget} />}
       {data && data.body.length === 0 && data.sessions.length === 0 && (

@@ -53,7 +53,7 @@ export const validBpm = (v, [lo, hi]) => v === '' || v == null || (Number.isInte
 /** 舊的在前 [{ measured_on, bpm }] */
 export async function listRestingHr(profileId) {
   if (DEMO) return demoList(`rhr:${profileId}`).sort((a, b) => a.measured_on.localeCompare(b.measured_on))
-  const { data, error } = await supabase.from('resting_hr').select('measured_on, bpm')
+  const { data, error } = await supabase.from('resting_hr').select('measured_on, bpm, source')
     .eq('profile_id', profileId).order('measured_on', { ascending: true })
   if (error) throw error
   return data
@@ -65,10 +65,10 @@ export async function saveRestingHr(profileId, measured_on, bpm) {
   if (!Number.isInteger(n) || n < REST_RANGE[0] || n > REST_RANGE[1]) throw new Error('BAD_BPM')
   if (DEMO) {
     const rows = demoList(`rhr:${profileId}`).filter((r) => r.measured_on !== measured_on)
-    demoSet(`rhr:${profileId}`, [...rows, { measured_on, bpm: n }])
+    demoSet(`rhr:${profileId}`, [...rows, { measured_on, bpm: n, source: 'manual' }])
     return
   }
   const { error } = await supabase.from('resting_hr')
-    .upsert({ profile_id: profileId, measured_on, bpm: n }, { onConflict: 'profile_id,measured_on' })
+    .upsert({ profile_id: profileId, measured_on, bpm: n, source: 'manual' }, { onConflict: 'profile_id,measured_on' })
   if (error) throw error
 }

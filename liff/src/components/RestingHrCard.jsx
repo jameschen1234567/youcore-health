@@ -43,6 +43,7 @@ export default function RestingHrCard({ profileId, rows, onSaved }) {
       ) : (
         <p className="stat">
           <span className="big-num">{mine.bpm}<small> bpm</small></span>
+          {mine.source === 'shortcut' && <span className="delta neutral">iPhone 自動</span>}
           {avg7 != null && <span className="delta neutral">近 7 筆平均 {avg7}</span>}
           <button className="link-btn" onClick={() => setEditing(true)}>修改</button>
         </p>

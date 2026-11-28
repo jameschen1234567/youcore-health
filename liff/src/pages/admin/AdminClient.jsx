@@ -15,6 +15,7 @@ import BodyMap from '../../components/BodyMap'
 import { deleteFootMeasurement } from '../../lib/api'
 import { DEMO } from '../../config'
 import OrderCard from '../../components/OrderCard'
+import { fmtSyncTime, getSyncStatus, isStale, revokeSync } from '../../lib/healthSync'
 import AdminInfo from './AdminInfo'
 import AdminBody from './AdminBody'
 import AdminTraining from './AdminTraining'
@@ -51,6 +52,7 @@ export default function AdminClient() {
       <h1>{profile.display_name || '未命名'}</h1>
       <p className="muted small">加入 {fmtDate(profile.created_at)}</p>
       <MemberNo profileId={profile.id} value={profile.member_no} onSaved={reload} />
+      <SyncStatus profileId={profile.id} />
 
       <DeletionPanel data={data} onDone={() => navigate('/admin')} onChange={reload} />
       <AdminInfo profileId={profile.id} />
@@ -356,5 +358,27 @@ function MemberNo({ profileId, value, onSaved }) {
       <p className="muted small">英文會自動轉大寫；清空後儲存＝移除編號。</p>
       {err && <p className="error small">{err}</p>}
     </div>
+  )
+}
+
+function SyncStatus({ profileId }) {
+  const [st, setSt] = useState(undefined)
+  const [busy, setBusy] = useState(false)
+  const reload = useCallback(() => getSyncStatus(profileId).then(setSt).catch(() => setSt(null)), [profileId])
+  useEffect(() => { reload() }, [reload])
+  if (st === undefined) return null
+  async function off() {
+    if (!window.confirm('停用這位客人的 iPhone 自動同步？已同步的資料會保留，客人要重新設定才能再同步。')) return
+    setBusy(true)
+    try { await revokeSync(profileId, true); await reload() } finally { setBusy(false) }
+  }
+  return (
+    <p className="small">
+      iPhone 自動同步：{!st ? <b>未設定</b> : <>
+        <b>{st.last_sync_at ? `最後 ${fmtSyncTime(st.last_sync_at)}` : '已設定，尚未收到資料'}</b>
+        {isStale(st.last_sync_at) && <span className="danger-text">（超過 2 天沒同步）</span>}{' '}
+        <button className="link-btn danger-text" disabled={busy} onClick={off}>停用</button>
+      </>}
+    </p>
   )
 }

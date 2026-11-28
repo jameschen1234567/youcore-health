@@ -109,7 +109,7 @@ export async function adminSetNutrition(profileId, on) {
 
 export async function listActivity(profileId, fromDay) {
   if (DEMO) return demoList(`activity:${profileId}`).filter((a) => a.day >= fromDay)
-  return unwrap(await supabase.from('daily_activity').select('day, steps, active_kcal').eq('profile_id', profileId).gte('day', fromDay).order('day'))
+  return unwrap(await supabase.from('daily_activity').select('day, steps, active_kcal, source').eq('profile_id', profileId).gte('day', fromDay).order('day'))
 }
 
 export async function saveActivity(profileId, v) {
@@ -119,5 +119,5 @@ export async function saveActivity(profileId, v) {
     active_kcal: v.active_kcal === '' || v.active_kcal == null ? null : Number(v.active_kcal),
   }
   if (DEMO) return demoSet(`activity:${profileId}`, [...demoList(`activity:${profileId}`).filter((a) => a.day !== v.day), row])
-  unwrap(await supabase.from('daily_activity').upsert({ profile_id: profileId, ...row }, { onConflict: 'profile_id,day' }))
+  unwrap(await supabase.from('daily_activity').upsert({ profile_id: profileId, ...row, source: 'manual' }, { onConflict: 'profile_id,day' }))
 }

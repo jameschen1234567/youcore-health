@@ -14,3 +14,6 @@ export const BOOKING_OPEN = false
 
 // 同意書版本：文字有改就要升版，所有客戶會被要求重新同意
 export const CONSENT_VERSION = '2026-11-draft2' // 加入基本資料、病史、身體組成、訓練紀錄
+
+// iPhone 自動同步捷徑的 iCloud 分享連結（James 做好捷徑後填入；空字串＝顯示「捷徑準備中」）
+export const HEALTH_SHORTCUT_URL = ''

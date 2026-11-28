@@ -44,7 +44,7 @@ export default function EnergyCard({ profile, body, sessions, info, age, readOnl
         <input className="search day-pick" type="date" value={day} min={addDays(today, -MAX_BACK_DAYS)} max={today} onChange={(e) => e.target.value && setDay(e.target.value)} aria-label="選擇日期" />
       </div>
       {err && <p className="error small">{err}</p>}
-      {d && readOnly && <p className="muted small">手機資料：{cur.activity ? `步數 ${cur.activity.steps ?? '—'}｜活動熱量 ${cur.activity.active_kcal ?? '—'}` : '這天沒填'}</p>}
+      {d && readOnly && <p className="muted small">手機資料：{cur.activity ? `步數 ${cur.activity.steps ?? '—'}｜活動熱量 ${cur.activity.active_kcal ?? '—'}${cur.activity.source === 'shortcut' ? '（iPhone 自動）' : '（手填）'}` : '這天沒填'}</p>}
       {d && !readOnly && <ActivityForm key={day} day={day} cur={cur.activity} profileId={profile.id} onSaved={reload} />}
 
       {cur && (
@@ -105,6 +105,7 @@ function ActivityForm({ day, cur, profileId, onSaved }) {
       <label className="small">活動熱量（大卡）<input className="search" type="number" inputMode="numeric" min="0" value={kcal} onChange={(e) => setKcal(e.target.value)} placeholder="手機上的數字" /></label>
       <button className="btn ghost" disabled={busy} onClick={save}>{busy ? '儲存中…' : '儲存'}</button>
       {msg && <span className="small">{msg}</span>}
+      {cur?.source === 'shortcut' && <span className="muted small">這天是 iPhone 自動同步的，改了就以你填的為準（晚上同步時會再更新）。</span>}
     </div>
   )
 }
